@@ -6,10 +6,7 @@ Enum StatusEnum {
 
 Enum AnswerTypesEnum {
   CHOICE
-  PARAGRAPH
-  SENTENCE
-  AUDIO_SENTENCE
-  AUDIO_PARAGRAPH
+  INPUT
 }
 
 Enum LessonTypesEnum {
@@ -19,11 +16,8 @@ Enum LessonTypesEnum {
 }
 
 Enum QuestionTypesEnum {
-  CHOICE
-  PARAGRAPH
-  SENTENCE
-  AUDIO_SENTENCE
-  AUDIO_PARAGRAPH
+  AUDIO
+  IMAGE
 }
 
 Enum AuthProvidersEnum {
@@ -106,6 +100,7 @@ Table lesson {
   stars decimal
   totalStars int
   status StatusEnum
+  isSequence boolean
   createdAt timestamp
   updatedAt timestamp
   deletedAt timestamp
@@ -135,6 +130,7 @@ Table question {
   questionType QuestionTypesEnum
   status StatusEnum
   category_id uuid
+  time number
   createdAt timestamp
   updatedAt timestamp
 }
@@ -158,6 +154,7 @@ Table user_course {
   status StatusEnum
   user_id int
   course_id uuid
+  current_lesson uuid 
   lastPositon int
   createdAt timestamp
   updatedAt timestamp
@@ -176,8 +173,9 @@ Table user_lesson {
   id uuid [pk]
   status StatusEnum
   user_id int
-  lesson_id uuid
-  isCompleted boolean
+  lesson_id uuid (nullable)
+  practice_id uuid (nullable)
+  point number
   createdAt timestamp
   updatedAt timestamp
 }

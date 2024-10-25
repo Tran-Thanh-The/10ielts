@@ -38,6 +38,7 @@ import { CourseResponseDto } from "./dto/course-response-dto";
 import { CourseListResponseDto } from "./dto/courses-response-dto";
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 
 @ApiTags("Courses")
 @ApiBearerAuth()
@@ -51,7 +52,7 @@ export class CoursesController {
 
   @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post()
-  @UseInterceptors(FileInterceptor("file"))
+  @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: Course,

@@ -28,6 +28,7 @@ export class FilesLocalService {
     const filePath = `/${this.configService.get("app.apiPrefix", {
       infer: true,
     })}/v1/files/${file.filename}`;
+    console.log(`filePath: ${JSON.stringify(file)}`);
     return {
       file: await this.fileRepository.create({
         path: filePath,

@@ -4,7 +4,7 @@ import { CreateCourseDto } from "@/domain/courses/dto/create-course.dto";
 import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 import { Course } from "../../../../domain/course";
 import { CourseEntity } from "../entities/course.entity";
-import { FileEntity } from '@/files/infrastructure/persistence/relational/entities/file.entity';
+import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 
 export class CourseMapper {
   static toDomain(raw: CourseEntity): Course {

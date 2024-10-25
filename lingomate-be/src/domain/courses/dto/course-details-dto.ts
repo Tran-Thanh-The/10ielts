@@ -1,16 +1,16 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 import { CreateLessonDto } from "@/domain/lessons/dto/create-lesson.dto";
-import { CreateCourseDto } from "./create-course.dto";
+import { FileDto } from "@/files/dto/file.dto";
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import {
   IsArray,
   IsNotEmpty,
   IsOptional,
   ValidateNested,
 } from "class-validator/types/decorator/decorators";
-import { Type } from "class-transformer";
-import { FileDto } from "@/files/dto/file.dto";
+import { CourseResponseDto } from "./course-response-dto";
 
-export class CourseWithDetailsDTO extends PartialType(CreateCourseDto) {
+export class CourseWithDetailsDTO extends PartialType(CourseResponseDto) {
   @ApiProperty({ type: String })
   id: string;
 

@@ -1,6 +1,7 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { CourseEntity } from "@/domain/courses/infrastructure/persistence/relational/entities/course.entity";
 import { UserCourse } from "@/domain/user-courses/domain/user-course";
+import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import {
   ConflictException,
@@ -13,6 +14,7 @@ import { UserEntity } from "../users/infrastructure/persistence/relational/entit
 import { UserRepository } from "../users/infrastructure/persistence/user.repository";
 import { Course } from "./domain/course";
 import { CourseWithDetailsDTO } from "./dto/course-details-dto";
+import { CourseResponseDto } from "./dto/course-response-dto";
 import { CourseListResponseDto } from "./dto/courses-response-dto";
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
@@ -26,9 +28,14 @@ export class CoursesService {
     private readonly lessonCourseRepository: LessonCourseRepository,
     private readonly userCourseRepository: UserCourseRepository,
     private readonly userRepository: UserRepository,
+    private readonly filesLocalService: FilesLocalService,
   ) {}
 
-  async create(createCourseDto: CreateCourseDto, userId: string) {
+  async create(
+    createCourseDto: CreateCourseDto,
+    userId: string,
+    photoFile: Express.Multer.File,
+  ) {
     const existingCourse = await this.courseRepository.findByName(
       createCourseDto.name,
     );
@@ -37,20 +44,28 @@ export class CoursesService {
         `Course with name "${createCourseDto.name}" already exists.`,
       );
     }
-    const model = await CourseMapper.toModel(createCourseDto);
-    const course = await this.courseRepository.create(model);
     const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new NotFoundException("User not found");
     }
+
+    const model = await CourseMapper.toModel(createCourseDto);
+    model.status = StatusEnum.ACTIVE;
+    const course = await this.courseRepository.create(model);
+
     const userCourse = new UserCourse();
     userCourse.user = user as UserEntity;
     userCourse.course = course as CourseEntity;
     userCourse.status = StatusEnum.ACTIVE;
-
     await this.userCourseRepository.create(userCourse);
 
-    return course;
+    console.log(`PHOTO_FILE: ${photoFile ? photoFile : "undefined"}`);
+    if (photoFile) {
+      const uploadedFile = await this.filesLocalService.create(photoFile);
+      course.photo = uploadedFile.file;
+      await this.courseRepository.update(course.id, course);
+    }
+    return CourseMapper.toDto(course);
   }
 
   findAllWithPagination({
@@ -94,7 +109,7 @@ export class CoursesService {
     page: number = 1,
     limit: number = 10,
     orderBy: { [key: string]: "ASC" | "DESC" } = { created_at: "DESC" },
-  ): Promise<CourseListResponseDto<CreateCourseDto>> {
+  ): Promise<CourseListResponseDto<CourseResponseDto>> {
     const result = await this.courseRepository.getListCourse({
       status,
       userId,

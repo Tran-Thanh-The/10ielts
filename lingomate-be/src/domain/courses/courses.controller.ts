@@ -1,24 +1,27 @@
 import { RoleEnum } from "@/domain/roles/roles.enum";
 import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
-import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -26,15 +29,14 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { LessonCoursesService } from "../lesson-courses/lesson-courses.service";
 import { Roles } from "../roles/roles.decorator";
 import { RolesGuard } from "../roles/roles.guard";
 import { CoursesService } from "./courses.service";
 import { Course } from "./domain/course";
 import { CourseQueryDto, parseOrderBy } from "./dto/course-query-dto";
+import { CourseResponseDto } from "./dto/course-response-dto";
 import { CourseListResponseDto } from "./dto/courses-response-dto";
 import { CreateCourseDto } from "./dto/create-course.dto";
-import { FindAllCoursesDto } from "./dto/find-all-courses.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
 
 @ApiTags("Courses")
@@ -45,19 +47,49 @@ import { UpdateCourseDto } from "./dto/update-course.dto";
   version: "1",
 })
 export class CoursesController {
-  constructor(
-    private readonly coursesService: CoursesService,
-    private readonly lessonCourseService: LessonCoursesService,
-  ) {}
+  constructor(private readonly coursesService: CoursesService) {}
 
   @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post()
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: Course,
   })
-  create(@Body() createCourseDto: CreateCourseDto, @Req() req) {
-    const userId = req.user.id;
-    return this.coursesService.create(createCourseDto, userId);
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
+        },
+        name: { type: "string" },
+        price: { type: "number" },
+        description: { type: "string" },
+        category_id: { type: "string" },
+      },
+    },
+  })
+  create(
+    @Body() createCourseDto: CreateCourseDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req,
+  ) {
+    try {
+      const userId = req.user.id;
+      return this.coursesService.create(createCourseDto, userId, file);
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new ConflictException(error.message);
+      }
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        "An error occurred while updating the lesson. Please try again later.",
+      );
+    }
   }
 
   @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
@@ -70,7 +102,7 @@ export class CoursesController {
   })
   async getListCourse(
     @Query() query: CourseQueryDto,
-  ): Promise<CourseListResponseDto<CreateCourseDto>> {
+  ): Promise<CourseListResponseDto<CourseResponseDto>> {
     const orderBy = parseOrderBy(query.orderBy);
 
     return this.coursesService.getListCourse(
@@ -83,30 +115,30 @@ export class CoursesController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(Course),
-  })
-  async findAll(
-    @Query() query: FindAllCoursesDto,
-  ): Promise<InfinityPaginationResponseDto<Course>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
+  // @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(Course),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllCoursesDto,
+  // ): Promise<InfinityPaginationResponseDto<Course>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
 
-    return infinityPagination(
-      await this.coursesService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
-  }
+  //   return infinityPagination(
+  //     await this.coursesService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
 
   @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
@@ -158,7 +190,16 @@ export class CoursesController {
     type: String,
     required: true,
   })
-  remove(@Param("id") id: string) {
-    return this.coursesService.remove(id);
+  async remove(@Param("id") id: string) {
+    try {
+      return await this.coursesService.remove(id);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        "An error occurred while creating the lesson. Please try again later.",
+      );
+    }
   }
 }

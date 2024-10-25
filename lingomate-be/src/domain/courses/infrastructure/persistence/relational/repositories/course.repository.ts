@@ -165,6 +165,8 @@ export class CourseRelationalRepository implements CourseRepository {
 
     const queryBuilder = this.courseRepository.createQueryBuilder("course");
 
+    queryBuilder.leftJoinAndSelect("course.photo", "photo");
+
     if (userId) {
       queryBuilder.leftJoinAndSelect(
         "course.userCourses",
@@ -186,7 +188,9 @@ export class CourseRelationalRepository implements CourseRepository {
     }
 
     if (status) {
-      queryBuilder.andWhere("course.status = :status", { status });
+      queryBuilder.andWhere("course.status = :status", {
+        status: StatusEnum.ACTIVE,
+      });
     }
 
     queryBuilder.leftJoinAndSelect("course.category", "category");
@@ -199,7 +203,9 @@ export class CourseRelationalRepository implements CourseRepository {
       "status",
       "createdAt",
       "updatedAt",
+      "photo",
     ];
+
     Object.entries(orderBy).forEach(([key, value]) => {
       if (validColumns.includes(key)) {
         queryBuilder.addOrderBy(`course.${key}`, value);
@@ -214,6 +220,7 @@ export class CourseRelationalRepository implements CourseRepository {
     }
 
     const courses = await queryBuilder.getMany();
+
     const mappedCourses = courses.map((course) =>
       CourseMapper.toDomain(course),
     );

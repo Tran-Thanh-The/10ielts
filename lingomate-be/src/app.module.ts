@@ -8,7 +8,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { HeaderResolver } from "nestjs-i18n";
 import { I18nModule } from "nestjs-i18n/dist/i18n.module";
-import path from "path";
+import path, { join } from "path";
 import { DataSource, DataSourceOptions } from "typeorm";
 import appConfig from "./config/app.config";
 import { AllConfigType } from "./config/config.type";
@@ -43,7 +43,7 @@ import { HttpModule } from "@nestjs/axios";
 import { InvoicesModule } from "./domain/invoices/invoices.module";
 
 import { CategoriesModule } from "@/domain/categories/categories.module";
-
+import { ServeStaticModule } from "@nestjs/serve-static";
 @Module({
   imports: [
     CategoriesModule,
@@ -62,6 +62,9 @@ import { CategoriesModule } from "@/domain/categories/categories.module";
     MailerModule,
     HomeModule,
     RedisModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "..", "client"),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [

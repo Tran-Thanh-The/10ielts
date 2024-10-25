@@ -6,6 +6,7 @@ import { UsersModule } from "../users/users.module";
 import { CoursesController } from "./courses.controller";
 import { CoursesService } from "./courses.service";
 import { RelationalCoursePersistenceModule } from "./infrastructure/persistence/relational/relational-persistence.module";
+import { FilesLocalModule } from "@/files/infrastructure/uploader/local/files.module";
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RelationalCoursePersistenceModule } from "./infrastructure/persistence/
     UserCoursesModule,
     UserLessonsModule,
     UsersModule,
+    FilesLocalModule,
   ],
   controllers: [CoursesController],
   providers: [CoursesService],

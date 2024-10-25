@@ -1,10 +1,10 @@
-import { StatusEnum } from "@/common/enums/status.enum";
 import { CategoryEntity } from "@/domain/categories/infrastructure/persistence/relational/entities/category.entity";
+import { CourseResponseDto } from "@/domain/courses/dto/course-response-dto";
 import { CreateCourseDto } from "@/domain/courses/dto/create-course.dto";
-import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 import { Course } from "../../../../domain/course";
 import { CourseEntity } from "../entities/course.entity";
+import { FileEntity } from '@/files/infrastructure/persistence/relational/entities/file.entity';
 
 export class CourseMapper {
   static toDomain(raw: CourseEntity): Course {
@@ -56,33 +56,27 @@ export class CourseMapper {
     model.name = dto.name;
     model.price = dto.price;
     model.description = dto.description;
-    model.status = dto.status ?? StatusEnum.IN_ACTIVE;
     const category = new CategoryEntity();
     category.id = dto.category_id;
     model.category = category;
-    if (dto.photo) {
-      model.photo = FileMapper.toPersistence(dto.photo);
-    }
-    if (dto.creatAt) {
-      model.createdAt = dto.creatAt;
-    }
     return model;
   }
 
-  static toDto(model: Course): CreateCourseDto {
-    const dto = new CreateCourseDto();
+  static toDto(model: Course): CourseResponseDto {
+    const dto = new CourseResponseDto();
+    dto.id = model.id;
     dto.name = model.name;
     dto.price = model.price;
+    dto.status = model.status;
     dto.description = model.description;
-    dto.status = model.status ?? StatusEnum.IN_ACTIVE;
-    const category = new CategoryEntity();
-    category.id = model.id;
-    dto.category_id = model.id;
-    if (model.photo) {
-      dto.photo = FileMapper.toPersistence(model.photo);
-    }
-    dto.creatAt = model.createdAt;
+    dto.category_id = model.category.id;
 
+    if (model.photo) {
+      dto.photo = model.photo;
+    }
+
+    dto.createAt = model.createdAt;
+    dto.updateAt = model.updatedAt;
     return dto;
   }
 }

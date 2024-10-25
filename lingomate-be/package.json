@@ -109,6 +109,7 @@
     "@types/passport-jwt": "4.0.1",
     "@types/redis": "^4.0.11",
     "@types/supertest": "6.0.2",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "8.5.0",
     "@typescript-eslint/parser": "8.5.0",
     "env-cmd": "10.1.0",

@@ -49,8 +49,13 @@ export class CoursesService {
       throw new NotFoundException("User not found");
     }
 
-    const model = await CourseMapper.toModel(createCourseDto);
+    const model = CourseMapper.toModel(createCourseDto);
     model.status = StatusEnum.ACTIVE;
+
+    if (photoFile) {
+      const uploadedFile = await this.filesLocalService.create(photoFile);
+      model.photo = uploadedFile.file;
+    }
     const course = await this.courseRepository.create(model);
 
     const userCourse = new UserCourse();
@@ -59,12 +64,6 @@ export class CoursesService {
     userCourse.status = StatusEnum.ACTIVE;
     await this.userCourseRepository.create(userCourse);
 
-    console.log(`PHOTO_FILE: ${photoFile ? photoFile : "undefined"}`);
-    if (photoFile) {
-      const uploadedFile = await this.filesLocalService.create(photoFile);
-      course.photo = uploadedFile.file;
-      await this.courseRepository.update(course.id, course);
-    }
     return CourseMapper.toDto(course);
   }
 

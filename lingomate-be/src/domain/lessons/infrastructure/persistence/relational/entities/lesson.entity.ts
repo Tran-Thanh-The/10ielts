@@ -3,6 +3,7 @@ import { StatusEnum } from "@/common/enums/status.enum";
 import { LessonCourseEntity } from "@/domain/lesson-courses/infrastructure/persistence/relational/entities/lesson-course.entity";
 import { QuestionLessonEntity } from "@/domain/question-lessons/infrastructure/persistence/relational/entities/question-lesson.entity";
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
+import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 import { ApiProperty } from "@nestjs/swagger";
 import {
@@ -10,7 +11,9 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -36,10 +39,13 @@ export class LessonEntity extends EntityRelationalHelper {
   content?: string | null;
 
   @ApiProperty({
-    type: String,
+    type: () => FileEntity,
   })
-  @Column({ type: String, nullable: true })
-  videoUrl?: string | null;
+  @OneToOne(() => FileEntity, {
+    eager: true,
+  })
+  @JoinColumn()
+  videoUrl?: FileEntity | null;
 
   @ApiProperty({
     enum: LessonTypesEnum,
@@ -94,6 +100,10 @@ export class LessonEntity extends EntityRelationalHelper {
   @ApiProperty({ type: Number })
   @Column({ type: "int", nullable: true, default: 3 })
   totalStars?: number | null;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: "boolean", nullable: true, default: false })
+  isSequence?: boolean | null;
 
   @ApiProperty()
   @CreateDateColumn()

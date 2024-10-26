@@ -36,6 +36,12 @@ export class UserCourseEntity extends EntityRelationalHelper {
   })
   course: CourseEntity;
 
+  @ApiProperty({
+    type: () => String,
+  })
+  @Column({ type: "text", nullable: true })
+  currentLesson?: string;
+
   @ApiProperty({ type: Number })
   @Column({ type: "int", nullable: true })
   lastPosition?: number | null;

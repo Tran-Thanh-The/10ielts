@@ -1,4 +1,6 @@
 import { LessonTypesEnum } from "@/common/enums/lesson.enum";
+import { StatusEnum } from "@/common/enums/status.enum";
+import { FileDto } from "@/files/dto/file.dto";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsBoolean,
@@ -6,9 +8,13 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
 } from "class-validator";
 
-export class CreateLessonDto {
+export class LessonResponseDto {
+  @ApiProperty({ type: String })
+  id: string;
+
   @ApiProperty({ type: String })
   @IsNotEmpty()
   @IsString()
@@ -26,6 +32,10 @@ export class CreateLessonDto {
   @IsEnum(LessonTypesEnum)
   lessonType: LessonTypesEnum;
 
+  @ApiProperty({ type: String })
+  @IsUUID()
+  course_id?: string;
+
   @ApiPropertyOptional({ type: Number })
   @IsOptional()
   stars?: number | null;
@@ -38,4 +48,15 @@ export class CreateLessonDto {
   @IsBoolean()
   @IsOptional()
   isSequence?: boolean | null;
+
+  @ApiPropertyOptional({ type: () => FileDto })
+  @IsOptional()
+  videoUrl?: FileDto | null;
+
+  @ApiPropertyOptional({
+    enum: StatusEnum,
+  })
+  @IsEnum(StatusEnum)
+  @IsOptional()
+  status?: StatusEnum;
 }

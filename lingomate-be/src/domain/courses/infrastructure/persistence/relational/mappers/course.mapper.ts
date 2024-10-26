@@ -4,7 +4,6 @@ import { CreateCourseDto } from "@/domain/courses/dto/create-course.dto";
 import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 import { Course } from "../../../../domain/course";
 import { CourseEntity } from "../entities/course.entity";
-import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 
 export class CourseMapper {
   static toDomain(raw: CourseEntity): Course {
@@ -33,8 +32,6 @@ export class CourseMapper {
     persistenceEntity.name = domainEntity.name;
     persistenceEntity.price = domainEntity.price;
     persistenceEntity.description = domainEntity.description;
-
-    const photo: FileEntity | undefined | null = undefined;
 
     if (domainEntity.photo) {
       persistenceEntity.photo = FileMapper.toPersistence(domainEntity.photo);
@@ -69,7 +66,7 @@ export class CourseMapper {
     dto.price = model.price;
     dto.status = model.status;
     dto.description = model.description;
-    dto.category_id = model.category.id;
+    dto.category = model.category;
 
     if (model.photo) {
       dto.photo = model.photo;

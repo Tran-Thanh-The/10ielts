@@ -1,4 +1,5 @@
 import { StatusEnum } from "@/common/enums/status.enum";
+import { Category } from "@/domain/categories/domain/category";
 import { FileDto } from "@/files/dto/file.dto";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
@@ -33,10 +34,9 @@ export class CourseResponseDto {
   status?: StatusEnum;
 
   @ApiProperty({
-    type: String,
+    type: Category,
   })
-  @IsNotEmpty()
-  category_id: string;
+  category: Category;
 
   @ApiProperty({ type: Date })
   createAt?: Date;

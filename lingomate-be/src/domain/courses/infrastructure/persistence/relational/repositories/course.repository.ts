@@ -128,21 +128,15 @@ export class CourseRelationalRepository implements CourseRepository {
       LessonMapper.toDto(lc.lesson),
     );
 
-    // Tính số bài học đã hoàn thành (isCompleted = true)
-    const completedLessonCount = courseEntity.lessonCourses.filter((lc) =>
-      lc.lesson.userLesson.some((ul) => ul.isCompleted === true),
-    ).length;
-
     return {
       id: courseEntity.id,
       title: courseEntity.name,
       price: courseEntity.price,
       description: courseEntity.description,
       photo: courseEntity.photo,
-      category_id: courseEntity.category.id,
+      category: courseEntity.category,
       createdAt: courseEntity.createdAt,
       totalLesson: courseEntity.lessonCourses.length,
-      completedLesson: completedLessonCount,
       isMyCourse: true,
       lessons: lessonsDto,
     };
@@ -155,17 +149,11 @@ export class CourseRelationalRepository implements CourseRepository {
     paginationOptions?: IPaginationOptions;
     orderBy?: { [key: string]: "ASC" | "DESC" };
   }) {
-    const {
-      status,
-      userId,
-      invoiceId,
-      paginationOptions,
-      orderBy = { createdAt: "DESC" },
-    } = params;
+    const { status, userId, invoiceId, paginationOptions, orderBy } = params;
 
     const queryBuilder = this.courseRepository.createQueryBuilder("course");
-
     queryBuilder.leftJoinAndSelect("course.photo", "photo");
+    queryBuilder.leftJoinAndSelect("course.category", "category");
 
     if (userId) {
       queryBuilder.leftJoinAndSelect(
@@ -181,10 +169,6 @@ export class CourseRelationalRepository implements CourseRepository {
         .leftJoinAndSelect("course.courseInvoices", "courseInvoice")
         .leftJoinAndSelect("courseInvoice.userInvoices", "userInvoices")
         .andWhere("userInvoices.id = :invoiceId", { invoiceId });
-    } else if (invoiceId) {
-      console.warn(
-        `Invalid invoiceId: ${invoiceId}. This condition will be ignored.`,
-      );
     }
 
     if (status) {
@@ -192,8 +176,6 @@ export class CourseRelationalRepository implements CourseRepository {
         status: StatusEnum.ACTIVE,
       });
     }
-
-    queryBuilder.leftJoinAndSelect("course.category", "category");
 
     const validColumns = [
       "id",
@@ -206,12 +188,16 @@ export class CourseRelationalRepository implements CourseRepository {
       "photo",
     ];
 
-    Object.entries(orderBy).forEach(([key, value]) => {
-      if (validColumns.includes(key)) {
-        queryBuilder.addOrderBy(`course.${key}`, value);
-      }
-    });
-
+    if (orderBy && Object.keys(orderBy).length > 0) {
+      Object.entries(orderBy).forEach(([key, value]) => {
+        if (validColumns.includes(key)) {
+          queryBuilder.addOrderBy(`course.${key}`, value);
+        }
+      });
+    } else {
+      queryBuilder.orderBy("course.createdAt", "DESC");
+    }
+    queryBuilder.addOrderBy("course.id", "ASC");
     const total = await queryBuilder.getCount();
 
     if (paginationOptions) {
@@ -220,10 +206,11 @@ export class CourseRelationalRepository implements CourseRepository {
     }
 
     const courses = await queryBuilder.getMany();
-
-    const mappedCourses = courses.map((course) =>
-      CourseMapper.toDomain(course),
-    );
+    const mappedCourses = courses.map((course) => ({
+      ...CourseMapper.toDomain(course),
+      createdAt: course.createdAt,
+      updatedAt: course.updatedAt,
+    }));
 
     return {
       data: mappedCourses,

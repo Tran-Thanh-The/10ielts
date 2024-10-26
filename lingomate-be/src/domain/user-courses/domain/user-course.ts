@@ -19,6 +19,11 @@ export class UserCourse {
   })
   course: CourseEntity;
 
+  @ApiProperty({
+    type: () => String,
+  })
+  currentLesson?: string;
+
   @ApiProperty({ type: Number })
   lastPosition?: number | null;
 

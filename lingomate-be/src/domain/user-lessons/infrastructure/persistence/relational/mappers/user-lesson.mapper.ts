@@ -10,7 +10,6 @@ export class UserLessonMapper {
     domainEntity.id = raw.id;
     domainEntity.user = raw.user;
     domainEntity.lesson = raw.lesson;
-    domainEntity.isCompleted = raw.isCompleted;
     domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -25,7 +24,6 @@ export class UserLessonMapper {
     }
     persistenceEntity.user = domainEntity.user;
     persistenceEntity.lesson = domainEntity.lesson;
-    persistenceEntity.isCompleted = domainEntity.isCompleted;
     persistenceEntity.status = domainEntity.status;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;

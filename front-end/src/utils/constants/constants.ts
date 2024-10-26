@@ -1,7 +1,7 @@
 export const API_ENDPOINT = {
   ACCESS_TOKEN_KEY: 'ttb_atk',
   REFRESH_TOKEN_KEY: 'refresh_token',
-  REFRESH_TOKEN: '/auth/refresh_token',
+  REFRESH_TOKEN: '/auth/refresh',
   VERIFY_TOKEN: 'verify_token',
   LOGIN: '/auth/email/login',
   LOGOUT: '/auth/logout',

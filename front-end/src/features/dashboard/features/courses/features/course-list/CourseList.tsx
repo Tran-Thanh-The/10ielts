@@ -12,10 +12,14 @@ interface Course {
   name: string;
   description: string;
   price: number;
-  createdAt: Date;
+  createAt: Date | string;
   totalLesson: number;
   completedLesson: number;
   isMyCourse: boolean;
+  photo: {
+    id: string;
+    path: string;
+  };
 }
 
 export default function CourseList() {
@@ -29,7 +33,9 @@ export default function CourseList() {
 
   const triggerReload = () => {
     setReload(!reload);
-  }
+  };
+
+  console.log('danh sách khóa học: ', courses);
 
   const fetchCourses = async () => {
     try {
@@ -83,7 +89,8 @@ export default function CourseList() {
               title={course.name}
               description={course.description}
               price={course.price}
-              createdAt={course.createdAt}
+              createdAt={course.createAt}
+              // photo={course.photo.path}
               totalLesson={14}
               completedLesson={4}
               isMyCourse={false}

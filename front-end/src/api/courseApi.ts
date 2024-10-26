@@ -5,10 +5,14 @@ const courseApi = {
     return axiosInstance.get<any>('/categories');
   },
   getCourses: () => {
-    return axiosInstance.get<any>('/courses?page=1&limit=5');
+    return axiosInstance.get<any>('/courses/list?status=ACTIVE');
   },
   createCourse: (data: any) => {
-    return axiosInstance.post<any>('/courses', data);
+    return axiosInstance.post('/courses', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
   updateCourse: (id: string, data: any) => {
     return axiosInstance.patch<any>(`/courses/${id}`, data);

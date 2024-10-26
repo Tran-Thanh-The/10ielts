@@ -3,14 +3,28 @@ import { useForm, Controller } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Button, MenuItem, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  MenuItem,
+  TextField,
+  Typography,
+  IconButton,
+  Input,
+  FormHelperText,
+  FormControl,
+} from '@mui/material';
+import { CloudUpload, Clear } from '@mui/icons-material';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
 import FeatureLayout from '@/features/dashboard/layouts/feature-layout/FeatureLayout';
 import { LessonTypes } from '@/types/enum/LessonType';
-import { LessonRequest } from '@/types/interface/Lesson';
 import lessonApi from '@/api/lessonApi';
+import { LessonRequest } from '@/types/interface/Lesson';
 
-// Validation Schema using Yup
+interface LessonApiRequest extends LessonRequest {
+  append(name: string, value: string | Blob, fileName?: string): void;
+}
+
 const validationSchema = Yup.object().shape({
   lessonType: Yup.string().required('Please select the lesson type'),
   title: Yup.string()
@@ -19,17 +33,29 @@ const validationSchema = Yup.object().shape({
   content: Yup.string()
     .min(10, 'Content must be at least 10 characters')
     .required('Content is required'),
-  videoUrl: Yup.string().when('lessonType', {
+  videoUrl: Yup.mixed().when('lessonType', {
     is: LessonTypes.Video,
     then: (schema) =>
       schema
-        .url('Must be a valid URL')
-        .required('Video URL is required for video lessons'),
+        .test(
+          'fileRequired',
+          'Video file is required for video lessons',
+          (value) => {
+            return value !== null && value !== undefined;
+          },
+        )
+        .test('fileFormat', 'Only MP4 files are allowed', (value) => {
+          if (!value) return true;
+          return value instanceof File && ['video/mp4'].includes(value.type);
+        })
+        .test('fileSize', 'File size must be less than 100MB', (value) => {
+          if (!value) return true;
+          return value instanceof File && value.size <= 100 * 1024 * 1024; // 100MB
+        }),
     otherwise: (schema) => schema.notRequired(),
   }),
 }) as Yup.ObjectSchema<LessonRequest>;
 
-// Lesson Types
 const lessonTypes = [
   { label: 'Video', value: LessonTypes.Video },
   { label: 'Docs', value: LessonTypes.Docs },
@@ -43,6 +69,7 @@ const CreateUpdateLesson = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lessonType, setLessonType] = useState<LessonTypes | ''>('');
+  const [selectedFileName, setSelectedFileName] = useState<string>('');
 
   const {
     control,
@@ -56,52 +83,32 @@ const CreateUpdateLesson = () => {
       lessonType: LessonTypes.Video,
       title: '',
       content: '',
-      videoUrl: '',
+      videoUrl: null,
     },
   });
 
   const selectedLessonType = watch('lessonType');
-
-  // useEffect(() => {
-  //   const fetchLessonData = async () => {
-  //     if (selectedLessonId) {
-  //       try {
-  //         setIsLoading(true);
-  //         setError(null);
-  //         const response = await lessonApi.getLesson(selectedLessonId);
-  //         const lessonData = response.data;
-
-  //         setIsEditMode(true);
-  //         setValue('lessonType', lessonData.lessonType);
-  //         setValue('title', lessonData.title);
-  //         setValue('content', lessonData.content);
-  //         if (lessonData.videoUrl) {
-  //           setValue('videoUrl', lessonData.videoUrl);
-  //         }
-  //         setLessonType(lessonData.lessonType);
-  //       } catch (err) {
-  //         setError('Failed to fetch lesson data. Please try again.');
-  //         console.error('Error fetching lesson:', err);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     }
-  //   };
-
-  //   fetchLessonData();
-  // }, [selectedLessonId, setValue]);
 
   const onSubmit = async (data: LessonRequest) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      if (isEditMode && selectedLessonId) {
-        await lessonApi.updateLesson(selectedLessonId, data);
-      } else {
-        await lessonApi.createLesson(data, idCourse);
+      const formData = new FormData() as LessonApiRequest;
+      formData.append('title', data.title || '');
+      formData.append('content', data.content || '');
+      formData.append('lessonType', data.lessonType || '');
+      if (data.videoUrl) {
+        formData.append('videoUrl', data.videoUrl);
       }
 
+      console.log(formData);
+
+      if (isEditMode && selectedLessonId) {
+        await lessonApi.updateLesson(selectedLessonId, formData);
+      } else {
+        await lessonApi.createLesson(formData, idCourse as string);
+      }
       navigate(`/dashboard/courses/${idCourse}`);
     } catch (err) {
       setError(
@@ -113,6 +120,11 @@ const CreateUpdateLesson = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleFileRemove = () => {
+    setValue('videoUrl', null);
+    setSelectedFileName('');
   };
 
   return (
@@ -201,23 +213,62 @@ const CreateUpdateLesson = () => {
           )}
         />
 
-        {/* {selectedLessonType === LessonTypes.Video && ( */}
-        <Controller
-          name="videoUrl"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              label="Video URL"
-              variant="outlined"
-              fullWidth
-              {...field}
-              error={!!errors.videoUrl}
-              helperText={errors.videoUrl?.message}
-              sx={{ mb: 3 }}
-            />
-          )}
-        />
-        {/* )} */}
+        {selectedLessonType === LessonTypes.Video && (
+          <Controller
+            name="videoUrl"
+            control={control}
+            render={({ field: { onChange, value, ...field } }) => (
+              <FormControl error={!!errors.videoUrl} fullWidth sx={{ mb: 3 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    width: '100%',
+                  }}
+                >
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    startIcon={<CloudUpload />}
+                    sx={{ flexGrow: 1 }}
+                  >
+                    {selectedFileName || 'Upload Video File'}
+                    <Input
+                      type="file"
+                      sx={{ display: 'none' }}
+                      inputProps={{
+                        accept: 'video/mp4',
+                        'data-testid': 'video-upload',
+                      }}
+                      onChange={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        const file = target.files?.[0];
+                        if (file) {
+                          onChange(file);
+                          setSelectedFileName(file.name);
+                        }
+                      }}
+                      {...field}
+                    />
+                  </Button>
+                  {selectedFileName && (
+                    <IconButton
+                      onClick={handleFileRemove}
+                      size="small"
+                      sx={{ color: 'error.main' }}
+                    >
+                      <Clear />
+                    </IconButton>
+                  )}
+                </Box>
+                {errors.videoUrl && (
+                  <FormHelperText>{errors.videoUrl.message}</FormHelperText>
+                )}
+              </FormControl>
+            )}
+          />
+        )}
 
         <Button
           type="submit"

@@ -12,7 +12,12 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-export default function CreateCourseModal({ open, onClose, onOk, data = null }) {
+export default function CreateCourseModal({
+  open,
+  onClose,
+  onOk,
+  data = null,
+}) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -22,106 +27,122 @@ export default function CreateCourseModal({ open, onClose, onOk, data = null }) 
   });
   const [categories, setCategories] = useState([]);
 
+  // Fetch categories on component mount
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await courseApi.getCategories();
         setCategories(response?.data?.data ?? []);
       } catch (error) {
-        console.error('Failed to fetch categories:', error);
+        toast.error('Failed to fetch categories');
       }
     };
     fetchCategories();
   }, []);
 
+  // Initialize form data if editing an existing course
   useEffect(() => {
     if (data?.id) {
       setFormData({
         name: data.name,
         description: data.description,
         price: data.price,
-        image: null,
+        image: null, // No need to load image here
         category_id: data.category.id,
       });
+    } else {
+      resetForm();
     }
   }, [data]);
 
+  // Reset form when modal is closed
   useEffect(() => {
-    if (!open) {
-      if (data?.id) {
-        setFormData({
-          name: data.name,
-          description: data.description,
-          price: data.price,
-          image: null,
-          category_id: data.category.id,
-        });
-      } else {
-        setFormData({
-          name: '',
-          description: '',
-          price: '',
-          image: null,
-          category_id: '',
-        });
-      }
-    }
+    if (!open) resetForm();
   }, [open]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  // Helper function to reset form fields
+  const resetForm = () => {
     setFormData({
-      ...formData,
-      [name]: value,
+      name: '',
+      description: '',
+      price: '',
+      image: null,
+      category_id: '',
     });
   };
 
+  // Handle form field changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  // Handle image input change
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData({
-        ...formData,
-        image: e.target.files[0],
-      });
+      setFormData((prevState) => ({
+        ...prevState,
+        image: e.target.files[0], // Store file object
+      }));
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate required fields
     if (
-      formData.name.trim() === '' ||
-      formData.description.trim() === '' ||
-      formData.price === '' ||
-      formData.category_id === ''
+      !formData.name.trim() ||
+      !formData.description.trim() ||
+      !formData.price ||
+      !formData.category_id
     ) {
-      toast.error('Vui lòng điền đầy đủ các trường thông tin bắt buộc.');
+      toast.error('Please fill in all required fields.');
       return;
     }
 
-    if (data?.id) {
-      await courseApi.updateCourse(data.id, formData);
-      toast.success('Cập nhật khóa học thành công!');
-    } else {
-      await courseApi.createCourse(formData);
-      toast.success('Tạo khóa học thành công!');
+    // Prepare form data to send via multipart/form-data
+    const form = new FormData();
+    form.append('name', formData.name);
+    form.append('description', formData.description);
+    form.append('price', formData.price);
+    form.append('category_id', formData.category_id);
+
+    if (formData.image) {
+      form.append('file', formData.image); // Append the file if present
     }
-    onOk();
-    onClose(false);
+
+    try {
+      if (data?.id) {
+        await courseApi.updateCourse(data.id, form); // Pass FormData
+        toast.success('Course updated successfully!');
+      } else {
+        await courseApi.createCourse(form); // Pass FormData
+        toast.success('Course created successfully!');
+      }
+      onOk();
+      onClose(false);
+    } catch (error) {
+      toast.error('Failed to save the course.');
+    }
   };
 
   return (
     <Modal
       open={open}
-      hideBackdrop={true}
       onClose={() => onClose(false)}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"
     >
       <Box
         sx={{
           width: 800,
           bgcolor: 'background.paper',
-          p: '24px',
+          padding: '24px',
           position: 'absolute',
           top: '50%',
           left: '50%',
@@ -130,123 +151,107 @@ export default function CreateCourseModal({ open, onClose, onOk, data = null }) 
           borderRadius: 4,
           display: 'flex',
           flexDirection: 'column',
-          gap: '24px',
+          gap: 3,
         }}
       >
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Tạo khóa học
+        <Typography id="modal-title" variant="h6" component="h2">
+          {data?.id ? 'Update Course' : 'Create Course'}
         </Typography>
-        <Box id="modal-modal-description">
-          <form onSubmit={handleSubmit}>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-              }}
+        <form onSubmit={handleSubmit}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Image Preview */}
+            {formData.image && (
+              <Box mt={2}>
+                <img
+                  src={URL.createObjectURL(formData.image)}
+                  alt="Course Preview"
+                  style={{
+                    width: '100%',
+                    maxHeight: 100,
+                    objectFit: 'cover',
+                  }}
+                />
+              </Box>
+            )}
+            {/* Image Upload */}
+            <Button
+              variant="contained"
+              component="label"
+              startIcon={<AddIcon />}
+              fullWidth
             >
-              <Box>
-                {formData.image && (
-                  <Box mt={2}>
-                    <img
-                      src={URL.createObjectURL(formData.image)}
-                      alt="Preview"
-                      style={{
-                        width: '100%',
-                        maxHeight: 100,
-                        objectFit: 'cover',
-                      }}
-                    />
-                  </Box>
-                )}
-                <Box>
-                  <Button
-                    variant="contained"
-                    component="label"
-                    startIcon={<AddIcon />}
-                    fullWidth
-                  >
-                    Upload Image
-                    <input
-                      type="file"
-                      accept="image/*"
-                      hidden
-                      onChange={handleImageChange}
-                    />
-                  </Button>
-                </Box>
-              </Box>
+              Upload Image
+              <input
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={handleImageChange}
+              />
+            </Button>
 
-              <Box>
-                <TextField
-                  label="Title"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-              </Box>
+            {/* Course Name */}
+            <TextField
+              label="Course Name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
 
-              <Box>
-                <Select
-                  label="Category"
-                  name="category_id"
-                  value={formData.category_id}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                >
-                  {(categories ?? []).map((category) => (
-                    <MenuItem key={category.id} value={category.id}>
-                      {category.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Box>
+            {/* Category Selection */}
+            <Select
+              label="Category"
+              name="category_id"
+              value={formData.category_id}
+              onChange={handleChange}
+              required
+              fullWidth
+            >
+              {categories.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
 
-              <Box>
-                <TextField
-                  label="Description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  required
-                  multiline
-                  rows={4}
-                  fullWidth
-                />
-              </Box>
+            {/* Description */}
+            <TextField
+              label="Description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+              multiline
+              rows={4}
+              fullWidth
+            />
 
-              <Box>
-                <TextField
-                  label="Price ($)"
-                  name="price"
-                  type="number"
-                  inputProps={{ step: '0.01', min: '0' }}
-                  value={formData.price}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-              </Box>
-            </Box>
-          </form>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-          <Button
-            onClick={() => onClose(false)}
-            sx={{ width: 'unset', padding: '6px 24px' }}
-          >
-            Đóng
+            {/* Price */}
+            <TextField
+              label="Price ($)"
+              name="price"
+              type="number"
+              inputProps={{ step: '0.01', min: '0' }}
+              value={formData.price}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+          </Box>
+        </form>
+
+        {/* Action Buttons */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Button onClick={() => onClose(false)} sx={{ padding: '6px 24px' }}>
+            Cancel
           </Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
-            size="medium"
-            sx={{ width: 'unset', padding: '6px 24px' }}
+            sx={{ padding: '6px 24px' }}
           >
-            Lưu
+            Save
           </Button>
         </Box>
       </Box>

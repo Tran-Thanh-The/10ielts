@@ -15,16 +15,18 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Swal from 'sweetalert2';
 import courseApi from '@/api/courseApi';
+import dayjs from 'dayjs';
 
 interface CourseCardProps {
   id: string;
   title: string;
   description: string;
   price: number;
-  createdAt: Date;
+  createdAt: Date | string;
   totalLesson: number;
   completedLesson: number;
   isMyCourse: boolean;
+  // photo: string;
   onDeleted: () => void;
 }
 
@@ -36,8 +38,9 @@ const CourseCard = ({
   createdAt,
   totalLesson,
   completedLesson,
+  // photo,
   isMyCourse,
-  onDeleted
+  onDeleted,
 }: CourseCardProps) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -53,7 +56,6 @@ const CourseCard = ({
   };
 
   const handleCardClick = () => {
-    console.log(id);
     navigate(`/dashboard/courses/${id}`);
   };
 
@@ -103,7 +105,7 @@ const CourseCard = ({
       <CardMedia
         component="img"
         sx={{ width: '100%', height: '160px', overflow: 'hidden' }}
-        image="https://storage.googleapis.com/prep-storage-service/course/cover/qDgMeVyQqcHeqa5oz4lHTgpW5a8fSxKmB3mwzHHK.jpg"
+        // image={photo}
         alt={title}
       />
       <CardContent sx={{ flexGrow: 1 }}>
@@ -121,7 +123,7 @@ const CourseCard = ({
           color="text.secondary"
           sx={{ display: 'block', mb: 1 }}
         >
-          Ngày tạo: {new Date(createdAt).toLocaleDateString()}
+          Ngày tạo: {createdAt ? dayjs(createdAt).format('DD-MM-YYYY') : ''}
         </Typography>
         <Box sx={{ mb: 1 }}>
           <Typography variant="caption">

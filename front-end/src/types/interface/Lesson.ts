@@ -11,6 +11,17 @@ export interface LessonResponse {
 export interface LessonRequest {
   title?: string;
   content?: string;
-  videoUrl?: string;
+  videoUrl?: File | null;
   lessonType?: LessonTypes;
 }
+
+// export interface LessonRequest {
+//   lessonDetails?: {
+//     title?: string;
+//     content?: string;
+//     lessonType?: LessonTypes;
+//   };
+//   video?: {
+//     videoUrl?: File | null;
+//   };
+// }

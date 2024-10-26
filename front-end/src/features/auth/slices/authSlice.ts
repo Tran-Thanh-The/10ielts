@@ -2,11 +2,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import loginApi from '@/api/loginApi';
 import { Account } from '@/types/interface/Account';
 
+interface User {
+  id: number;
+  email: string;
+  provider: string;
+  socialId: string | null;
+  fullName: string;
+}
+
 interface AuthState {
   token: string | null;
   refreshToken: string | null;
   tokenExpires: number | null;
-  user: any;
+  user: User | null;
   loading: boolean;
   error: string | null;
 }
@@ -20,57 +28,55 @@ const initialState: AuthState = {
   error: null,
 };
 
+// Thunk để đăng nhập
 export const login = createAsyncThunk<
-  {
-    token: string;
-    refreshToken: string;
-    tokenExpires: number;
-    user: any;
-  },
+  { token: string; refreshToken: string; tokenExpires: number; user: User },
   Account,
   { rejectValue: string }
 >('auth/login', async (account: Account, { rejectWithValue }) => {
   try {
     const response = await loginApi.postLogin(account);
-    return response.data;
+    return response.data; // Dữ liệu từ server
   } catch (error: any) {
     return rejectWithValue(error.response?.data || 'Đăng nhập thất bại');
   }
 });
 
+// Thunk để làm mới token
 export const refreshToken = createAsyncThunk<
-  {
-    token: string;
-    tokenExpires: number;
-  },
+  { token: string; tokenExpires: number },
   { refreshToken: string },
   { rejectValue: string }
 >('auth/refreshToken', async ({ refreshToken }, { rejectWithValue }) => {
   try {
     const response = await loginApi.postRefreshToken({ refreshToken });
-    return response.data;
+    return response.data; // Dữ liệu mới từ server
   } catch (error: any) {
     return rejectWithValue(error.response?.data || 'Gia hạn token thất bại');
   }
 });
 
-export const loadAuthFromLocalStorage = createAsyncThunk(
-  'auth/loadAuthFromLocalStorage',
-  async (_, { dispatch }) => {
-    const storedAuth = localStorage.getItem('auth');
-    if (storedAuth) {
-      const authData = JSON.parse(storedAuth);
-      const { token, refreshToken, tokenExpires, user } = authData;
+// Thunk để tải thông tin xác thực từ local storage
+export const loadAuthFromLocalStorage = createAsyncThunk<
+  void,
+  void,
+  { dispatch: any }
+>('auth/loadAuthFromLocalStorage', async (_, { dispatch }) => {
+  const storedAuth = localStorage.getItem('auth');
+  if (storedAuth) {
+    const authData = JSON.parse(storedAuth);
+    const { token, refreshToken, tokenExpires, user } = authData;
 
-      if (tokenExpires && Date.now() > tokenExpires) {
-        await dispatch(refreshToken({ refreshToken }));
-      } else {
-        return { token, refreshToken, tokenExpires, user };
-      }
+    // Kiểm tra xem token đã hết hạn chưa
+    if (tokenExpires && Date.now() > tokenExpires) {
+      await dispatch(refreshToken({ refreshToken }));
+    } else {
+      dispatch(setAuthData({ token, refreshToken, tokenExpires, user }));
     }
-  },
-);
+  }
+});
 
+// Action để cập nhật dữ liệu xác thực
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -84,6 +90,24 @@ const authSlice = createSlice({
       localStorage.removeItem('auth');
       console.log('Auth removed from localStorage');
     },
+    setAuthData: (state, action) => {
+      const { token, refreshToken, tokenExpires, user } = action.payload;
+      state.token = token;
+      state.refreshToken = refreshToken;
+      state.tokenExpires = tokenExpires;
+      state.user = user;
+
+      // Lưu thông tin vào local storage
+      localStorage.setItem(
+        'auth',
+        JSON.stringify({
+          token,
+          refreshToken,
+          tokenExpires,
+          user,
+        }),
+      );
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -93,29 +117,23 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload.token;
-        state.refreshToken = action.payload.refreshToken;
-        state.tokenExpires = action.payload.tokenExpires;
-        state.user = action.payload.user;
+        const { token, refreshToken, tokenExpires, user } = action.payload;
+        state.token = token;
+        state.refreshToken = refreshToken;
+        state.tokenExpires = tokenExpires;
+        state.user = user;
 
-        localStorage.setItem(
-          'auth',
-          JSON.stringify({
-            token: action.payload.token,
-            refreshToken: action.payload.refreshToken,
-            tokenExpires: action.payload.tokenExpires,
-            user: action.payload.user,
-          }),
-        );
+        // Lưu thông tin vào local storage
+        localStorage.setItem('auth', JSON.stringify(action.payload));
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-
       .addCase(refreshToken.fulfilled, (state, action) => {
-        state.token = action.payload.token;
-        state.tokenExpires = action.payload.tokenExpires;
+        const { token, tokenExpires } = action.payload;
+        state.token = token;
+        state.tokenExpires = tokenExpires;
 
         const storedAuth = localStorage.getItem('auth');
         if (storedAuth) {
@@ -124,8 +142,8 @@ const authSlice = createSlice({
             'auth',
             JSON.stringify({
               ...authData,
-              token: action.payload.token,
-              tokenExpires: action.payload.tokenExpires,
+              token,
+              tokenExpires,
             }),
           );
         }
@@ -138,17 +156,12 @@ const authSlice = createSlice({
         state.user = null;
         localStorage.removeItem('auth');
       })
-
       .addCase(loadAuthFromLocalStorage.fulfilled, (state, action) => {
-        if (action.payload) {
-          state.token = action.payload.token;
-          state.refreshToken = action.payload.refreshToken;
-          state.tokenExpires = action.payload.tokenExpires;
-          state.user = action.payload.user;
-        }
+        // Không làm gì ở đây, tất cả đã được xử lý trong thunk
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+// Xuất ra các action và reducer
+export const { logout, setAuthData } = authSlice.actions;
 export default authSlice.reducer;

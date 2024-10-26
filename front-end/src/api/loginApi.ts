@@ -32,10 +32,10 @@ const loginApi = {
     }
   },
 
-  // API: Refresh Token
-  postRefreshToken: (refreshToken: RefreshToken) => {
+  postRefreshToken: ({ refreshToken }: RefreshToken) => {
+    // Sửa đổi ở đây
     const url = `${API_ENDPOINT.REFRESH_TOKEN}`;
-    return axiosInstance.post(url);
+    return axiosInstance.post(url, { refreshToken }); // Gửi refresh token qua payload
   },
 
   // API: Logout

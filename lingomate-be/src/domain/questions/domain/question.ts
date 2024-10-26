@@ -18,6 +18,9 @@ export class Question {
   @ApiProperty({ type: String })
   audioUrl?: string | null;
 
+  @ApiProperty({ type: Number })
+  time?: number | null;
+
   @ApiProperty({
     enum: QuestionTypesEnum,
   })

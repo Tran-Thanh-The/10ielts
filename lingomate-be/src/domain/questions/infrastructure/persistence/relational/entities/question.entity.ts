@@ -36,6 +36,10 @@ export class QuestionEntity extends EntityRelationalHelper {
   @Column({ type: String })
   audioUrl?: string | null;
 
+  @ApiProperty({ type: Number })
+  @Column({ type: Number })
+  time?: number | null;
+
   @ApiProperty({
     enum: QuestionTypesEnum,
   })

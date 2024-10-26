@@ -1,4 +1,5 @@
-import { CreateLessonDto } from "@/domain/lessons/dto/create-lesson.dto";
+import { Category } from "@/domain/categories/domain/category";
+import { LessonResponseDto } from "@/domain/lessons/dto/response-lesson.dto";
 import { FileDto } from "@/files/dto/file.dto";
 import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 import { Type } from "class-transformer";
@@ -31,9 +32,9 @@ export class CourseWithDetailsDTO extends PartialType(CourseResponseDto) {
   photo?: FileDto | null;
 
   @ApiProperty({
-    type: String,
+    type: Category,
   })
-  category_id: string;
+  category: Category;
 
   @ApiProperty({ type: Date })
   createdAt: Date;
@@ -49,11 +50,11 @@ export class CourseWithDetailsDTO extends PartialType(CourseResponseDto) {
   isMyCourse?: boolean;
 
   @ApiProperty({
-    type: [CreateLessonDto],
+    type: [LessonResponseDto],
     description: "Array of lessons in the course",
   })
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreateLessonDto)
-  lessons: CreateLessonDto[];
+  @Type(() => LessonResponseDto)
+  lessons: LessonResponseDto[];
 }

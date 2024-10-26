@@ -1,5 +1,6 @@
 import { LessonTypesEnum } from "@/common/enums/lesson.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { FileType } from "@/files/domain/file";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class Lesson {
@@ -19,9 +20,9 @@ export class Lesson {
   content?: string | null;
 
   @ApiProperty({
-    type: String,
+    type: () => FileType,
   })
-  videoUrl?: string | null;
+  videoUrl?: FileType | null;
 
   @ApiProperty({
     enum: LessonTypesEnum,
@@ -33,6 +34,9 @@ export class Lesson {
 
   @ApiProperty({ type: Number })
   totalStars?: number | null;
+
+  @ApiProperty({ type: Boolean })
+  isSequence?: boolean | null;
 
   @ApiProperty({
     enum: StatusEnum,

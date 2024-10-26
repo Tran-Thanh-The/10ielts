@@ -45,7 +45,7 @@ export class CourseWithDetailsDTO extends PartialType(CourseResponseDto) {
   @ApiProperty({ type: Number })
   completedLesson?: number;
 
-  @ApiProperty({ type: Date })
+  @ApiProperty({ type: Boolean })
   @Type(() => Boolean)
   isMyCourse?: boolean;
 

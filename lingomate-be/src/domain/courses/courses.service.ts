@@ -92,12 +92,9 @@ export class CoursesService {
       id,
       userId,
     );
-    console.log(`courseExists: ${courseExists.id}`);
-    console.log(`courseDetails: ${courseDetails}`);
     if (!courseDetails) {
       throw new NotFoundException(`Course with ID ${id} not found`);
     }
-    courseDetails.isMyCourse = true;
     return courseDetails;
   }
 

@@ -13,6 +13,9 @@ import { Repository } from "typeorm";
 import { Course } from "../../../../domain/course";
 import { CourseRepository } from "../../course.repository";
 import { CourseMapper } from "../mappers/course.mapper";
+import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
+import { CourseInvoicesEntity } from "@/domain/course-invoices/infrastructure/persistence/relational/entities/course-invoices.entity";
+import { UserInvoicesEntity } from "@/domain/user-invoices/infrastructure/persistence/relational/entities/user-invoices.entity";
 
 @Injectable()
 export class CourseRelationalRepository implements CourseRepository {
@@ -23,6 +26,12 @@ export class CourseRelationalRepository implements CourseRepository {
     private readonly userCourseRepository: Repository<UserCourseEntity>,
     @InjectRepository(UserLessonEntity)
     private readonly userLessonRepository: Repository<UserLessonEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(CourseInvoicesEntity)
+    private readonly courseInvoicesRepository: Repository<CourseInvoicesEntity>,
+    @InjectRepository(UserInvoicesEntity)
+    private readonly userInvoicesRepository: Repository<UserInvoicesEntity>,
   ) {}
 
   async create(data: Course): Promise<Course> {
@@ -105,8 +114,10 @@ export class CourseRelationalRepository implements CourseRepository {
 
   async getCourseDetailById(
     id: string,
-    userId,
+    userId: string,
   ): Promise<CourseWithDetailsDTO | null> {
+    const userIdNumber = Number(userId);
+
     const courseEntity = await this.courseRepository
       .createQueryBuilder("course")
       .leftJoinAndSelect("course.category", "category")
@@ -116,7 +127,7 @@ export class CourseRelationalRepository implements CourseRepository {
         "lesson.userLesson",
         "userLesson",
         "userLesson.userId = :userId",
-        { userId },
+        { userId: userIdNumber },
       )
       .where("course.id = :id", { id })
       .getOne();
@@ -124,11 +135,13 @@ export class CourseRelationalRepository implements CourseRepository {
     if (!courseEntity) {
       return null;
     }
-    const lessonsDto = courseEntity.lessonCourses.map((lc) =>
-      LessonMapper.toDto(lc.lesson),
-    );
 
-    return {
+    const user = await this.userRepository.findOne({
+      where: { id: userIdNumber },
+      relations: ["role"],
+    });
+
+    const courseDetail: Omit<CourseWithDetailsDTO, "isMyCourse"> = {
       id: courseEntity.id,
       title: courseEntity.name,
       price: courseEntity.price,
@@ -137,8 +150,36 @@ export class CourseRelationalRepository implements CourseRepository {
       category: courseEntity.category,
       createdAt: courseEntity.createdAt,
       totalLesson: courseEntity.lessonCourses.length,
-      isMyCourse: true,
-      lessons: lessonsDto,
+      lessons: courseEntity.lessonCourses.map((lc) =>
+        LessonMapper.toDto(lc.lesson),
+      ),
+    };
+
+    if (user?.role?.name?.toUpperCase() !== "USER") {
+      return courseDetail;
+    }
+
+    const userInvoice = await this.userInvoicesRepository
+      .createQueryBuilder("userInvoice")
+      .where("userInvoice.userId = :userId", { userId: userIdNumber })
+      .getOne();
+
+    let isMyCourse = false;
+    if (userInvoice) {
+      const purchaseExists = await this.courseInvoicesRepository
+        .createQueryBuilder("courseInvoice")
+        .where("courseInvoice.userInvoicesId = :userInvoicesId", {
+          userInvoicesId: userInvoice.id,
+        })
+        .andWhere("courseInvoice.courseId = :courseId", { courseId: id })
+        .getOne();
+
+      isMyCourse = !!purchaseExists;
+    }
+
+    return {
+      ...courseDetail,
+      isMyCourse,
     };
   }
 

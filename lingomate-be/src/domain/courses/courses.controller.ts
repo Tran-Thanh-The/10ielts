@@ -105,13 +105,14 @@ export class CoursesController {
     @Query() query: CourseQueryDto,
   ): Promise<CourseListResponseDto<CourseResponseDto>> {
     const orderBy = parseOrderBy(query.orderBy);
-
     return this.coursesService.getListCourse(
       query.status,
       query.userId,
       query.invoiceId,
       query.page,
       query.limit,
+      query.search,
+      query.isMyCourse,
       orderBy,
     );
   }

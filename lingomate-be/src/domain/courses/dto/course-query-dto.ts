@@ -1,7 +1,7 @@
-import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsEnum, IsOptional, IsString, IsNumber, Min } from "class-validator";
-import { Transform } from "class-transformer";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { ApiPropertyOptional } from "@nestjs/swagger";
+import { Transform } from "class-transformer";
+import { IsEnum, IsNumber, IsOptional, IsString, Min } from "class-validator";
 
 export class CourseQueryDto {
   @IsOptional()
@@ -21,6 +21,20 @@ export class CourseQueryDto {
   @IsOptional()
   @IsString()
   invoiceId?: string;
+
+  @ApiPropertyOptional({
+    description: "Filter courses by search",
+  })
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @ApiPropertyOptional({
+    description: "Filter courses by isMyCourse",
+  })
+  @IsOptional()
+  @IsString()
+  isMyCourse?: string;
 
   @ApiPropertyOptional({
     default: 1,

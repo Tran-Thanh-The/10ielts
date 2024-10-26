@@ -112,12 +112,33 @@ export class CourseRelationalRepository implements CourseRepository {
     return course ? CourseMapper.toDomain(course) : null;
   }
 
+  async checkIsMyCourse(userId: string, courseId: string): Promise<boolean> {
+    const userIdNumber = Number(userId);
+
+    const userInvoice = await this.userInvoicesRepository
+      .createQueryBuilder("userInvoice")
+      .where("userInvoice.userId = :userId", { userId: userIdNumber })
+      .getOne();
+
+    if (!userInvoice) {
+      return false;
+    }
+
+    const purchaseExists = await this.courseInvoicesRepository
+      .createQueryBuilder("courseInvoice")
+      .where("courseInvoice.userInvoicesId = :userInvoicesId", {
+        userInvoicesId: userInvoice.id,
+      })
+      .andWhere("courseInvoice.courseId = :courseId", { courseId })
+      .getOne();
+
+    return !!purchaseExists;
+  }
+
   async getCourseDetailById(
     id: string,
     userId: string,
   ): Promise<CourseWithDetailsDTO | null> {
-    const userIdNumber = Number(userId);
-
     const courseEntity = await this.courseRepository
       .createQueryBuilder("course")
       .leftJoinAndSelect("course.category", "category")
@@ -127,7 +148,7 @@ export class CourseRelationalRepository implements CourseRepository {
         "lesson.userLesson",
         "userLesson",
         "userLesson.userId = :userId",
-        { userId: userIdNumber },
+        { userId: Number(userId) },
       )
       .where("course.id = :id", { id })
       .getOne();
@@ -135,11 +156,6 @@ export class CourseRelationalRepository implements CourseRepository {
     if (!courseEntity) {
       return null;
     }
-
-    const user = await this.userRepository.findOne({
-      where: { id: userIdNumber },
-      relations: ["role"],
-    });
 
     const courseDetail: Omit<CourseWithDetailsDTO, "isMyCourse"> = {
       id: courseEntity.id,
@@ -155,27 +171,7 @@ export class CourseRelationalRepository implements CourseRepository {
       ),
     };
 
-    if (user?.role?.name?.toUpperCase() !== "USER") {
-      return courseDetail;
-    }
-
-    const userInvoice = await this.userInvoicesRepository
-      .createQueryBuilder("userInvoice")
-      .where("userInvoice.userId = :userId", { userId: userIdNumber })
-      .getOne();
-
-    let isMyCourse = false;
-    if (userInvoice) {
-      const purchaseExists = await this.courseInvoicesRepository
-        .createQueryBuilder("courseInvoice")
-        .where("courseInvoice.userInvoicesId = :userInvoicesId", {
-          userInvoicesId: userInvoice.id,
-        })
-        .andWhere("courseInvoice.courseId = :courseId", { courseId: id })
-        .getOne();
-
-      isMyCourse = !!purchaseExists;
-    }
+    const isMyCourse = userId ? await this.checkIsMyCourse(userId, id) : false;
 
     return {
       ...courseDetail,
@@ -188,34 +184,84 @@ export class CourseRelationalRepository implements CourseRepository {
     userId?: string;
     invoiceId?: string;
     paginationOptions?: IPaginationOptions;
+    isMyCourse?: boolean;
+    search?: string;
     orderBy?: { [key: string]: "ASC" | "DESC" };
-  }) {
-    const { status, userId, invoiceId, paginationOptions, orderBy } = params;
+  }): Promise<{
+    data: Course[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
+    const {
+      status,
+      userId,
+      invoiceId,
+      paginationOptions,
+      orderBy,
+      isMyCourse,
+      search,
+    } = params;
 
-    const queryBuilder = this.courseRepository.createQueryBuilder("course");
-    queryBuilder.leftJoinAndSelect("course.photo", "photo");
-    queryBuilder.leftJoinAndSelect("course.category", "category");
+    const queryBuilder = this.courseRepository
+      .createQueryBuilder("course")
+      .leftJoinAndSelect("course.photo", "photo")
+      .leftJoinAndSelect("course.category", "category");
 
     if (userId) {
-      queryBuilder.leftJoinAndSelect(
-        "course.userCourses",
-        "userCourse",
-        "userCourse.userId = :userId",
-        { userId },
-      );
+      queryBuilder
+        .leftJoin(
+          "course.userCourses",
+          "userCourse",
+          "userCourse.userId = :userId",
+          {
+            userId: Number(userId),
+          },
+        )
+        .leftJoin("course.courseInvoices", "courseInvoice")
+        .leftJoin(
+          "courseInvoice.userInvoices",
+          "userInvoice",
+          "userInvoice.userId = :userId",
+          { userId: Number(userId) },
+        )
+        .andWhere(
+          "(userCourse.userId = :userId OR userInvoice.userId = :userId)",
+          { userId: Number(userId) },
+        );
     }
 
     if (invoiceId && isUUID(invoiceId)) {
-      queryBuilder
-        .leftJoinAndSelect("course.courseInvoices", "courseInvoice")
-        .leftJoinAndSelect("courseInvoice.userInvoices", "userInvoices")
-        .andWhere("userInvoices.id = :invoiceId", { invoiceId });
+      queryBuilder.andWhere("userInvoices.id = :invoiceId", { invoiceId });
     }
 
     if (status) {
       queryBuilder.andWhere("course.status = :status", {
-        status: StatusEnum.ACTIVE,
+        status,
       });
+    }
+
+    if (search) {
+      queryBuilder.andWhere(
+        "(course.name LIKE :search OR course.description LIKE :search)",
+        {
+          search: `%${search}%`,
+        },
+      );
+    }
+
+    if (isMyCourse !== undefined && userId) {
+      if (isMyCourse) {
+        queryBuilder.andWhere("userInvoice.userId = :userId", {
+          userId: Number(userId),
+        });
+      } else {
+        queryBuilder.andWhere(
+          "(userInvoice.userId IS NULL OR userInvoice.userId != :userId)",
+          { userId: Number(userId) },
+        );
+      }
     }
 
     const validColumns = [
@@ -238,7 +284,9 @@ export class CourseRelationalRepository implements CourseRepository {
     } else {
       queryBuilder.orderBy("course.createdAt", "DESC");
     }
+
     queryBuilder.addOrderBy("course.id", "ASC");
+
     const total = await queryBuilder.getCount();
 
     if (paginationOptions) {

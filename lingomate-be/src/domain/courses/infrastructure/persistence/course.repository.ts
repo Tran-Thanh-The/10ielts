@@ -26,6 +26,8 @@ export abstract class CourseRepository {
   abstract remove(id: Course["id"]): Promise<void>;
   abstract save(course: Course): Promise<void>;
   abstract findOne(id: string, relations?: string[]): Promise<Course | null>;
+  abstract checkIsMyCourse(userId: string, courseId: string): Promise<boolean>;
+
   abstract getCourseDetailById(
     id: string,
     userId: string,
@@ -36,6 +38,8 @@ export abstract class CourseRepository {
     userId?: string;
     invoiceId?: string;
     paginationOptions?: IPaginationOptions;
+    isMyCourse?: boolean;
+    search?: string;
     orderBy?: { [key: string]: "ASC" | "DESC" };
   }): Promise<{
     data: Course[];

@@ -1,3 +1,12 @@
+import { StatusEnum } from "@/common/enums/status.enum";
+import { redisConstants } from "@/common/redis/redis.constants";
+import { RedisService } from "@/common/redis/redis.service";
+import { AllConfigType } from "@/config/config.type";
+import { Session } from "@/domain/session/domain/session";
+import { SessionService } from "@/domain/session/session.service";
+import { User } from "@/domain/users/domain/user";
+import { UsersService } from "@/domain/users/users.service";
+import { NullableType } from "@/utils/types/nullable.type";
 import {
   HttpStatus,
   Injectable,
@@ -12,14 +21,7 @@ import { JwtService } from "@nestjs/jwt";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import ms from "ms";
-import { AllConfigType } from "@/config/config.type";
 import { MailService } from "../../mail/mail.service";
-import { RoleEnum } from "@/domain/roles/roles.enum";
-import { Session } from "@/domain/session/domain/session";
-import { SessionService } from "@/domain/session/session.service";
-import { User } from "@/domain/users/domain/user";
-import { UsersService } from "@/domain/users/users.service";
-import { NullableType } from "@/utils/types/nullable.type";
 import { AuthProvidersEnum } from "./auth-providers.enum";
 import { AuthEmailLoginDto } from "./dto/auth-email-login.dto";
 import { AuthRegisterLoginDto } from "./dto/auth-register-login.dto";
@@ -27,9 +29,6 @@ import { AuthUpdateDto } from "./dto/auth-update.dto";
 import { LoginResponseDto } from "./dto/login-response.dto";
 import { JwtPayloadType } from "./strategies/types/jwt-payload.type";
 import { JwtRefreshPayloadType } from "./strategies/types/jwt-refresh-payload.type";
-import { RedisService } from "@/common/redis/redis.service";
-import { redisConstants } from "@/common/redis/redis.constants";
-import { StatusEnum } from "@/common/enums/status.enum";
 
 @Injectable()
 export class AuthService {
@@ -127,13 +126,7 @@ export class AuthService {
       const user = await this.usersService.create({
         ...restDto,
         email: dto.email,
-        role: {
-          id: RoleEnum.user,
-        },
         status: StatusEnum.IN_ACTIVE,
-        // status: {
-        //   id: StatusEnum.IN_ACTIVE,
-        // },
       });
 
       const hash = await this.jwtService.signAsync(

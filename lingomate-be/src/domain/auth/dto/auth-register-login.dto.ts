@@ -1,7 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, MinLength } from "class-validator";
-import { Transform } from "class-transformer";
+import { RoleDto } from "@/domain/roles/dto/role.dto";
 import { lowerCaseTransformer } from "@/utils/transformers/lower-case.transformer";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Transform, Type } from "class-transformer";
+import { IsEmail, IsNotEmpty, IsOptional, MinLength } from "class-validator";
 
 export class AuthRegisterLoginDto {
   @ApiProperty({ example: "test1@example.com", type: String })
@@ -27,4 +28,11 @@ export class AuthRegisterLoginDto {
   })
   @IsNotEmpty()
   dob: Date;
+
+  @ApiPropertyOptional({
+    type: () => RoleDto,
+  })
+  @IsOptional()
+  @Type(() => RoleDto)
+  role?: RoleDto | null;
 }

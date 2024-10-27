@@ -13,7 +13,7 @@ export abstract class UserCourseRepository {
   }: {
     paginationOptions: IPaginationOptions;
   }): Promise<UserCourse[]>;
-
+  abstract save(userCourse: UserCourse): Promise<void>;
   abstract findById(id: UserCourse["id"]): Promise<NullableType<UserCourse>>;
   abstract findByCourseId(
     course_id: string,

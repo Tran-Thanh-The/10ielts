@@ -50,7 +50,6 @@ export class CoursesService {
     }
 
     const model = CourseMapper.toModel(createCourseDto);
-    model.status = StatusEnum.ACTIVE;
 
     if (photoFile) {
       const uploadedFile = await this.filesLocalService.create(photoFile);
@@ -92,12 +91,9 @@ export class CoursesService {
       id,
       userId,
     );
-    console.log(`courseExists: ${courseExists.id}`);
-    console.log(`courseDetails: ${courseDetails}`);
     if (!courseDetails) {
       throw new NotFoundException(`Course with ID ${id} not found`);
     }
-    courseDetails.isMyCourse = true;
     return courseDetails;
   }
 
@@ -107,9 +103,11 @@ export class CoursesService {
     invoiceId?: string,
     page: number = 1,
     limit: number = 10,
+    search?: string,
+    isMyCourse?: string,
     orderBy: { [key: string]: "ASC" | "DESC" } = { created_at: "DESC" },
   ): Promise<CourseListResponseDto<CourseResponseDto>> {
-    const result = await this.courseRepository.getListCourse({
+    const params = {
       status,
       userId,
       invoiceId,
@@ -117,9 +115,11 @@ export class CoursesService {
         page,
         limit,
       },
+      isMyCourse: isMyCourse?.toLowerCase() === "true",
+      search,
       orderBy,
-    });
-
+    };
+    const result = await this.courseRepository.getListCourse(params);
     return {
       ...result,
       data: result.data.map((course) => CourseMapper.toDto(course)),

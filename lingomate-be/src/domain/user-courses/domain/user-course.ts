@@ -22,7 +22,7 @@ export class UserCourse {
   @ApiProperty({
     type: () => String,
   })
-  currentLesson?: string;
+  currentLesson?: string | null;
 
   @ApiProperty({ type: Number })
   lastPosition?: number | null;

@@ -4,6 +4,7 @@ import { CreateCourseDto } from "@/domain/courses/dto/create-course.dto";
 import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 import { Course } from "../../../../domain/course";
 import { CourseEntity } from "../entities/course.entity";
+import { StatusEnum } from "@/common/enums/status.enum";
 
 export class CourseMapper {
   static toDomain(raw: CourseEntity): Course {
@@ -56,6 +57,11 @@ export class CourseMapper {
     const category = new CategoryEntity();
     category.id = dto.category_id;
     model.category = category;
+    if (!dto.status) {
+      model.status = StatusEnum.IN_ACTIVE;
+    } else {
+      model.status = dto.status;
+    }
     return model;
   }
 

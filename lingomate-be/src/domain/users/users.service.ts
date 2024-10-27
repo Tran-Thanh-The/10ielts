@@ -1,3 +1,4 @@
+import { StatusEnum } from "@/common/enums/status.enum";
 import { AuthProvidersEnum } from "@/domain/auth/auth-providers.enum";
 import { DeepPartial } from "@/utils/types/deep-partial.type";
 import { NullableType } from "@/utils/types/nullable.type";
@@ -14,7 +15,6 @@ import { User } from "./domain/user";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { FilterUserDto, SortUserDto } from "./dto/query-user.dto";
 import { UserRepository } from "./infrastructure/persistence/user.repository";
-import { StatusEnum } from "@/common/enums/status.enum";
 
 @Injectable()
 export class UsersService {
@@ -62,11 +62,11 @@ export class UsersService {
       clonedPayload.photo = fileObject;
     }
 
-    if (clonedPayload.role?.id) {
-      const roleObject = Object.values(RoleEnum)
-        .map(String)
-        .includes(String(clonedPayload.role.id));
-      if (!roleObject) {
+    if (clonedPayload.role) {
+      const isRoleValid = Object.values(RoleEnum).includes(
+        clonedPayload.role.id,
+      );
+      if (!isRoleValid) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
           errors: {
@@ -74,6 +74,8 @@ export class UsersService {
           },
         });
       }
+    } else {
+      clonedPayload.role = { id: RoleEnum.user };
     }
 
     if (clonedPayload.status) {

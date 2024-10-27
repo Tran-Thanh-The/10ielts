@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { UserCourseEntity } from "../entities/user-course.entity";
@@ -14,6 +14,14 @@ export class UserCourseRelationalRepository implements UserCourseRepository {
     @InjectRepository(UserCourseEntity)
     private readonly userCourseRepository: Repository<UserCourseEntity>,
   ) {}
+
+  async save(userCourse: UserCourse): Promise<void> {
+    if (!userCourse || !userCourse.id) {
+      throw new NotFoundException("User Course not found");
+    }
+    const entity = UserCourseMapper.toPersistence(userCourse);
+    await this.userCourseRepository.save(entity);
+  }
 
   async create(data: UserCourse): Promise<UserCourse> {
     const persistenceModel = UserCourseMapper.toPersistence(data);

@@ -26,7 +26,7 @@ interface CourseCardProps {
   totalLesson: number;
   completedLesson: number;
   isMyCourse: boolean;
-  // photo: string;
+  photo: string;
   onDeleted: () => void;
 }
 
@@ -38,7 +38,7 @@ const CourseCard = ({
   createdAt,
   totalLesson,
   completedLesson,
-  // photo,
+  photo,
   isMyCourse,
   onDeleted,
 }: CourseCardProps) => {
@@ -98,59 +98,65 @@ const CourseCard = ({
             transition: '0.1s',
           },
         },
-        width: 300,
+        width: 286,
       }}
       onClick={handleCardClick}
     >
       <CardMedia
         component="img"
         sx={{ width: '100%', height: '160px', overflow: 'hidden' }}
-        // image={photo}
+        image={photo}
         alt={title}
       />
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant="h6" sx={{ mb: 1 }}>
           {title}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{
+            mb: 1,
+            display: '-webkit-box',
+            WebkitLineClamp: 1,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
           {description}
         </Typography>
-        <Typography variant="subtitle1" color="primary" sx={{ mb: 1 }}>
-          ${price}
-        </Typography>
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ display: 'block', mb: 1 }}
-        >
-          Ngày tạo: {createdAt ? dayjs(createdAt).format('DD-MM-YYYY') : ''}
-        </Typography>
-        <Box sx={{ mb: 1 }}>
-          <Typography variant="caption">
-            Tiến độ: {completedLesson}/{totalLesson} bài học
-          </Typography>
-          <LinearProgress
-            variant="determinate"
-            value={(completedLesson / totalLesson) * 100}
-            sx={{ mt: 1, height: 8, borderRadius: 5 }}
-          />
+        <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          <Chip label={`Giá: ${price} VND`} size="small"></Chip>
+          <Chip label="Đã đăng ký" color="success" size="small"></Chip>
+        </Box>
+        <Box sx={{ display: 'flex', gap: '8px' }}>
+          <Box sx={{ mb: 1, flex: 1 }}>
+            <Typography variant="caption">
+              Tiến độ: {completedLesson}/{totalLesson} bài học
+            </Typography>
+            <LinearProgress
+              variant="determinate"
+              value={(completedLesson / totalLesson) * 100}
+              sx={{ mt: 1, height: 8, borderRadius: 5 }}
+            />
+          </Box>
+          <Box sx={{ alignSelf: 'flex-end' }}>
+            <IconButton onClick={handleMenuOpen}>
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleMenuClose}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MenuItem onClick={handleEdit}>Chỉnh sửa</MenuItem>
+              <MenuItem onClick={handleDelete}>Xóa</MenuItem>
+            </Menu>
+          </Box>
         </Box>
         {isMyCourse && <Chip label="Đã mua" color="success" size="small" />}
       </CardContent>
-      <Box>
-        <IconButton onClick={handleMenuOpen}>
-          <MoreVertIcon />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleMenuClose}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <MenuItem onClick={handleEdit}>Chỉnh sửa</MenuItem>
-          <MenuItem onClick={handleDelete}>Xóa</MenuItem>
-        </Menu>
-      </Box>
     </Card>
   );
 };

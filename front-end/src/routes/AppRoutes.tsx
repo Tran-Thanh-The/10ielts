@@ -52,19 +52,31 @@ function AppRoutes() {
         <Route path="/:id" element={<ListCourse />} />
 
         {/* User navigation */}
-        <Route element={<ProtectedRoute allowedRoles={[ROLE.USER]} />}>
-          <Route path="/profile" element={<Profile />} />
-        </Route>
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute allowedRoles={[ROLE.USER]}>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path='/dashboard' element={<Dashboard />}>
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={[]}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        >
           {/* <Route path='profile' element={<Profile />} /> */}
-          <Route path='' element={<Navigate to='courses' />} />
-          <Route path='chat' element={<Chat />} />
-          <Route path='courses/*' element={<CourseRouter />} />
-          <Route path='practices' element={<Practices />} />
-          <Route path='payments' element={<Payment />} />
-          <Route path='user-management' element={<UserManagement />} />
-          <Route path='*' />
+          <Route path="" element={<Navigate to="courses" />} />
+          <Route path="chat" element={<Chat />} />
+          <Route path="courses/*" element={<CourseRouter />} />
+          <Route path="practices" element={<Practices />} />
+          <Route path="payments" element={<Payment />} />
+          <Route path="user-management/*" element={<UserManagement />} />
+          <Route path="*" />
         </Route>
       </Routes>
     </Suspense>

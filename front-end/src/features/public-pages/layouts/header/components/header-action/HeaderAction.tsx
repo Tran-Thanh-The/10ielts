@@ -46,21 +46,14 @@ const HeaderAction = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await loginApi.postLogout();
-
-      if (response.status === 204) {
-        dispatch(logout());
-        console.log('auth: ', localStorage.getItem('auth'));
-
-        Swal.fire({
-          title: 'Đăng xuất thành công!',
-          text: 'Bạn đã đăng xuất khỏi hệ thống.',
-          icon: 'success',
-          confirmButtonText: 'OK',
-        }).then(() => {});
-      } else {
-        console.log('chưa request được');
-      }
+      dispatch(logout());
+      navigate('/login');
+      Swal.fire({
+        title: 'Đăng xuất thành công!',
+        text: 'Bạn đã đăng xuất khỏi hệ thống.',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      }).then(() => {});
     } catch (error) {
       Swal.fire({
         title: 'Đăng xuất thất bại',

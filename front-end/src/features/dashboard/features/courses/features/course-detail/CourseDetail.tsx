@@ -16,13 +16,14 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Chip,
   IconButton,
   Menu,
   MenuItem,
   Pagination,
   Tab,
   Tabs,
-  Typography
+  Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -226,33 +227,102 @@ export default function CourseDetail() {
           href="#"
           label="Khóa học"
           icon={<LibraryBooksIcon fontSize="small" />}
+          onClick={() => navigate('/dashboard/courses')}
         />
         <Breadcrumb label={course?.name} component="a" href="#" />
       </Breadcrumbs>
 
       {course?.id && (
-        <Box sx={{ padding: 3 }}>
-          <Card sx={{ marginBottom: 3 }}>
-            <CardMedia
-              component="img"
-              sx={{ width: '100%', height: 250 }}
-              image="https://ebest.edu.vn/wp-content/uploads/2021/09/Banner-khoa-hoc-8-min.png"
-              alt={course.name}
-            />
+        <Box sx={{ paddingTop: '24px' }}>
+          <Card
+            sx={{
+              marginBottom: 3,
+              boxShadow:
+                'rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px',
+              padding: '8px 12px',
+            }}
+          >
             <CardContent>
-              <Typography variant="h4">{course.name}</Typography>
-              <Typography
-                variant="body1"
-                color="text.secondary"
-                sx={{ marginBottom: 2 }}
-              >
-                {course.description}
-              </Typography>
-              <Typography variant="h6" color="primary">
-                ${course.price}
-              </Typography>
+              <Box sx={{ display: 'flex', gap: '32px' }}>
+                <Box flex={6}>
+                  <Typography variant="h4">
+                    {course.name}{' '}
+                    <Chip label="Đã xuất bản khóa học" color="success"></Chip>
+                    {/* <Chip label='Chưa xuất bản khóa học'></Chip> */}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    color="text.secondary"
+                    align="justify"
+                    sx={{ marginBottom: 2, whiteSpace: 'pre-line', marginTop: 2 }}
+                  >
+                    {course.description}
+                  </Typography>
+                </Box>
+                <Box flex={4}>
+                  <CardMedia
+                    component="img"
+                    sx={{
+                      width: '100%',
+                      height: '240px',
+                      borderRadius: '12px',
+                    }}
+                    image={course?.photo?.path}
+                    alt={course.name}
+                  />
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      marginTop: 2,
+                    }}
+                  >
+                    <Typography variant="h6">Thông tin khóa học</Typography>
+                    <ul style={{ margin: 0 }}>
+                      <li>
+                        <Typography variant="body1">
+                          Giá khóa học:{' '}
+                          {course.price === 0 ? 'FREE' : course.price + ' VND'}
+                        </Typography>
+                      </li>
+                      <li>
+                        <Typography variant="body1">
+                          Danh mục: {course.category.name}
+                        </Typography>
+                      </li>
+                      <li>
+                        <Typography variant="body1">
+                          Tổng bài học: 20
+                        </Typography>
+                      </li>
+                    </ul>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginTop: '12px',
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      onClick={handleUpdateCourse}
+                    >
+                      Đăng ký khóa học
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
               <Typography variant="caption" color="text.secondary">
-                Created at: {new Date(course.createdAt).toLocaleDateString()}
+                Ngày tạo: {new Date(course.createdAt).toLocaleDateString()}
+              </Typography>
+
+              <Typography variant="caption" color="text.secondary">
+                Ngày tạo: {new Date(course.createdAt).toLocaleDateString()}
               </Typography>
             </CardContent>
             <Box
@@ -264,6 +334,14 @@ export default function CourseDetail() {
                 padding: 2,
               }}
             >
+              <Button
+                variant="outlined"
+                color="success"
+                size="small"
+                onClick={handleDeleteCourse}
+              >
+                Xuất bản khóa học
+              </Button>
               <Button
                 variant="outlined"
                 color="error"

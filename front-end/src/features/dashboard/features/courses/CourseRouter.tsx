@@ -8,8 +8,8 @@ import LessonDetail from './features/lesson-detail/LessonDetail';
 export default function CourseRouter() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="course-list" replace />} />
-      <Route path="/course-list" element={<CourseList />} />
+      <Route path="/" element={<Navigate to="list" replace />} />
+      <Route path="/list" element={<CourseList />} />
       <Route path="/create" element={<CreateUpdateCourse />} />
       <Route path="/update/:id" element={<CreateUpdateCourse />} />
       <Route path="/:idCourse" element={<CourseDetail />} />

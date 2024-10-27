@@ -73,6 +73,9 @@ export default function Header() {
           <Box
             sx={{
               flexGrow: 0,
+              '& > div': {
+                marginTop: 0, 
+              },
               '& .button-action': {
                 display: 'none',
               },

@@ -2,7 +2,7 @@ import axios from 'axios';
 import loginApi from '@/api/loginApi';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://10.10.150.69:3000/api/v1',
+  baseURL: 'http://localhost:3002/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -14,40 +14,8 @@ axiosInstance.interceptors.request.use(
     const authDataString = localStorage.getItem('auth');
     const authData = authDataString ? JSON.parse(authDataString) : null;
     let token = authData?.token;
-    const refreshToken = authData?.refreshToken;
-    const tokenExpires = authData?.tokenExpires;
 
-    const currentTime = Math.floor(Date.now() / 1000);
-
-    if (
-      token &&
-      tokenExpires &&
-      currentTime >= Math.floor(Number(tokenExpires) / 1000)
-    ) {
-      try {
-        const response = await loginApi.postRefreshToken({ refreshToken });
-
-        token = response.data.token;
-        const newTokenExpires = response.data.tokenExpires;
-
-        const updatedAuthData = {
-          ...authData,
-          token,
-          tokenExpires: newTokenExpires,
-        };
-        localStorage.setItem('auth', JSON.stringify(updatedAuthData));
-
-        config.headers['Authorization'] = `Bearer ${token}`;
-      } catch (error) {
-        console.error('Error refreshing token:', error);
-        localStorage.removeItem('auth');
-
-        return Promise.reject(error);
-      }
-    } else if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-
+    config.headers['Authorization'] = `Bearer ${token}`;
     return config;
   },
   (error) => {
@@ -59,12 +27,26 @@ axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  async (error) => {
     if (error.response) {
+      const originalRequest = error.config;
       const { status } = error.response;
 
-      if (status === 401) {
-        localStorage.removeItem('auth');
+      if (status === 401 && !originalRequest._retry) {
+        const authDataString = localStorage.getItem('auth');
+        const authData = authDataString ? JSON.parse(authDataString) : null;
+        const refreshToken = authData?.refreshToken;
+        const response = await loginApi.postRefreshToken({ refreshToken });
+        const token = response.data.token;
+        const updatedAuthData = {
+          ...authData,
+          token: response.data.token,
+          tokenExpires: response.data.tokenExpires,
+        };
+        localStorage.setItem('auth', JSON.stringify(updatedAuthData));
+
+        originalRequest.headers['Authorization'] = `Bearer ${token}`;
+        return axios(originalRequest);
       }
 
       if (status === 403) {

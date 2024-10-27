@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }) {
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 9999,
+          zIndex: 999,
         }}
       >
         <Header />

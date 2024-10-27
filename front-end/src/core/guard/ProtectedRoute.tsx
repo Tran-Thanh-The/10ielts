@@ -4,11 +4,13 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 interface ProtectedRouteProps {
   allowedRoles: string[]; // Các role được phép truy cập route này
   redirectPath?: string; // Đường dẫn điều hướng khi không đủ quyền
+  children?: React.ReactNode; // Nội dung bên trong route
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   allowedRoles,
   redirectPath = '/login',
+  children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Kiểm tra xem người dùng có đăng nhập hay không
   const [userRole, setUserRole] = useState<string | null>(null); // Role của người dùng
@@ -53,7 +55,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // Nếu tất cả các điều kiện đều đúng, hiển thị nội dung bên trong route
-  return <Outlet />;
+  return (
+    <>
+      {children}
+      {/* <Outlet /> */}
+    </>
+  );
 };
 
 export default ProtectedRoute;

@@ -3,6 +3,7 @@ import { Add as AddIcon } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Divider,
   MenuItem,
   Modal,
   Select,
@@ -47,7 +48,7 @@ export default function CreateCourseModal({
         name: data.name,
         description: data.description,
         price: data.price,
-        image: null, // No need to load image here
+        image: data.photo.path, // No need to load image here
         category_id: data.category.id,
       });
     } else {
@@ -57,7 +58,19 @@ export default function CreateCourseModal({
 
   // Reset form when modal is closed
   useEffect(() => {
-    if (!open) resetForm();
+    if (!open) {
+      if (data?.id) {
+        setFormData({
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          image: data.photo.path, // No need to load image here
+          category_id: data.category.id,
+        });
+      } else {
+        resetForm();
+      }
+    }
   }, [open]);
 
   // Helper function to reset form fields
@@ -151,107 +164,121 @@ export default function CreateCourseModal({
           borderRadius: 4,
           display: 'flex',
           flexDirection: 'column',
-          gap: 3,
+          gap: 1,
         }}
       >
         <Typography id="modal-title" variant="h6" component="h2">
-          {data?.id ? 'Update Course' : 'Create Course'}
+          {data?.id ? 'Cập nhập khóa học' : 'Tạo khóa học'}
         </Typography>
-        <form onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Image Preview */}
-            {formData.image && (
-              <Box mt={2}>
-                <img
-                  src={URL.createObjectURL(formData.image)}
-                  alt="Course Preview"
-                  style={{
-                    width: '100%',
-                    maxHeight: 100,
-                    objectFit: 'cover',
-                  }}
+        <Divider />
+
+        <Box
+          sx={{
+            maxHeight: 'calc(100vh - 200px)',
+            overflowY: 'auto',
+          }}
+        >
+          <form onSubmit={handleSubmit}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {formData.image && (
+                <Box mt={2}>
+                  <img
+                    src={
+                      data?.id
+                        ? formData.image
+                        : URL.createObjectURL(formData.image)
+                    }
+                    alt="Course Preview"
+                    style={{
+                      width: '100%',
+                      maxHeight: 200,
+                      objectFit: 'cover',
+                      borderRadius: '12px',
+                    }}
+                  />
+                </Box>
+              )}
+              {!formData.image && (
+                <Button
+                  variant="contained"
+                  component="label"
+                  startIcon={<AddIcon />}
+                  fullWidth
+                >
+                  Tải ảnh bìa
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={handleImageChange}
+                  />
+                </Button>
+              )}
+
+              <TextField
+                label="Tên khóa học"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                fullWidth
+              />
+
+              <Box
+                sx={{ display: 'flex', alignContent: 'center', gap: '20px' }}
+              >
+                <Select
+                  label="Danhh mục"
+                  name="category_id"
+                  value={formData.category_id}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                >
+                  {categories.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+
+                <TextField
+                  label="Giá (VND)"
+                  name="price"
+                  type="number"
+                  inputProps={{ step: '0.01', min: '0' }}
+                  value={formData.price}
+                  onChange={handleChange}
+                  required
+                  fullWidth
                 />
               </Box>
-            )}
-            {/* Image Upload */}
-            <Button
-              variant="contained"
-              component="label"
-              startIcon={<AddIcon />}
-              fullWidth
-            >
-              Upload Image
-              <input
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={handleImageChange}
+
+              <TextField
+                label="Mô tả"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+                multiline
+                rows={4}
+                fullWidth
               />
-            </Button>
+            </Box>
+          </form>
+        </Box>
+        <Divider />
 
-            {/* Course Name */}
-            <TextField
-              label="Course Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
-
-            {/* Category Selection */}
-            <Select
-              label="Category"
-              name="category_id"
-              value={formData.category_id}
-              onChange={handleChange}
-              required
-              fullWidth
-            >
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </Select>
-
-            {/* Description */}
-            <TextField
-              label="Description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-              multiline
-              rows={4}
-              fullWidth
-            />
-
-            {/* Price */}
-            <TextField
-              label="Price ($)"
-              name="price"
-              type="number"
-              inputProps={{ step: '0.01', min: '0' }}
-              value={formData.price}
-              onChange={handleChange}
-              required
-              fullWidth
-            />
-          </Box>
-        </form>
-
-        {/* Action Buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-          <Button onClick={() => onClose(false)} sx={{ padding: '6px 24px' }}>
-            Cancel
-          </Button>
           <Button
-            onClick={handleSubmit}
-            variant="contained"
+            variant="outlined"
+            onClick={() => onClose(false)}
             sx={{ padding: '6px 24px' }}
           >
-            Save
+            Hủy
+          </Button>
+          <Button onClick={handleSubmit} variant="contained">
+            Lưu khóa học
           </Button>
         </Box>
       </Box>

@@ -63,6 +63,7 @@ export default function CourseList() {
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: 3,
+            gap: '32px'
           }}
         >
           <CourseFilter />
@@ -71,6 +72,8 @@ export default function CourseList() {
             onClick={handleCreateCourse}
             sx={{
               width: 'unset',
+              padding: '12px 16px !important',
+              borderRadius: '12px',
             }}
           >
             Tạo khóa học
@@ -90,7 +93,7 @@ export default function CourseList() {
               description={course.description}
               price={course.price}
               createdAt={course.createAt}
-              // photo={course.photo.path}
+              photo={course?.photo?.path}
               totalLesson={14}
               completedLesson={4}
               isMyCourse={false}

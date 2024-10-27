@@ -3,6 +3,7 @@ import { UserCourse } from "@/domain/user-courses/domain/user-course";
 import { CreateUserCourseDto } from "@/domain/user-courses/dto/create-user-course.dto";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { UserCourseEntity } from "../entities/user-course.entity";
+import { UserCourseResponseDto } from "@/domain/user-courses/dto/user-course-response.dto";
 
 export class UserCourseMapper {
   static toDomain(raw: UserCourseEntity): UserCourse {
@@ -36,9 +37,27 @@ export class UserCourseMapper {
   public static toModel(dto: CreateUserCourseDto): UserCourse {
     const model = new UserCourse();
     model.user = new UserEntity();
-    Object.assign(model.user, dto.user);
+    model.user.id = Number(dto.user_id);
+
     model.course = new CourseEntity();
-    Object.assign(model.course, dto.course);
+    model.course.id = dto.course_id;
+
+    model.currentLesson = dto.currentLesson;
+    model.lastPosition = dto.lastPosition;
+
     return model;
+  }
+
+  public static toDto(model: UserCourse): UserCourseResponseDto {
+    const dto = new UserCourseResponseDto();
+    dto.id = model.id;
+    dto.user = { ...model.user };
+    dto.course = { ...model.course };
+    dto.currentLesson = model.currentLesson;
+    dto.lastPosition = model.lastPosition;
+    dto.status = model.status;
+    dto.createdAt = model.createdAt;
+    dto.updatedAt = model.updatedAt;
+    return dto;
   }
 }

@@ -1,17 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from "@/utils/dto/infinity-pagination-response.dto";
+import { infinityPagination } from "@/utils/infinity-pagination";
+import {
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
+  Req,
+  UseGuards,
 } from "@nestjs/common";
-import { UserCoursesService } from "./user-courses.service";
-import { CreateUserCourseDto } from "./dto/create-user-course.dto";
-import { UpdateUserCourseDto } from "./dto/update-user-course.dto";
+import { AuthGuard } from "@nestjs/passport";
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -20,13 +24,11 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { UserCourse } from "./domain/user-course";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
+import { CreateUserCourseDto } from "./dto/create-user-course.dto";
 import { FindAllUserCoursesDto } from "./dto/find-all-user-courses.dto";
+import { UpdateUserCourseDto } from "./dto/update-user-course.dto";
+import { UserCoursesService } from "./user-courses.service";
+import { UpdateCurrentLessonDto } from "./dto/update-current-lesson.dto";
 
 @ApiTags("Usercourses")
 @ApiBearerAuth()
@@ -42,8 +44,20 @@ export class UserCoursesController {
   @ApiCreatedResponse({
     type: UserCourse,
   })
-  create(@Body() createUserCourseDto: CreateUserCourseDto) {
-    return this.userCoursesService.create(createUserCourseDto);
+  create(@Body() createUserCourseDto: CreateUserCourseDto, @Req() req) {
+    const userId = req.user.id;
+    return this.userCoursesService.create(createUserCourseDto, userId);
+  }
+
+  @Patch(":id/current-lesson")
+  async updateCurrentLesson(
+    @Param("id") userCourseId: string,
+    @Body() updateCurrentLessonDto: UpdateCurrentLessonDto,
+  ) {
+    return this.userCoursesService.updateCurrentLesson(
+      updateCurrentLessonDto,
+      userCourseId,
+    );
   }
 
   @Get()

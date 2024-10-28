@@ -15,7 +15,7 @@ export abstract class LessonRepository {
   }): Promise<Lesson[]>;
 
   abstract findById(id: Lesson["id"]): Promise<NullableType<Lesson>>;
-
+  abstract findByQuestionId(questionId: string): Promise<NullableType<Lesson>>;
   abstract findByTitle(title: Lesson["title"]): Promise<NullableType<Lesson>>;
   abstract update(
     id: Lesson["id"],

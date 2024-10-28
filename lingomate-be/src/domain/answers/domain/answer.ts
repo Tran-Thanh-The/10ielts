@@ -1,8 +1,8 @@
 import { AnswerTypesEnum } from "@/common/enums/answer.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
 import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
+import { FileType } from "@/files/domain/file";
 import { ApiProperty } from "@nestjs/swagger";
-import { Column } from "typeorm";
 
 export class Answer {
   @ApiProperty({
@@ -10,23 +10,21 @@ export class Answer {
   })
   id: string;
 
+  @ApiProperty({ type: String })
+  content?: string | null;
+
   @ApiProperty({
     enum: AnswerTypesEnum,
   })
   answerType: AnswerTypesEnum;
 
-  @ApiProperty({ type: String })
-  answerAudio: string;
-
-  @ApiProperty({ type: String })
-  @Column({ type: String })
-  answerText: string;
+  @ApiProperty({
+    type: () => FileType,
+  })
+  file?: FileType | null;
 
   @ApiProperty({ type: Boolean })
-  isCorrect: boolean;
-
-  @ApiProperty({ type: String })
-  position: number;
+  isCorrect?: boolean | null;
 
   @ApiProperty({
     type: () => QuestionEntity,

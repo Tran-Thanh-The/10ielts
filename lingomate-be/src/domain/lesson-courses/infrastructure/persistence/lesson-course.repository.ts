@@ -3,6 +3,7 @@ import { NullableType } from "@/utils/types/nullable.type";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { LessonCourse } from "../../domain/lesson-course";
 import { Lesson } from "@/domain/lessons/domain/lesson";
+import { Course } from "@/domain/courses/domain/course";
 
 export abstract class LessonCourseRepository {
   abstract create(
@@ -14,6 +15,8 @@ export abstract class LessonCourseRepository {
   }: {
     paginationOptions: IPaginationOptions;
   }): Promise<LessonCourse[]>;
+
+  abstract findCourseByLessonId(lessonId: string): Promise<Course | null>;
 
   abstract findLessonByCourseIdWithPagination(
     courseId: string,
@@ -44,11 +47,8 @@ export abstract class LessonCourseRepository {
     lessonId: string,
   ): Promise<NullableType<LessonCourse>>;
 
-  abstract countACTIVELessonsByCourseId(courseId: string): Promise<number>;
-  abstract findACTIVELessonsByCourseId(
+  abstract countActiveLessonsByCourseId(courseId: string): Promise<number>;
+  abstract findActiveLessonsByCourseId(
     courseId: string,
   ): Promise<LessonCourse[]>;
-  // abstract findLessonByCourseId(
-  //   course_id: string,
-  // ): Promise<NullableType<Lesson[]>>;
 }

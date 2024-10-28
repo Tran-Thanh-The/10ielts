@@ -1,12 +1,6 @@
 import { LessonTypesEnum } from "@/common/enums/lesson.enum";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import {
-  IsBoolean,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateLessonDto {
   @ApiProperty({ type: String })
@@ -35,7 +29,6 @@ export class CreateLessonDto {
   totalStars?: number | null;
 
   @ApiPropertyOptional({ type: Boolean })
-  @IsBoolean()
   @IsOptional()
   isSequence?: boolean | null;
 }

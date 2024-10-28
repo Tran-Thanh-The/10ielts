@@ -1,4 +1,9 @@
 export enum QuestionTypesEnum {
-  AUDIO,
-  IMAGE,
+  CHOICE = "CHOICE",
+  INPUT = "INPUT",
+}
+
+export enum QuestionFileTypesEnum {
+  AUDIO = "AUDIO",
+  IMAGE = "IMAGE",
 }

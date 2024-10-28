@@ -44,6 +44,9 @@ import { InvoicesModule } from "./domain/invoices/invoices.module";
 
 import { CategoriesModule } from "@/domain/categories/categories.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { PayOSModule } from "@/common/payos/payos.module";
+import { PaymentModule } from "@/domain/payment/payment.module";
+
 @Module({
   imports: [
     CategoriesModule,
@@ -62,6 +65,8 @@ import { ServeStaticModule } from "@nestjs/serve-static";
     MailerModule,
     HomeModule,
     RedisModule,
+    PayOSModule,
+    PaymentModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "client"),
     }),

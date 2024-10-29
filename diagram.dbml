@@ -16,9 +16,15 @@ Enum LessonTypesEnum {
 }
 
 Enum QuestionTypesEnum {
+  CHOICE
+  INPUT
+}
+
+Enum QuestionFileTypesEnum {
   AUDIO
   IMAGE
 }
+
 
 Enum AuthProvidersEnum {
   email
@@ -30,11 +36,10 @@ Enum AuthProvidersEnum {
 
 Table answer {
   id uuid [pk]
+  content string
+  file_id uuid
   answerType AnswerTypesEnum
-  answerAudio string
-  answerText string
   isCorrect boolean
-  position int
   status StatusEnum
   question_id uuid
   createdAt timestamp
@@ -95,7 +100,7 @@ Table lesson {
   id uuid [pk]
   title string
   content string
-  videoUrl string
+  file_id uuid
   lessonType LessonTypesEnum
   stars decimal
   totalStars int
@@ -112,22 +117,14 @@ Table practice_exercise {
   updatedAt timestamp
 }
 
-Table question_lesson {
-  id uuid [pk]
-  status StatusEnum
-  position int
-  lesson_id uuid
-  question_id uuid
-  createdAt timestamp
-  updatedAt timestamp
-}
-
 Table question {
   id uuid [pk]
   title string
-  description string
-  audioUrl string
+  content string
+  position int
+  file_id uuid 
   questionType QuestionTypesEnum
+  fileType QuestionFileTypesEnum
   status StatusEnum
   category_id uuid
   time number
@@ -219,8 +216,6 @@ Ref: course.photo_id > file.id
 Ref: course.category_id > category.id
 Ref: lesson_course.lesson_id > lesson.id
 Ref: lesson_course.course_id > course.id
-Ref: question_lesson.lesson_id > lesson.id
-Ref: question_lesson.question_id > question.id
 Ref: question.category_id > category.id
 Ref: session.user_id > user.id
 Ref: user_course.user_id > user.id
@@ -233,3 +228,5 @@ Ref: user_question.user_id > user.id
 Ref: user_question.question_id > question.id
 Ref: user.photo_id > file.id
 Ref: user.role_id > role.id
+Ref: lesson.file_id > file.id
+Ref: question.file_id > file.id

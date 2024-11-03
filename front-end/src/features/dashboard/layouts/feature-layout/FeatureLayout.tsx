@@ -8,6 +8,7 @@ export default function FeatureLayout({ children }) {
         maxHeight: 'calc(100vh - 60px)',
         overflowY: 'auto',
         overflowX: 'hidden',
+        width: '100%',
       }}
     >
       {children}

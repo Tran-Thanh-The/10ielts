@@ -24,6 +24,9 @@ interface Course {
 
 export default function CourseList() {
   const [open, setOpen] = React.useState(false);
+  const [selectedCourse, setSelectedCourse] = React.useState<Course | null>(
+    null,
+  );
   const [courses, setCourses] = React.useState<Course[]>([]);
   const [reload, setReload] = React.useState(false);
 
@@ -50,6 +53,11 @@ export default function CourseList() {
     setOpen(true);
   };
 
+  const handleEditCourse = (id: string) => {
+    setSelectedCourse(courses.find((course) => course.id === id) ?? null);
+    setOpen(true);
+  };
+
   return (
     <FeatureLayout>
       <FeatureHeader
@@ -63,7 +71,7 @@ export default function CourseList() {
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: 3,
-            gap: '32px'
+            gap: '32px',
           }}
         >
           <CourseFilter />
@@ -98,12 +106,21 @@ export default function CourseList() {
               completedLesson={4}
               isMyCourse={false}
               onDeleted={triggerReload}
+              onEdit={handleEditCourse}
             />
           ))}
         </Box>
       </Box>
 
-      <CreateCourseModal open={open} onClose={setOpen} onOk={triggerReload} />
+      <CreateCourseModal
+        open={open}
+        data={selectedCourse}
+        onClose={(value: boolean) => {
+          setOpen(value);
+          setSelectedCourse(null);
+        }}
+        onOk={triggerReload}
+      />
     </FeatureLayout>
   );
 }

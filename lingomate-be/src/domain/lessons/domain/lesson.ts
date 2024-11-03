@@ -1,5 +1,6 @@
 import { LessonTypesEnum } from "@/common/enums/lesson.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { Question } from "@/domain/questions/domain/question";
 import { FileType } from "@/files/domain/file";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -22,7 +23,7 @@ export class Lesson {
   @ApiProperty({
     type: () => FileType,
   })
-  videoUrl?: FileType | null;
+  file?: FileType | null;
 
   @ApiProperty({
     enum: LessonTypesEnum,
@@ -50,4 +51,7 @@ export class Lesson {
 
   @ApiProperty()
   deletedAt?: Date | null;
+
+  @ApiProperty({ type: () => Question })
+  questions?: Question[];
 }

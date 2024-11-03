@@ -32,6 +32,10 @@ export class LessonRelationalRepository implements LessonRepository {
     const entities = await this.lessonRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      relations: ["questions", "questions.answers", "file"],
+      order: {
+        createdAt: "DESC",
+      },
     });
 
     return entities.map((entity) => LessonMapper.toDomain(entity));
@@ -40,9 +44,18 @@ export class LessonRelationalRepository implements LessonRepository {
   async findById(id: Lesson["id"]): Promise<NullableType<Lesson>> {
     const entity = await this.lessonRepository.findOne({
       where: { id },
+      relations: ["questions", "questions.answers"],
     });
 
     return entity ? LessonMapper.toDomain(entity) : null;
+  }
+
+  async findByQuestionId(questionId: string): Promise<NullableType<Lesson>> {
+    return await this.lessonRepository
+      .createQueryBuilder("lesson")
+      .leftJoinAndSelect("lesson.questions", "question")
+      .where("question.id = :questionId", { questionId })
+      .getOne();
   }
 
   async findByTitle(title: Lesson["title"]): Promise<NullableType<Lesson>> {
@@ -77,6 +90,7 @@ export class LessonRelationalRepository implements LessonRepository {
   async remove(id: Lesson["id"]): Promise<void> {
     await this.lessonRepository.delete(id);
   }
+
   async save(lesson: Lesson): Promise<void> {
     if (!lesson || !lesson.id) {
       throw new NotFoundException("Lesson not found");

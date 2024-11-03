@@ -14,6 +14,13 @@ export class CategoryRelationalRepository implements CategoryRepository {
     @InjectRepository(CategoryEntity)
     private readonly categoryRepository: Repository<CategoryEntity>,
   ) {}
+  async findByCourseId(courseId: string): Promise<Category | null> {
+    return await this.categoryRepository
+      .createQueryBuilder("category")
+      .leftJoin("category.course", "course")
+      .where("course.id = :courseId", { courseId })
+      .getOne();
+  }
 
   async create(data: Category): Promise<Category> {
     const persistenceModel = CategoryMapper.toPersistence(data);

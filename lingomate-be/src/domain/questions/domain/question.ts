@@ -1,6 +1,12 @@
-import { QuestionTypesEnum } from "@/common/enums/question.enum";
+import {
+  QuestionFileTypesEnum,
+  QuestionTypesEnum,
+} from "@/common/enums/question.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { Answer } from "@/domain/answers/domain/answer";
 import { CategoryEntity } from "@/domain/categories/infrastructure/persistence/relational/entities/category.entity";
+import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { FileType } from "@/files/domain/file";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class Question {
@@ -13,10 +19,18 @@ export class Question {
   title: string;
 
   @ApiProperty({ type: String })
-  description?: string | null;
+  content?: string | null;
 
   @ApiProperty({ type: String })
-  audioUrl?: string | null;
+  explain?: string | null;
+
+  @ApiProperty({ type: Number })
+  position?: number | null;
+
+  @ApiProperty({
+    type: () => FileType,
+  })
+  file?: FileType | null;
 
   @ApiProperty({ type: Number })
   time?: number | null;
@@ -25,6 +39,16 @@ export class Question {
     enum: QuestionTypesEnum,
   })
   questionType: QuestionTypesEnum;
+
+  @ApiProperty({
+    enum: QuestionFileTypesEnum,
+  })
+  fileType: QuestionFileTypesEnum;
+
+  @ApiProperty({
+    type: () => LessonEntity,
+  })
+  lesson: LessonEntity;
 
   @ApiProperty({
     type: () => CategoryEntity,
@@ -41,4 +65,7 @@ export class Question {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty({ type: () => Answer })
+  answers: Answer[];
 }

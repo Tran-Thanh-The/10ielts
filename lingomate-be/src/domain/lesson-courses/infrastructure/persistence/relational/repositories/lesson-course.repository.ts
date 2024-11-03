@@ -11,6 +11,7 @@ import { LessonCourseEntity } from "../entities/lesson-course.entity";
 import { LessonCourseMapper } from "../mappers/lesson-course.mapper";
 import { StatusEnum } from "@/common/enums/status.enum";
 import { LessonMapper } from "@/domain/lessons/infrastructure/persistence/relational/mappers/lesson.mapper";
+import { Course } from "@/domain/courses/domain/course";
 
 @Injectable()
 export class LessonCourseRelationalRepository
@@ -100,6 +101,15 @@ export class LessonCourseRelationalRepository
     await this.lessonCourseRepository.delete(id);
   }
 
+  async findCourseByLessonId(lessonId: string): Promise<Course | null> {
+    const lessonCourse = await this.lessonCourseRepository.findOne({
+      where: { lesson: { id: lessonId } },
+      relations: ["course"],
+    });
+
+    return lessonCourse ? lessonCourse.course : null;
+  }
+
   async findByCourseAndLesson(
     courseId: string,
     lessonId: string,
@@ -150,7 +160,7 @@ export class LessonCourseRelationalRepository
     return LessonCourseMapper.toDomain(lessonCourseEntity) || null;
   }
 
-  async countACTIVELessonsByCourseId(courseId: string): Promise<number> {
+  async countActiveLessonsByCourseId(courseId: string): Promise<number> {
     return this.lessonCourseRepository.count({
       where: {
         course: { id: courseId },
@@ -159,7 +169,7 @@ export class LessonCourseRelationalRepository
     });
   }
 
-  async findACTIVELessonsByCourseId(courseId: string): Promise<LessonCourse[]> {
+  async findActiveLessonsByCourseId(courseId: string): Promise<LessonCourse[]> {
     return this.lessonCourseRepository.find({
       where: {
         course: { id: courseId },

@@ -11,12 +11,15 @@ import {
   ConflictException,
   InternalServerErrorException,
   NotFoundException,
+  UseInterceptors,
+  UploadedFile,
 } from "@nestjs/common";
 import { LessonsService } from "./lessons.service";
 import { CreateLessonDto } from "./dto/create-lesson.dto";
 import { UpdateLessonDto } from "./dto/update-lesson.dto";
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
@@ -33,6 +36,8 @@ import { FindAllLessonsDto } from "./dto/find-all-lessons.dto";
 import { RolesGuard } from "../roles/roles.guard";
 import { RoleEnum } from "../roles/roles.enum";
 import { Roles } from "../roles/roles.decorator";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 
 @ApiTags("Lessons")
 @ApiBearerAuth()
@@ -46,15 +51,18 @@ export class LessonsController {
 
   @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post(":courseId")
+  @UseInterceptors(FileInterceptor("file", multerConfig))
+  @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: Lesson,
   })
   async create(
     @Param("courseId") courseId: string,
     @Body() createLessonDto: CreateLessonDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
     try {
-      return await this.lessonsService.create(courseId, createLessonDto);
+      return await this.lessonsService.create(courseId, createLessonDto, file);
     } catch (error) {
       if (error instanceof ConflictException) {
         throw new ConflictException("Conflict title");
@@ -67,6 +75,7 @@ export class LessonsController {
       );
     }
   }
+
   @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
@@ -80,7 +89,6 @@ export class LessonsController {
     if (limit > 50) {
       limit = 50;
     }
-
     return infinityPagination(
       await this.lessonsService.findAllWithPagination({
         paginationOptions: {

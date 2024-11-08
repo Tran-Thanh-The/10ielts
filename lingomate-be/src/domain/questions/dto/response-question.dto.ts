@@ -5,8 +5,6 @@ import {
 import { StatusEnum } from "@/common/enums/status.enum";
 import { AnswerResponseDto } from "@/domain/answers/dto/response-answer.dto";
 import { CreateCategoryDto } from "@/domain/categories/dto/create-category.dto";
-import { LessonResponseDto } from "@/domain/lessons/dto/response-lesson.dto";
-import { PracticeResponseDto } from "@/domain/practice-exercises/dto/response-practice-exercise.dto";
 import { FileDto } from "@/files/dto/file.dto";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
@@ -76,16 +74,16 @@ export class QuestionResponseDto {
   category: CreateCategoryDto;
 
   @ApiProperty({
-    type: () => LessonResponseDto,
+    type: () => String,
   })
   @IsNotEmpty()
-  lesson: LessonResponseDto;
+  lesson_id: string;
 
   @ApiProperty({
-    type: () => PracticeResponseDto,
+    type: () => String,
   })
   @IsNotEmpty()
-  practice: PracticeResponseDto;
+  practice_id: string;
 
   @ApiProperty({
     type: [AnswerResponseDto],

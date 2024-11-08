@@ -24,6 +24,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { Lesson } from "./domain/lesson";
@@ -39,6 +40,8 @@ import { RoleEnum } from "../roles/roles.enum";
 import { Roles } from "../roles/roles.decorator";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import { NullableType } from "@/utils/types/nullable.type";
+import { StatusEnum } from "@/common/enums/status.enum";
 
 @ApiTags("Lessons")
 @ApiBearerAuth()
@@ -141,16 +144,34 @@ export class LessonsController {
 
   @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id/detail")
-  @ApiParam({
-    name: "id",
-    type: String,
-    required: true,
+  @ApiQuery({
+    name: "order",
+    required: false,
+    enum: ["ASC", "DESC"],
+    description: "Order of questions by position (ASC or DESC)",
   })
-  @ApiOkResponse({
-    type: Lesson,
+  @ApiQuery({
+    name: "status",
+    required: false,
+    enum: StatusEnum,
+    description: "Status filter for questions",
   })
-  async getDetail(@Param("id") id: string) {
-    return this.lessonsService.getLessonDetail(id);
+  async getDetail(
+    @Param("id") id: string,
+    @Query("page") page = 1,
+    @Query("limit") limit = 10,
+    @Query("order") order: "ASC" | "DESC" = "ASC",
+    @Query("status") status?: StatusEnum,
+  ): Promise<NullableType<Lesson>> {
+    if (limit > 50) {
+      limit = 50;
+    }
+    return this.lessonsService.getLessonDetail(id, {
+      page,
+      limit,
+      order,
+      status,
+    });
   }
 
   @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)

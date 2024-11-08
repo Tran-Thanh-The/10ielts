@@ -112,8 +112,14 @@ export class LessonsService {
     });
   }
 
-  async getLessonDetail(id: Lesson["id"]): Promise<NullableType<Lesson>> {
-    return this.lessonRepository.getLessonDetail(id);
+  async getLessonDetail(
+    id: Lesson["id"],
+    paginationOptions: IPaginationOptions & {
+      order: "ASC" | "DESC";
+      status?: StatusEnum;
+    },
+  ): Promise<NullableType<Lesson>> {
+    return this.lessonRepository.getLessonDetail(id, paginationOptions);
   }
 
   async findById(id: Lesson["id"]): Promise<NullableType<Lesson>> {

@@ -12,6 +12,7 @@ import {
   UploadedFile,
   NotFoundException,
   InternalServerErrorException,
+  Req,
 } from "@nestjs/common";
 import { QuestionsService } from "./questions.service";
 import { CreateQuestionDto } from "./dto/create-question.dto";
@@ -49,20 +50,21 @@ export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
   @Roles(RoleEnum.admin, RoleEnum.staff)
-  @Post(":lessonId")
+  @Post()
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: Question,
   })
   async create(
-    @Param("lessonId") lessonId: string,
+    @Req() req,
     @Body() createQuestionDto: CreateQuestionDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {
+      const userId = req.user.id;
       return await this.questionsService.create(
-        lessonId,
+        userId,
         createQuestionDto,
         file,
       );

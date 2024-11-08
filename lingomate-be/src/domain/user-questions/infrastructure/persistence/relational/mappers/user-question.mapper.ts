@@ -10,7 +10,9 @@ export class UserQuestionMapper {
     domainEntity.id = raw.id;
     domainEntity.user = raw.user;
     domainEntity.question = raw.question;
-    domainEntity.answerPick = raw.answerPick;
+    if (raw.answerPick) {
+      domainEntity.answerPick = raw.answerPick;
+    }
     domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -35,10 +37,20 @@ export class UserQuestionMapper {
 
   public static toModel(dto: CreateUserQuestionDto): UserQuestion {
     const model = new UserQuestion();
-    model.user = new UserEntity();
-    Object.assign(model.user, dto.user);
-    model.question = new QuestionEntity();
-    Object.assign(model.question, dto.question);
+    if (dto.user_id) {
+      const user = new UserEntity();
+      user.id = dto.user_id;
+      model.user = user;
+    }
+
+    if (dto.question_id) {
+      const question = new QuestionEntity();
+      question.id = dto.question_id;
+      model.question = question;
+    }
+    if (dto.answerPick) {
+      model.answerPick = dto.answerPick;
+    }
     return model;
   }
 }

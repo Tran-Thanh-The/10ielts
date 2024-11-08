@@ -7,6 +7,7 @@ import { LessonRepository } from "../../lesson.repository";
 import { LessonEntity } from "../entities/lesson.entity";
 import { LessonMapper } from "../mappers/lesson.mapper";
 import { Lesson } from "./../../../../domain/lesson";
+import { StatusEnum } from "@/common/enums/status.enum";
 
 @Injectable()
 export class LessonRelationalRepository implements LessonRepository {
@@ -75,12 +76,31 @@ export class LessonRelationalRepository implements LessonRepository {
 
     return entities.map((entity) => LessonMapper.toDomain(entity));
   }
-  async getLessonDetail(id: Lesson["id"]): Promise<NullableType<Lesson>> {
-    const entity = await this.lessonRepository.findOne({
-      where: { id },
-      relations: ["questions", "questions.answers", "file"],
-    });
 
+  async getLessonDetail(
+    id: Lesson["id"],
+    {
+      page,
+      limit,
+      order,
+      status,
+    }: IPaginationOptions & { order: "ASC" | "DESC"; status?: StatusEnum },
+  ): Promise<NullableType<Lesson>> {
+    const queryBuilder = this.lessonRepository
+      .createQueryBuilder("lesson")
+      .leftJoinAndSelect("lesson.file", "file")
+      .leftJoinAndSelect("lesson.questions", "question")
+      .leftJoinAndSelect("question.answers", "answer")
+      .where("lesson.id = :id", { id })
+      .orderBy("question.position", order)
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    if (status) {
+      queryBuilder.andWhere("question.status = :status", { status });
+    }
+
+    const entity = await queryBuilder.getOne();
     return entity ? LessonMapper.toDomain(entity) : null;
   }
 

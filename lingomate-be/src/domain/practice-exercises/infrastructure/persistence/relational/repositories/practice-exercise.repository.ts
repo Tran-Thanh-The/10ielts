@@ -33,6 +33,10 @@ export class PracticeExerciseRelationalRepository
     const entities = await this.practiceExerciseRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      relations: ["questions", "questions.answers"],
+      order: {
+        createdAt: "DESC",
+      },
     });
 
     return entities.map((entity) => PracticeExerciseMapper.toDomain(entity));

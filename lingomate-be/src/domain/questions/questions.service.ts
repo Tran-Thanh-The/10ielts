@@ -3,9 +3,12 @@ import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.s
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CategoryRepository } from "../categories/infrastructure/persistence/category.repository";
-import { LessonCourseRepository } from "../lesson-courses/infrastructure/persistence/lesson-course.repository";
 import { LessonRepository } from "../lessons/infrastructure/persistence/lesson.repository";
 import { LessonMapper } from "../lessons/infrastructure/persistence/relational/mappers/lesson.mapper";
+import { PracticeExerciseRepository } from "../practice-exercises/infrastructure/persistence/practice-exercise.repository";
+import { PracticeExerciseMapper } from "../practice-exercises/infrastructure/persistence/relational/mappers/practice-exercise.mapper";
+import { UserQuestionMapper } from "../user-questions/infrastructure/persistence/relational/mappers/user-question.mapper";
+import { UserQuestionRepository } from "../user-questions/infrastructure/persistence/user-question.repository";
 import { CategoryMapper } from "./../categories/infrastructure/persistence/relational/mappers/category.mapper";
 import { Question } from "./domain/question";
 import { CreateQuestionDto } from "./dto/create-question.dto";
@@ -20,47 +23,89 @@ export class QuestionsService {
     private readonly lessonRepository: LessonRepository,
     private readonly filesLocalService: FilesLocalService,
     private readonly categoryRepository: CategoryRepository,
-    private readonly lessonCourseRepository: LessonCourseRepository,
+    private readonly practiceExerciseRepository: PracticeExerciseRepository,
+    private readonly userQuestionRepository: UserQuestionRepository,
   ) {}
 
   async create(
-    lessonId,
+    userId: string,
     createQuestionDto: CreateQuestionDto,
     fileQuestion: Express.Multer.File,
   ) {
-    const course =
-      await this.lessonCourseRepository.findCourseByLessonId(lessonId);
-
-    if (!course) {
-      throw new NotFoundException(
-        `Course not found for Lesson with ID ${lessonId}`,
-      );
-    }
-    const category = await this.categoryRepository.findByCourseId(course.id);
-    if (!category) {
-      throw new NotFoundException(
-        `Category not found for Course with ID ${course.id}`,
-      );
-    }
-    const lesson = await this.lessonRepository.findById(lessonId);
-    if (!lesson) {
-      throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
-    }
     const model = QuestionMapper.toModel(createQuestionDto);
     console.log("Created question model:", model);
 
-    model.category = CategoryMapper.toPersistence(category);
-    model.lesson = LessonMapper.toPersistence(lesson);
+    if (createQuestionDto.category_id) {
+      const category = await this.categoryRepository.findById(
+        createQuestionDto.category_id,
+      );
+      if (!category) {
+        throw new NotFoundException(
+          `Category not found with ID ${createQuestionDto.category_id}`,
+        );
+      }
+      model.category = CategoryMapper.toPersistence(category);
+    }
+
+    if (!createQuestionDto.lesson_id && !createQuestionDto.practice_id) {
+      throw new NotFoundException(
+        "You must provide either a lesson_id or practice_id",
+      );
+    }
+
+    let position = 1;
+    if (createQuestionDto.lesson_id) {
+      const lesson = await this.lessonRepository.findById(
+        createQuestionDto.lesson_id,
+      );
+      if (!lesson) {
+        throw new NotFoundException(
+          `Lesson with ID ${createQuestionDto.lesson_id} not found`,
+        );
+      }
+      model.lesson = LessonMapper.toPersistence(lesson);
+      const currentActiveQuestionsCount =
+        await this.questionRepository.countActiveQuestionsByLessonId(
+          createQuestionDto.lesson_id,
+        );
+      position = currentActiveQuestionsCount + 1;
+      model.position = position;
+    }
+
+    if (createQuestionDto.practice_id) {
+      const practice = await this.practiceExerciseRepository.findById(
+        createQuestionDto.practice_id,
+      );
+      if (!practice) {
+        throw new NotFoundException(
+          `Practice with ID ${createQuestionDto.practice_id} not found`,
+        );
+      }
+      model.practice = PracticeExerciseMapper.toPersistence(practice);
+      const currentActiveQuestionsCount =
+        await this.questionRepository.countActiveQuestionsByPracticeId(
+          createQuestionDto.practice_id,
+        );
+      position = currentActiveQuestionsCount + 1;
+      model.position = position;
+    }
+
     model.status = StatusEnum.ACTIVE;
+
     if (fileQuestion) {
       const uploadedFile = await this.filesLocalService.create(fileQuestion);
       model.file = uploadedFile.file;
     }
-    const currentActiveQuestionsCount =
-      await this.questionRepository.countActiveQuestionsByLessonId(lessonId);
-    model.position = currentActiveQuestionsCount + 1;
+
     const savedQuestion = await this.questionRepository.create(model);
 
+    //Thêm vào bảng user_question: xác định ai là người thêm question
+    const userQuestion = UserQuestionMapper.toModel({
+      user_id: Number(userId),
+      question_id: savedQuestion.id,
+      status: StatusEnum.ACTIVE,
+    });
+    await this.userQuestionRepository.create(userQuestion);
     return savedQuestion;
   }
 
@@ -97,23 +142,31 @@ export class QuestionsService {
         `No question found for question with id "${id}".`,
       );
     }
-    const lessonId = question?.lesson?.id;
-    console.log(question);
-    question.status = StatusEnum.IN_ACTIVE;
-    await this.questionRepository.save(question);
 
-    if (!lessonId) {
-      throw new NotFoundException(
-        `No lesson found containing with id "${id}".`,
-      );
+    if (question.lesson) {
+      await this.updatePositionAfterDeletion(question.lesson.id, "lesson");
+    } else if (question.practice) {
+      await this.updatePositionAfterDeletion(question.practice.id, "practice");
     }
 
-    const remainingQuestions =
-      await this.questionRepository.findActiveQuestionsByLessonId(lessonId);
+    question.status = StatusEnum.IN_ACTIVE;
+    await this.questionRepository.save(question);
+  }
 
-    for (let index = 0; index < remainingQuestions.length; index++) {
-      remainingQuestions[index].position = index + 1;
-      await this.questionRepository.save(remainingQuestions[index]);
+  private async updatePositionAfterDeletion(
+    entityId: string,
+    entityType: "lesson" | "practice",
+  ) {
+    const questions =
+      entityType === "lesson"
+        ? await this.questionRepository.findActiveQuestionsByLessonId(entityId)
+        : await this.questionRepository.findActiveQuestionsByPracticeId(
+            entityId,
+          );
+
+    for (let index = 0; index < questions.length; index++) {
+      questions[index].position = index + 1;
+      await this.questionRepository.save(questions[index]);
     }
   }
 }

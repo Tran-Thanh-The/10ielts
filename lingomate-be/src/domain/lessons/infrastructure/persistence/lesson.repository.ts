@@ -2,6 +2,7 @@ import { DeepPartial } from "@/utils/types/deep-partial.type";
 import { NullableType } from "@/utils/types/nullable.type";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { Lesson } from "../../domain/lesson";
+import { StatusEnum } from "@/common/enums/status.enum";
 
 export abstract class LessonRepository {
   abstract create(
@@ -24,7 +25,13 @@ export abstract class LessonRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<Lesson[]>;
 
-  abstract getLessonDetail(id: Lesson["id"]): Promise<NullableType<Lesson>>;
+  abstract getLessonDetail(
+    id: Lesson["id"],
+    paginationOptions: IPaginationOptions & {
+      order: "ASC" | "DESC";
+      status?: StatusEnum;
+    },
+  ): Promise<NullableType<Lesson>>;
 
   abstract findById(id: Lesson["id"]): Promise<NullableType<Lesson>>;
   abstract findByQuestionId(questionId: string): Promise<NullableType<Lesson>>;

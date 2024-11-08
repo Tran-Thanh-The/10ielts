@@ -49,8 +49,8 @@ export class UserQuestionEntity extends EntityRelationalHelper {
   @ApiProperty({
     type: String,
   })
-  @Column({ type: String })
-  answerPick: string;
+  @Column({ type: String, nullable: true })
+  answerPick?: string | null;
 
   @ApiProperty()
   @CreateDateColumn()

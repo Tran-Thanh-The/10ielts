@@ -59,10 +59,31 @@ export class QuestionRelationalRepository implements QuestionRepository {
     });
   }
 
+  async countActiveQuestionsByPracticeId(practiceId: string): Promise<number> {
+    return this.questionRepository.count({
+      where: {
+        practice: { id: practiceId },
+        status: StatusEnum.ACTIVE,
+      },
+    });
+  }
+
   async findActiveQuestionsByLessonId(lessonId: string): Promise<Question[]> {
     return this.questionRepository.find({
       where: {
         lesson: { id: lessonId },
+        status: StatusEnum.ACTIVE,
+      },
+      relations: ["lesson"],
+    });
+  }
+
+  async findActiveQuestionsByPracticeId(
+    practiceId: string,
+  ): Promise<Question[]> {
+    return this.questionRepository.find({
+      where: {
+        practice: { id: practiceId },
         status: StatusEnum.ACTIVE,
       },
       relations: ["lesson"],

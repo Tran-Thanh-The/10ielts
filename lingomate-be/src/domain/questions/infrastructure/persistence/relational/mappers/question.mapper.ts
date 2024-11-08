@@ -1,13 +1,11 @@
 import { AnswerMapper } from "@/domain/answers/infrastructure/persistence/relational/mappers/answer.mapper";
-import { LessonResponseDto } from "@/domain/lessons/dto/response-lesson.dto";
+import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { CreateQuestionDto } from "@/domain/questions/dto/create-question.dto";
 import { QuestionResponseDto } from "@/domain/questions/dto/response-question.dto";
 import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 import { Question } from "../../../../domain/question";
 import { QuestionEntity } from "../entities/question.entity";
-import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
-import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
-import { PracticeResponseDto } from "@/domain/practice-exercises/dto/response-practice-exercise.dto";
 
 export class QuestionMapper {
   static toDomain(raw: QuestionEntity): Question {
@@ -104,12 +102,11 @@ export class QuestionMapper {
     dto.updatedAt = model.updatedAt;
 
     if (model.lesson) {
-      dto.lesson = new LessonResponseDto();
-      Object.assign(dto.lesson, model.lesson);
+      dto.lesson_id = model.lesson.id;
     }
+
     if (model.practice) {
-      dto.practice = new PracticeResponseDto();
-      Object.assign(dto.practice, model.practice);
+      dto.practice_id = model.practice.id;
     }
 
     dto.answers =

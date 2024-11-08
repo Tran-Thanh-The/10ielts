@@ -4,7 +4,7 @@ import { AnswerHistoryEntity } from "@/domain/answer-histories/infrastructure/pe
 import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   Column,
   CreateDateColumn,
@@ -54,13 +54,18 @@ export class PracticeExerciseEntity extends EntityRelationalHelper {
   @Column({ type: String, nullable: true })
   description: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: Number,
     description: "Price of the course in dollars, allowing decimal values",
     example: 49.99,
   })
-  @Column("decimal", { precision: 10, scale: 2 })
-  price: number;
+  @Column({
+    type: "decimal",
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
+  price?: number | null;
 
   @ApiProperty({ type: String })
   @Column({ type: String, nullable: true })

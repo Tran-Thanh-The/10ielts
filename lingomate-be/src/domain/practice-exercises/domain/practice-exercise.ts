@@ -3,7 +3,7 @@ import { StatusEnum } from "@/common/enums/status.enum";
 import { AnswerHistory } from "@/domain/answer-histories/domain/answer-history";
 import { Question } from "@/domain/questions/domain/question";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class PracticeExercise {
   @ApiProperty()
@@ -26,12 +26,12 @@ export class PracticeExercise {
   @ApiProperty({ type: String })
   description: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: Number,
     description: "Price of the course in dollars, allowing decimal values",
     example: 49.99,
   })
-  price: number;
+  price?: number | null;
 
   @ApiProperty({ type: String })
   content: string;

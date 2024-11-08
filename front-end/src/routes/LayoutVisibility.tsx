@@ -10,11 +10,27 @@ const LayoutVisibility: React.FC<LayoutVisibilityProps> = ({ children }) => {
   const location = useLocation();
 
   // @TODO: refactor
-  const hideHeaderPaths: string[] = ['/login', '/register', '/verify-email', '/dashboard'];
-  const hideFooterPaths: string[] = ['/login', '/register', '/verify-email', '/dashboard'];
+  const hideHeaderPaths: string[] = [
+    '/login',
+    '/register',
+    '/verify-email',
+    '/dashboard',
+    '/payment/success',
+  ];
+  const hideFooterPaths: string[] = [
+    '/login',
+    '/register',
+    '/verify-email',
+    '/dashboard',
+    '/payment/success',
+  ];
 
-  const showHeader = !hideHeaderPaths.some((it) => location.pathname.includes(it));
-  const showFooter = !hideFooterPaths.some((it) => location.pathname.includes(it));
+  const showHeader = !hideHeaderPaths.some((it) =>
+    location.pathname.includes(it),
+  );
+  const showFooter = !hideFooterPaths.some((it) =>
+    location.pathname.includes(it),
+  );
 
   return (
     <>

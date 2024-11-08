@@ -11,12 +11,14 @@ import {
   Req,
   NotFoundException,
   InternalServerErrorException,
+  UseInterceptors,
 } from "@nestjs/common";
 import { PracticeExercisesService } from "./practice-exercises.service";
 import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
 import { UpdatePracticeExerciseDto } from "./dto/update-practice-exercise.dto";
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
@@ -33,6 +35,8 @@ import { FindAllPracticeExercisesDto } from "./dto/find-all-practice-exercises.d
 import { RolesGuard } from "../roles/roles.guard";
 import { Roles } from "../roles/roles.decorator";
 import { RoleEnum } from "../roles/roles.enum";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 
 @ApiTags("Practiceexercises")
 @ApiBearerAuth()
@@ -48,16 +52,18 @@ export class PracticeExercisesController {
 
   @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post()
+  @UseInterceptors(FileInterceptor("file", multerConfig))
+  @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: PracticeExercise,
   })
-  create(
+  async create(
     @Body() createPracticeExerciseDto: CreatePracticeExerciseDto,
     @Req() req,
   ) {
     try {
       const userId = req.user.id;
-      return this.practiceExercisesService.create(
+      return await this.practiceExercisesService.create(
         userId,
         createPracticeExerciseDto,
       );

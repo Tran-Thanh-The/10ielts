@@ -1,7 +1,7 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class UserQuestion {
   @ApiProperty({
@@ -24,10 +24,10 @@ export class UserQuestion {
   })
   status: StatusEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: String,
   })
-  answerPick: string;
+  answerPick?: string | null;
 
   @ApiProperty()
   createdAt: Date;

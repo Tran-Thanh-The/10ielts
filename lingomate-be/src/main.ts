@@ -12,7 +12,6 @@ import { AppModule } from "./app.module";
 import validationOptions from "./utils/validation-options";
 import { AllConfigType } from "./config/config.type";
 import { ResolvePromisesInterceptor } from "./utils/serializer.interceptor";
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({

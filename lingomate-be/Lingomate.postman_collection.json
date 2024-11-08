@@ -886,7 +886,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODQsImlhdCI6MTczMTA5MDgxMSwiZXhwIjoxNzMxMDkyNjExfQ.NvXuVUS5TEVUU-HgKZZiqQcM2UqRUjLqcf_O_TGxMuU",
 									"type": "string"
 								}
 							]
@@ -894,7 +894,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/5fbe6012-aac9-45b4-89eb-f7a75b1e9d24/detail",
+							"raw": "{{HOST}}/api/v1/lessons/5fbe6012-aac9-45b4-89eb-f7a75b1e9d24/detail?page=1&limit=10&order=DESC&status=ACTIVE",
 							"host": [
 								"{{HOST}}"
 							],
@@ -904,6 +904,24 @@
 								"lessons",
 								"5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
 								"detail"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "order",
+									"value": "DESC"
+								},
+								{
+									"key": "status",
+									"value": "ACTIVE"
+								}
 							]
 						}
 					},
@@ -1041,7 +1059,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzUsImlhdCI6MTczMTA0Nzg2NSwiZXhwIjoxNzMxMDQ5NjY1fQ.D7W6qCnZkgbJcFEMwNCCJWRhLlowm-OrIDmXbWIBSIQ",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODMsImlhdCI6MTczMTA4ODY0NywiZXhwIjoxNzMxMDkwNDQ3fQ.RBbS7gRjbAiI-GjsZKrtXkpQDl-OJXO6MGxvBxQGUb4",
 									"type": "string"
 								}
 							]
@@ -1054,11 +1072,11 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Program Files/Oracle/VirtualBox/doc/UserManual.pdf"
+									"src": "postman-cloud:///1ef91c79-fcfc-4d50-9440-29516ab65eee"
 								},
 								{
 									"key": "title",
-									"value": "Câu hỏi 4",
+									"value": "Câu hỏi 1",
 									"type": "text"
 								},
 								{
@@ -1100,19 +1118,29 @@
 									"value": "2d2e6a02-0acd-4c1d-add4-187e2c279ab8",
 									"type": "text",
 									"disabled": true
+								},
+								{
+									"key": "practiceId",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "lesson_id",
+									"value": "5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
+									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/questions/5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
+							"raw": "{{HOST}}/api/v1/questions",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"questions",
-								"5fbe6012-aac9-45b4-89eb-f7a75b1e9d24"
+								"questions"
 							]
 						}
 					},
@@ -1195,7 +1223,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODMsImlhdCI6MTczMTA4ODY0NywiZXhwIjoxNzMxMDkwNDQ3fQ.RBbS7gRjbAiI-GjsZKrtXkpQDl-OJXO6MGxvBxQGUb4",
 									"type": "string"
 								}
 							]
@@ -1203,7 +1231,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/questions/fede1e0a-0d9b-4c4e-bf9b-3955c4d89695",
+							"raw": "{{HOST}}/api/v1/questions/158dc9fc-3e97-4ba1-a93e-5f19f3a5f2fd",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1211,7 +1239,7 @@
 								"api",
 								"v1",
 								"questions",
-								"fede1e0a-0d9b-4c4e-bf9b-3955c4d89695"
+								"158dc9fc-3e97-4ba1-a93e-5f19f3a5f2fd"
 							]
 						}
 					},
@@ -1427,7 +1455,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"test@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"fullName\": \"Vũ Hoàng Tiến\",\r\n    \"dob\": \"2002/21/12\",\r\n    \"role\": {\r\n    \"id\": 1,\r\n    \"name\": \"admin\"\r\n  }\r\n}",
+							"raw": "{\r\n    \"email\": \"test2@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"fullName\": \"Vũ Hoàng Tiến\",\r\n    \"dob\": \"2002/12/21\",\r\n    \"role\": {\r\n    \"id\": 1\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1490,8 +1518,30 @@
 				{
 					"name": "find one",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/users/28",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"28"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1564,6 +1614,65 @@
 								"users",
 								"28"
 							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "practice-exercise",
+			"item": [
+				{
+					"name": "create-practice",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "find one",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODUsImlhdCI6MTczMTA5MzAzNCwiZXhwIjoxNzMxMDk0ODM0fQ.XMbu_Fiwh_okar5sYjTISjgT-gWL_EnBwzWlgjAPlqY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
 						}
 					},
 					"response": []

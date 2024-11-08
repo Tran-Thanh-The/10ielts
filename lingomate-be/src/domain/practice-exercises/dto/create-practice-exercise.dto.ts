@@ -1,20 +1,13 @@
 import { DifficultyEnum, PracticeTypeEnum } from "@/common/enums/practice.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreatePracticeExerciseDto {
   // Don't forget to use the class-validator decorators in the DTO properties.
   @ApiProperty({
     type: () => Number,
   })
-  @IsNotEmpty()
   user_id: number;
 
   @ApiProperty({ type: String })
@@ -32,9 +25,9 @@ export class CreatePracticeExerciseDto {
   @IsOptional()
   content: string;
 
-  @ApiProperty({ type: Number })
-  @IsNumber()
-  price: number;
+  @ApiPropertyOptional({ type: Number })
+  @IsOptional()
+  price?: number | null;
 
   @ApiProperty({
     enum: PracticeTypeEnum,

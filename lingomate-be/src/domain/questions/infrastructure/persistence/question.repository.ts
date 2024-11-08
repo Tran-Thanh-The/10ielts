@@ -16,7 +16,13 @@ export abstract class QuestionRepository {
 
   abstract findById(id: Question["id"]): Promise<NullableType<Question>>;
   abstract countActiveQuestionsByLessonId(lessonId: string): Promise<number>;
+  abstract countActiveQuestionsByPracticeId(
+    practiceId: string,
+  ): Promise<number>;
   abstract findActiveQuestionsByLessonId(lessonId: string): Promise<Question[]>;
+  abstract findActiveQuestionsByPracticeId(
+    practiceId: string,
+  ): Promise<Question[]>;
   abstract update(
     id: Question["id"],
     payload: DeepPartial<Question>,

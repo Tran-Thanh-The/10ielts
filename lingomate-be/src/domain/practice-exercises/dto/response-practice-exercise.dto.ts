@@ -32,13 +32,14 @@ export class PracticeResponseDto {
   @IsOptional()
   content?: string | null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: Number,
     description: "Price of the course in dollars, allowing decimal values",
     example: 49.99,
   })
   @IsNumber()
-  price: number;
+  @IsOptional()
+  price?: number | null;
 
   @ApiProperty({
     enum: PracticeTypeEnum,

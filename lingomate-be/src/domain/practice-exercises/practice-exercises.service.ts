@@ -17,18 +17,21 @@ export class PracticeExercisesService {
     createPracticeExerciseDto: CreatePracticeExerciseDto,
   ) {
     createPracticeExerciseDto.user_id = Number(userId);
+    if (!createPracticeExerciseDto.price) {
+      createPracticeExerciseDto.price = 0;
+    }
     const model = PracticeExerciseMapper.toModel(createPracticeExerciseDto);
     const savedPracticeExercise =
       await this.practiceExerciseRepository.create(model);
     return savedPracticeExercise;
   }
 
-  findAllWithPagination({
+  async findAllWithPagination({
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
   }) {
-    return this.practiceExerciseRepository.findAllWithPagination({
+    return await this.practiceExerciseRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,

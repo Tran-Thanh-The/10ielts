@@ -1059,7 +1059,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODMsImlhdCI6MTczMTA4ODY0NywiZXhwIjoxNzMxMDkwNDQ3fQ.RBbS7gRjbAiI-GjsZKrtXkpQDl-OJXO6MGxvBxQGUb4",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODUsImlhdCI6MTczMTA5MzAzNCwiZXhwIjoxNzMxMDk0ODM0fQ.XMbu_Fiwh_okar5sYjTISjgT-gWL_EnBwzWlgjAPlqY",
 									"type": "string"
 								}
 							]
@@ -1129,6 +1129,12 @@
 									"key": "lesson_id",
 									"value": "5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
 									"type": "text"
+								},
+								{
+									"key": "practice_id",
+									"value": "11ca653b-d7ec-4ecc-a103-c2128e1a41d4",
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
@@ -1547,21 +1553,33 @@
 				},
 				{
 					"name": "find all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODAsImlhdCI6MTczMTA4MjI5OSwiZXhwIjoxNzMxMDg0MDk5fQ.UBIk4Q1ztIJ-rC_Rd9qLo_gGaSgVNdfcClaLeywy0-k",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/users?page=1&&limit=10",
+							"raw": "{{HOST}}/api/v1/users?page=1&limit=10&filters={\"roles\":[{\"id\":1},{\"id\":2}]}&sort=[{\"orderBy\":\"fullName\",\"order\":\"ASC\"}]",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1576,12 +1594,16 @@
 									"value": "1"
 								},
 								{
-									"key": null,
-									"value": null
-								},
-								{
 									"key": "limit",
 									"value": "10"
+								},
+								{
+									"key": "filters",
+									"value": "{\"roles\":[{\"id\":1},{\"id\":2}]}"
+								},
+								{
+									"key": "sort",
+									"value": "[{\"orderBy\":\"fullName\",\"order\":\"ASC\"}]"
 								}
 							]
 						}
@@ -1651,8 +1673,73 @@
 				{
 					"name": "create-practice",
 					"request": {
-						"method": "GET",
-						"header": []
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODUsImlhdCI6MTczMTA5MzAzNCwiZXhwIjoxNzMxMDk0ODM0fQ.XMbu_Fiwh_okar5sYjTISjgT-gWL_EnBwzWlgjAPlqY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Bài thực hành 1",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "content",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "price",
+									"value": "100",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "practiceType",
+									"value": "READING",
+									"type": "text"
+								},
+								{
+									"key": "difficulty",
+									"value": "EASY",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/practice-exercises",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"practice-exercises"
+							]
+						}
 					},
 					"response": []
 				},

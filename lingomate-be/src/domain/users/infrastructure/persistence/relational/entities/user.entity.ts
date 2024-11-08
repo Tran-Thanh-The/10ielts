@@ -12,8 +12,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { FileEntity } from "../../../../../../files/infrastructure/persistence/relational/entities/file.entity";
-import { RoleEntity } from "../../../../../roles/infrastructure/persistence/relational/entities/role.entity";
 
 import { AuthProvidersEnum } from "@/domain/auth/auth-providers.enum";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
@@ -28,6 +26,9 @@ import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persisten
 import { UserQuestionEntity } from "@/domain/user-questions/infrastructure/persistence/relational/entities/user-question.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
+import { InvoiceEntity } from "@/domain/invoices/infrastructure/persistence/relational/entities/invoice.entity";
+import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
+import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
 
 @Entity({
   name: "user",
@@ -133,7 +134,7 @@ export class UserEntity extends EntityRelationalHelper {
   deletedAt: Date;
 
   @OneToMany(() => UserInvoicesEntity, (userInvoice) => userInvoice.user)
-  userInvoice: UserInvoicesEntity[];
+  invoices: InvoiceEntity[];
 
   @OneToMany(() => UserQuestionEntity, (userQuestion) => userQuestion.user)
   userQuestion: UserQuestionEntity[];

@@ -6,6 +6,8 @@ import { CoursesModule } from "@/domain/courses/courses.module";
 import { UserCoursesModule } from "@/domain/user-courses/user-courses.module";
 import { UserInvoicesModule } from "@/domain/user-invoices/user-invoices.module";
 import { CourseInvoicesModule } from "@/domain/course-invoices/course-invoices.module";
+import { InvoiceProductsModule } from "@/domain/invoice-products/invoice-products.module";
+import { PracticeExercisesModule } from "@/domain/practice-exercises/practice-exercises.module";
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { CourseInvoicesModule } from "@/domain/course-invoices/course-invoices.m
     CourseInvoicesModule,
     UserCoursesModule,
     UserInvoicesModule,
+    InvoiceProductsModule,
+    PracticeExercisesModule,
   ],
   controllers: [PaymentController],
   providers: [PaymentService],

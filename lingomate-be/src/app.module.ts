@@ -46,9 +46,13 @@ import { CategoriesModule } from "@/domain/categories/categories.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { PayOSModule } from "@/common/payos/payos.module";
 import { PaymentModule } from "@/domain/payment/payment.module";
+import { JwtModule } from "@nestjs/jwt";
+
+import { InvoiceProductsModule } from "@/domain/invoice-products/invoice-products.module";
 
 @Module({
   imports: [
+    InvoiceProductsModule,
     CategoriesModule,
     HttpModule,
     InvoicesModule,
@@ -67,6 +71,9 @@ import { PaymentModule } from "@/domain/payment/payment.module";
     RedisModule,
     PayOSModule,
     PaymentModule,
+    JwtModule.register({
+      global: true,
+    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "client"),
     }),

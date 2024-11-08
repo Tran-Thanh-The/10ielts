@@ -1,8 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class PracticeExercise {
+export class InvoiceProduct {
   @ApiProperty()
-  price: number;
+  courseId: string | null;
+
+  @ApiProperty()
+  practiceId: string | null;
+
+  @ApiProperty()
+  invoiceId: string;
 
   @ApiProperty({
     type: String,

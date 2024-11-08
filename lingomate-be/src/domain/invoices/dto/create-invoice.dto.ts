@@ -1,6 +1,7 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { ApiProperty } from "@nestjs/swagger";
 import {
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -8,7 +9,17 @@ import {
   IsString, // decorators here
 } from "class-validator";
 
+import {} from // decorators here
+"class-validator";
+
+import {} from // decorators here
+"@nestjs/swagger";
+
 export class CreateInvoiceDto {
+  @ApiProperty()
+  @IsBoolean()
+  paymentStatus: boolean;
+
   @ApiProperty()
   @IsNumber()
   orderCode: number;
@@ -29,7 +40,19 @@ export class CreateInvoiceDto {
 
   @ApiProperty({
     enum: StatusEnum,
+    default: StatusEnum.ACTIVE,
   })
   @IsEnum(StatusEnum)
+  @IsOptional()
   status: StatusEnum;
+
+  @ApiProperty({ type: String })
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @ApiProperty({ type: String })
+  @IsString()
+  @IsNotEmpty()
+  courseId: string;
 }

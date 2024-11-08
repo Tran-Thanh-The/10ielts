@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { PaymentService } from "@/domain/payment/payment.service";
 import {
@@ -9,6 +9,7 @@ import { CreatePaymentDto } from "@/domain/payment/dto/create-payment.dto";
 import { CancelPaymentDto } from "@/domain/payment/dto/cancel-payment.dto";
 import { Public } from "@/utils/decorators/public.decorator";
 import { JwtAuthGuard } from "@/domain/auth/guards/jwt.guard";
+import { Request } from "express";
 
 @ApiTags("Payment")
 @ApiBearerAuth()
@@ -29,8 +30,9 @@ export class PaymentController {
   @Post("/create-embedded-payment")
   async createEmbeddedPayment(
     @Body() body: CreatePaymentDto,
+    @Req() req: Request,
   ): Promise<CheckoutResponseDataType> {
-    return this.paymentService.createEmbeddedPayment(body);
+    return this.paymentService.createEmbeddedPayment(req, body);
   }
 
   @Post("/cancel-payment-link")
@@ -41,5 +43,10 @@ export class PaymentController {
       body.orderId,
       body.cancellationReason,
     );
+  }
+
+  @Get("/webhook-handler")
+  async webhookHandler(@Req() req: Request, @Body() body: any): Promise<any> {
+    return await "Webhook handler";
   }
 }

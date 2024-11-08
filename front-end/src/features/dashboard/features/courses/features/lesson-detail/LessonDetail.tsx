@@ -1,18 +1,20 @@
-import React from 'react';
+import CreateUpdateLesson from '@/features/dashboard/features/courses/components/create-update-lesson/CreateUpdateLesson';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import {
+  Collapse,
+  Divider,
   Grid,
-  Typography,
   List,
   ListItem,
-  ListItemText,
-  Divider,
-  Collapse,
   ListItemButton,
+  ListItemText,
+  Typography
 } from '@mui/material';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import LessonVideo from './components/lesson-video/LessonVideo';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LessonDetail = () => {
+  const navigate = useNavigate();
   // State quản lý trạng thái mở/đóng của từng section
   const [openSection, setOpenSection] = React.useState([
     true,
@@ -56,7 +58,6 @@ const LessonDetail = () => {
 
   return (
     <Grid container sx={{ height: '100vh' }}>
-      {/* Left Side: Video */}
       <Grid
         item
         xs={12}
@@ -64,19 +65,11 @@ const LessonDetail = () => {
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
+          width: '100%',
         }}
       >
-        <Grid
-          item
-          sx={{
-            width: { xs: '100%', sm: '80%', md: '75%' },
-            maxWidth: '960px',
-            aspectRatio: '16/9',
-          }}
-        >
-          <LessonVideo url="https://www.youtube.com/watch?v=Z4IIEnfgEeQ" />
-        </Grid>
+        <CreateUpdateLesson></CreateUpdateLesson>
+        {/* <LessonView></LessonView> */}
       </Grid>
 
       <Grid

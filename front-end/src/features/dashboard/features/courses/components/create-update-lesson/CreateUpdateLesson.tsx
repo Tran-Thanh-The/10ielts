@@ -13,6 +13,7 @@ import {
   Input,
   FormHelperText,
   FormControl,
+  Breadcrumbs,
 } from '@mui/material';
 import { CloudUpload, Clear } from '@mui/icons-material';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
@@ -20,6 +21,8 @@ import FeatureLayout from '@/features/dashboard/layouts/feature-layout/FeatureLa
 import { LessonTypes } from '@/types/enum/LessonType';
 import lessonApi from '@/api/lessonApi';
 import { LessonRequest } from '@/types/interface/Lesson';
+import Breadcrumb from '@/features/dashboard/components/breadcrumb/Breadcrumb';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
 interface LessonApiRequest extends LessonRequest {
   append(name: string, value: string | Blob, fileName?: string): void;
@@ -57,9 +60,9 @@ const validationSchema = Yup.object().shape({
 }) as Yup.ObjectSchema<LessonRequest>;
 
 const lessonTypes = [
-  { label: 'Video', value: LessonTypes.Video },
-  { label: 'Docs', value: LessonTypes.Docs },
-  { label: 'Exercises', value: LessonTypes.Exercise },
+  { label: 'Video bài giảng', value: LessonTypes.Video },
+  { label: 'Tài liệu', value: LessonTypes.Docs },
+  { label: 'Bài tập', value: LessonTypes.Exercise },
 ];
 
 const CreateUpdateLesson = () => {
@@ -129,28 +132,44 @@ const CreateUpdateLesson = () => {
 
   return (
     <FeatureLayout>
-      <FeatureHeader
-        title={isEditMode ? 'Cập nhật bài học' : 'Tạo bài học'}
-        backPath={`/dashboard/courses/${idCourse}`}
-      />
+      <Breadcrumbs aria-label="breadcrumb" sx={{ paddingBottom: '24px' }}>
+        <Breadcrumb
+          component="a"
+          href="#"
+          label="Khóa học"
+          icon={<LibraryBooksIcon fontSize="small" />}
+          onClick={() => navigate('/dashboard/courses')}
+        />
+        <Breadcrumb label={'course?.name'} component="a" href="#" />
+        <Breadcrumb label={'Tạo mới bài học'} component="a" href="#" />
+      </Breadcrumbs>
+
+      <FeatureHeader title={isEditMode ? 'Cập nhật bài học' : 'Tạo bài học'} />
 
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
-        sx={{
-          mt: 4,
-          p: 4,
-          borderRadius: 2,
-          bgcolor: '#f4f6f8',
-          maxWidth: '600px',
-          mx: 'auto',
-          mb: 5,
-          boxShadow: 3,
-        }}
+        sx={{ padding: '24px 0' }}
       >
-        <Typography variant="h5" gutterBottom sx={{ color: '#2E3091', mb: 2 }}>
+        {/* <Typography variant="h5" gutterBottom sx={{ color: '#2E3091', mb: 2 }}>
           {isEditMode ? 'Cập nhật bài học' : 'Thêm bài học mới'}
-        </Typography>
+        </Typography> */}
+
+        <Controller
+          name="title"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              label="Tiêu đề"
+              variant="outlined"
+              fullWidth
+              {...field}
+              error={!!errors.title}
+              helperText={errors.title?.message}
+              sx={{ mb: 3 }}
+            />
+          )}
+        />
 
         <Controller
           name="lessonType"
@@ -180,27 +199,11 @@ const CreateUpdateLesson = () => {
         />
 
         <Controller
-          name="title"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              label="Tiêu đề"
-              variant="outlined"
-              fullWidth
-              {...field}
-              error={!!errors.title}
-              helperText={errors.title?.message}
-              sx={{ mb: 3 }}
-            />
-          )}
-        />
-
-        <Controller
           name="content"
           control={control}
           render={({ field }) => (
             <TextField
-              label="Nội dung"
+              label="Mô tả"
               variant="outlined"
               multiline
               rows={6}
@@ -270,19 +273,7 @@ const CreateUpdateLesson = () => {
           />
         )}
 
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          sx={{
-            bgcolor: '#2E3091',
-            color: '#fff',
-            '&:hover': {
-              bgcolor: '#253494',
-            },
-          }}
-          disabled={isLoading}
-        >
+        <Button type="submit" variant="contained" disabled={isLoading}>
           {isEditMode ? 'Cập nhật bài học' : 'Thêm bài học'}
         </Button>
       </Box>

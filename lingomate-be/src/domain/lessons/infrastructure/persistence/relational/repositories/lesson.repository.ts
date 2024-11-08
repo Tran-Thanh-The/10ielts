@@ -1,13 +1,12 @@
-import { Lesson } from "./../../../../domain/lesson";
+import { NullableType } from "@/utils/types/nullable.type";
+import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { LessonEntity } from "../entities/lesson.entity";
-import { NullableType } from "@/utils/types/nullable.type";
 import { LessonRepository } from "../../lesson.repository";
+import { LessonEntity } from "../entities/lesson.entity";
 import { LessonMapper } from "../mappers/lesson.mapper";
-import { IPaginationOptions } from "@/utils/types/pagination-options";
-import { StatusEnum } from "@/common/enums/status.enum";
+import { Lesson } from "./../../../../domain/lesson";
 
 @Injectable()
 export class LessonRelationalRepository implements LessonRepository {
@@ -24,30 +23,87 @@ export class LessonRelationalRepository implements LessonRepository {
     return LessonMapper.toDomain(newEntity);
   }
 
+  async findAll(): Promise<Lesson[]> {
+    const entities = await this.lessonRepository.find({
+      relations: ["questions", "questions.answers", "file"],
+    });
+    return entities.map((entity) => LessonMapper.toDomain(entity));
+  }
+
   async findAllWithPagination({
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
   }): Promise<Lesson[]> {
+    const { page, limit } = paginationOptions;
     const entities = await this.lessonRepository.find({
-      skip: (paginationOptions.page - 1) * paginationOptions.limit,
-      take: paginationOptions.limit,
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: ["questions", "questions.answers", "file"],
+      order: {
+        createdAt: "DESC",
+      },
     });
 
     return entities.map((entity) => LessonMapper.toDomain(entity));
   }
 
-  async findById(id: Lesson["id"]): Promise<NullableType<Lesson>> {
+  async findAllWithPaginationAndCourseId({
+    courseId,
+    paginationOptions,
+  }: {
+    courseId: string;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Lesson[]> {
+    const { page, limit } = paginationOptions;
+
+    const entities = await this.lessonRepository
+      .createQueryBuilder("lesson")
+      .innerJoinAndSelect(
+        "lesson.lessonCourses",
+        "lessonCourse",
+        "lessonCourse.course.id = :courseId",
+        { courseId },
+      )
+      .leftJoinAndSelect("lesson.file", "file")
+      .leftJoinAndSelect("lesson.questions", "question")
+      .leftJoinAndSelect("question.answers", "answer")
+      .skip((page - 1) * limit)
+      .take(limit)
+      .orderBy("lesson.createdAt", "DESC")
+      .getMany();
+
+    return entities.map((entity) => LessonMapper.toDomain(entity));
+  }
+  async getLessonDetail(id: Lesson["id"]): Promise<NullableType<Lesson>> {
     const entity = await this.lessonRepository.findOne({
       where: { id },
+      relations: ["questions", "questions.answers", "file"],
     });
 
     return entity ? LessonMapper.toDomain(entity) : null;
   }
 
+  async findById(id: Lesson["id"]): Promise<NullableType<Lesson>> {
+    const entity = await this.lessonRepository.findOne({
+      where: { id },
+      relations: ["questions", "questions.answers"],
+    });
+
+    return entity ? LessonMapper.toDomain(entity) : null;
+  }
+
+  async findByQuestionId(questionId: string): Promise<NullableType<Lesson>> {
+    return await this.lessonRepository
+      .createQueryBuilder("lesson")
+      .leftJoinAndSelect("lesson.questions", "question")
+      .where("question.id = :questionId", { questionId })
+      .getOne();
+  }
+
   async findByTitle(title: Lesson["title"]): Promise<NullableType<Lesson>> {
     const entity = await this.lessonRepository.findOne({
-      where: { title, status: StatusEnum.ACTIVE },
+      where: { title },
     });
 
     return entity ? LessonMapper.toDomain(entity) : null;
@@ -77,6 +133,7 @@ export class LessonRelationalRepository implements LessonRepository {
   async remove(id: Lesson["id"]): Promise<void> {
     await this.lessonRepository.delete(id);
   }
+
   async save(lesson: Lesson): Promise<void> {
     if (!lesson || !lesson.id) {
       throw new NotFoundException("Lesson not found");

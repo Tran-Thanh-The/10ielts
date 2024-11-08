@@ -1,17 +1,24 @@
-import { QuestionTypesEnum } from "@/common/enums/question.enum";
+import {
+  QuestionFileTypesEnum,
+  QuestionTypesEnum,
+} from "@/common/enums/question.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
 import { AnswerEntity } from "@/domain/answers/infrastructure/persistence/relational/entities/answer.entity";
 import { CategoryEntity } from "@/domain/categories/infrastructure/persistence/relational/entities/category.entity";
-import { QuestionLessonEntity } from "@/domain/question-lessons/infrastructure/persistence/relational/entities/question-lesson.entity";
+import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { UserQuestionEntity } from "@/domain/user-questions/infrastructure/persistence/relational/entities/user-question.entity";
+import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 import { ApiProperty } from "@nestjs/swagger";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -29,15 +36,28 @@ export class QuestionEntity extends EntityRelationalHelper {
   title: string;
 
   @ApiProperty({ type: String })
-  @Column({ type: String })
-  description?: string | null;
+  @Column({ type: String, nullable: true })
+  content?: string | null;
 
   @ApiProperty({ type: String })
-  @Column({ type: String })
-  audioUrl?: string | null;
+  @Column({ type: String, nullable: true })
+  explain?: string | null;
 
   @ApiProperty({ type: Number })
-  @Column({ type: Number })
+  @Column({ type: Number, nullable: true })
+  position?: number | null;
+
+  @ApiProperty({
+    type: () => FileEntity,
+  })
+  @OneToOne(() => FileEntity, {
+    eager: true,
+  })
+  @JoinColumn()
+  file?: FileEntity | null;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: Number, nullable: true })
   time?: number | null;
 
   @ApiProperty({
@@ -50,22 +70,33 @@ export class QuestionEntity extends EntityRelationalHelper {
   questionType: QuestionTypesEnum;
 
   @ApiProperty({
+    enum: QuestionFileTypesEnum,
+  })
+  @Column({
+    type: "enum",
+    enum: QuestionFileTypesEnum,
+  })
+  fileType: QuestionFileTypesEnum;
+
+  @ApiProperty({
     enum: StatusEnum,
   })
   @Column({
     type: "enum",
     enum: StatusEnum,
-    default: StatusEnum.ACTIVE,
+    default: StatusEnum.IN_ACTIVE,
   })
   status: StatusEnum;
 
-  @OneToMany(
-    () => QuestionLessonEntity,
-    (questionLesson) => questionLesson.question,
-    { cascade: true },
-  )
-  questionLesson: QuestionLessonEntity[];
+  @ApiProperty({
+    type: () => LessonEntity,
+  })
+  @ManyToOne(() => LessonEntity, (lesson) => lesson.questions)
+  lesson?: LessonEntity | null;
 
+  @ApiProperty({
+    type: () => UserQuestionEntity,
+  })
   @OneToMany(
     () => UserQuestionEntity,
     (userQuestion) => userQuestion.question,
@@ -73,8 +104,17 @@ export class QuestionEntity extends EntityRelationalHelper {
   )
   userQuestion: UserQuestionEntity[];
 
+  @ApiProperty({
+    type: () => AnswerEntity,
+  })
   @OneToMany(() => AnswerEntity, (answer) => answer.question, { cascade: true })
-  answer: AnswerEntity[];
+  answers: AnswerEntity[];
+
+  @ApiProperty({
+    type: () => PracticeExerciseEntity,
+  })
+  @ManyToOne(() => PracticeExerciseEntity)
+  practice?: PracticeExerciseEntity | null;
 
   @ApiProperty({
     type: () => CategoryEntity,

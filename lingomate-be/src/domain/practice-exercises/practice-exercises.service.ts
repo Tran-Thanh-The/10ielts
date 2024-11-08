@@ -1,9 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
 import { UpdatePracticeExerciseDto } from "./dto/update-practice-exercise.dto";
 import { PracticeExerciseRepository } from "./infrastructure/persistence/practice-exercise.repository";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { PracticeExercise } from "./domain/practice-exercise";
+import { PracticeExerciseMapper } from "./infrastructure/persistence/relational/mappers/practice-exercise.mapper";
 
 @Injectable()
 export class PracticeExercisesService {
@@ -11,8 +12,15 @@ export class PracticeExercisesService {
     private readonly practiceExerciseRepository: PracticeExerciseRepository,
   ) {}
 
-  create(createPracticeExerciseDto: CreatePracticeExerciseDto) {
-    return this.practiceExerciseRepository.create(createPracticeExerciseDto);
+  async create(
+    userId: string,
+    createPracticeExerciseDto: CreatePracticeExerciseDto,
+  ) {
+    createPracticeExerciseDto.user_id = Number(userId);
+    const model = PracticeExerciseMapper.toModel(createPracticeExerciseDto);
+    const savedPracticeExercise =
+      await this.practiceExerciseRepository.create(model);
+    return savedPracticeExercise;
   }
 
   findAllWithPagination({
@@ -32,10 +40,14 @@ export class PracticeExercisesService {
     return this.practiceExerciseRepository.findById(id);
   }
 
-  update(
+  async update(
     id: PracticeExercise["id"],
     updatePracticeExerciseDto: UpdatePracticeExerciseDto,
   ) {
+    const existingPractice = await this.practiceExerciseRepository.findById(id);
+    if (!existingPractice) {
+      throw new NotFoundException(`Practice with id "${id}" not found.`);
+    }
     return this.practiceExerciseRepository.update(
       id,
       updatePracticeExerciseDto,

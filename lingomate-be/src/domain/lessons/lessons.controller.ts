@@ -11,12 +11,16 @@ import {
   ConflictException,
   InternalServerErrorException,
   NotFoundException,
+  UseInterceptors,
+  UploadedFile,
+  Req,
 } from "@nestjs/common";
 import { LessonsService } from "./lessons.service";
 import { CreateLessonDto } from "./dto/create-lesson.dto";
 import { UpdateLessonDto } from "./dto/update-lesson.dto";
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
@@ -33,6 +37,8 @@ import { FindAllLessonsDto } from "./dto/find-all-lessons.dto";
 import { RolesGuard } from "../roles/roles.guard";
 import { RoleEnum } from "../roles/roles.enum";
 import { Roles } from "../roles/roles.decorator";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 
 @ApiTags("Lessons")
 @ApiBearerAuth()
@@ -46,15 +52,25 @@ export class LessonsController {
 
   @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post(":courseId")
+  @UseInterceptors(FileInterceptor("file", multerConfig))
+  @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: Lesson,
   })
   async create(
     @Param("courseId") courseId: string,
     @Body() createLessonDto: CreateLessonDto,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req,
   ) {
     try {
-      return await this.lessonsService.create(courseId, createLessonDto);
+      const userId = req.user.id;
+      return await this.lessonsService.create(
+        userId,
+        courseId,
+        createLessonDto,
+        file,
+      );
     } catch (error) {
       if (error instanceof ConflictException) {
         throw new ConflictException("Conflict title");
@@ -67,6 +83,7 @@ export class LessonsController {
       );
     }
   }
+
   @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
@@ -80,7 +97,6 @@ export class LessonsController {
     if (limit > 50) {
       limit = 50;
     }
-
     return infinityPagination(
       await this.lessonsService.findAllWithPagination({
         paginationOptions: {
@@ -90,6 +106,51 @@ export class LessonsController {
       }),
       { page, limit },
     );
+  }
+
+  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
+  @Get("course/:courseId")
+  @ApiParam({
+    name: "courseId",
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(Lesson),
+  })
+  async findAllByCourse(
+    @Param("courseId") courseId: string,
+    @Query() query: FindAllLessonsDto,
+  ): Promise<InfinityPaginationResponseDto<Lesson>> {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
+    }
+    return infinityPagination(
+      await this.lessonsService.findAllWithPaginationAndCourseId({
+        courseId,
+        paginationOptions: {
+          page,
+          limit,
+        },
+      }),
+      { page, limit },
+    );
+  }
+
+  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
+  @Get(":id/detail")
+  @ApiParam({
+    name: "id",
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({
+    type: Lesson,
+  })
+  async getDetail(@Param("id") id: string) {
+    return this.lessonsService.getLessonDetail(id);
   }
 
   @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
@@ -103,7 +164,7 @@ export class LessonsController {
     type: Lesson,
   })
   findOne(@Param("id") id: string) {
-    return this.lessonsService.findOne(id);
+    return this.lessonsService.findById(id);
   }
 
   @Roles(RoleEnum.admin, RoleEnum.staff)

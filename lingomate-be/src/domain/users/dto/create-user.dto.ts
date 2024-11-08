@@ -51,7 +51,8 @@ export class CreateUserDto {
     enum: StatusEnum,
   })
   @IsEnum(StatusEnum)
-  status: StatusEnum;
+  @IsOptional()
+  status?: StatusEnum;
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()

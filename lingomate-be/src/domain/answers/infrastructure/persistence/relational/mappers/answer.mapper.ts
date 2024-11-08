@@ -1,18 +1,20 @@
 import { CreateAnswerDto } from "@/domain/answers/dto/create-answer.dto";
-import { QuestionRepository } from "@/domain/questions/infrastructure/persistence/question.repository";
-import { QuestionMapper } from "@/domain/questions/infrastructure/persistence/relational/mappers/question.mapper";
+import { AnswerResponseDto } from "@/domain/answers/dto/response-answer.dto";
+import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 import { Answer } from "../../../../domain/answer";
 import { AnswerEntity } from "../entities/answer.entity";
+import { QuestionResponseDto } from "@/domain/questions/dto/response-question.dto";
 
 export class AnswerMapper {
   static toDomain(raw: AnswerEntity): Answer {
     const domainEntity = new Answer();
     domainEntity.id = raw.id;
+    domainEntity.content = raw.content;
     domainEntity.answerType = raw.answerType;
-    domainEntity.answerAudio = raw.answerAudio;
-    domainEntity.answerText = raw.answerText;
+    if (raw.file) {
+      domainEntity.file = FileMapper.toDomain(raw.file);
+    }
     domainEntity.isCorrect = raw.isCorrect;
-    domainEntity.position = raw.position;
     domainEntity.question = raw.question;
     domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
@@ -27,10 +29,13 @@ export class AnswerMapper {
       persistenceEntity.id = domainEntity.id;
     }
     persistenceEntity.answerType = domainEntity.answerType;
-    persistenceEntity.answerAudio = domainEntity.answerAudio;
-    persistenceEntity.answerText = domainEntity.answerText;
+    persistenceEntity.content = domainEntity.content;
+    if (domainEntity.file) {
+      persistenceEntity.file = FileMapper.toPersistence(domainEntity.file);
+    } else {
+      persistenceEntity.file = null;
+    }
     persistenceEntity.isCorrect = domainEntity.isCorrect;
-    persistenceEntity.position = domainEntity.position;
     persistenceEntity.question = domainEntity.question;
     persistenceEntity.status = domainEntity.status;
     persistenceEntity.createdAt = domainEntity.createdAt;
@@ -39,34 +44,31 @@ export class AnswerMapper {
     return persistenceEntity;
   }
 
-  static async toModel(
-    dto: CreateAnswerDto,
-    questionRepository: QuestionRepository,
-  ): Promise<Answer> {
+  static toModel(dto: CreateAnswerDto): Answer {
     const model = new Answer();
+    model.content = dto.content;
     model.answerType = dto.answerType;
-    model.answerAudio = dto.answerAudio;
-    model.answerText = dto.answerText;
     model.isCorrect = dto.isCorrect;
-    model.position = dto.position;
-    model.status = dto.status;
-    if (dto.question) {
-      if (typeof dto.question === "string") {
-        const question = await questionRepository.findById(dto.question);
-        if (question) {
-          model.question = QuestionMapper.toPersistence(question);
-        } else {
-          model.question = null;
-        }
-      } else {
-        // Nếu question là một CreateQuestionDto, tạo một QuestionEntity mới
-        const questionModel = QuestionMapper.toModel(dto.question);
-        model.question = QuestionMapper.toPersistence(questionModel);
-      }
-    } else {
-      model.question = null;
-    }
 
     return model;
+  }
+
+  static toDto(model: Answer): AnswerResponseDto {
+    const dto = new AnswerResponseDto();
+    dto.id = model.id;
+    dto.content = model.content;
+    if (model.file) {
+      dto.file = model.file;
+    }
+    if (model.question) {
+      dto.question = new QuestionResponseDto();
+      Object.assign(dto.question, model.question);
+    }
+    dto.answerType = model.answerType;
+    dto.isCorrect = model.isCorrect;
+    dto.status = model.status;
+    dto.createdAt = model.createdAt;
+    dto.updatedAt = model.updatedAt;
+    return dto;
   }
 }

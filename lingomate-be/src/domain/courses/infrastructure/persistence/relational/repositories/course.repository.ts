@@ -145,7 +145,7 @@ export class CourseRelationalRepository implements CourseRepository {
       .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
       .leftJoinAndSelect("lessonCourse.lesson", "lesson")
       .leftJoinAndSelect(
-        "lesson.userLesson",
+        "lesson.userLessons",
         "userLesson",
         "userLesson.userId = :userId",
         { userId: Number(userId) },

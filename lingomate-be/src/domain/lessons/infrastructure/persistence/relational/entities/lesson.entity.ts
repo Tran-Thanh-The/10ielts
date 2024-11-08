@@ -1,7 +1,8 @@
 import { LessonTypesEnum } from "@/common/enums/lesson.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { AnswerHistoryEntity } from "@/domain/answer-histories/infrastructure/persistence/relational/entities/answer-history.entity";
 import { LessonCourseEntity } from "@/domain/lesson-courses/infrastructure/persistence/relational/entities/lesson-course.entity";
-import { QuestionLessonEntity } from "@/domain/question-lessons/infrastructure/persistence/relational/entities/question-lesson.entity";
+import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
@@ -45,7 +46,7 @@ export class LessonEntity extends EntityRelationalHelper {
     eager: true,
   })
   @JoinColumn()
-  videoUrl?: FileEntity | null;
+  file?: FileEntity | null;
 
   @ApiProperty({
     enum: LessonTypesEnum,
@@ -62,21 +63,19 @@ export class LessonEntity extends EntityRelationalHelper {
   @Column({
     type: "enum",
     enum: StatusEnum,
-    default: StatusEnum.ACTIVE,
+    default: StatusEnum.IN_ACTIVE,
   })
   status: StatusEnum;
 
-  @OneToMany(
-    () => QuestionLessonEntity,
-    (questionLesson) => questionLesson.lesson,
-    { cascade: true },
-  )
-  questionLesson: QuestionLessonEntity[];
+  @OneToMany(() => QuestionEntity, (question) => question.lesson, {
+    cascade: ["insert", "update"],
+  })
+  questions: QuestionEntity[];
 
   @OneToMany(() => UserLessonEntity, (userLesson) => userLesson.lesson, {
     cascade: true,
   })
-  userLesson: UserLessonEntity[];
+  userLessons: UserLessonEntity[];
 
   @OneToMany(
     () => LessonCourseEntity,
@@ -86,6 +85,9 @@ export class LessonEntity extends EntityRelationalHelper {
     },
   )
   lessonCourses: LessonCourseEntity[];
+
+  @OneToMany(() => AnswerHistoryEntity, (answerHistory) => answerHistory.lesson)
+  answerHistories: AnswerHistoryEntity[];
 
   @ApiProperty({ type: Number })
   @Column({
@@ -101,7 +103,7 @@ export class LessonEntity extends EntityRelationalHelper {
   @Column({ type: "int", nullable: true, default: 3 })
   totalStars?: number | null;
 
-  @ApiProperty({ type: Number })
+  @ApiProperty({ type: Boolean })
   @Column({ type: "boolean", nullable: true, default: false })
   isSequence?: boolean | null;
 

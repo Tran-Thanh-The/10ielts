@@ -41,7 +41,6 @@ import redisConfig from "@/common/redis/config/redis.config";
 import { RedisModule } from "@/common/redis/redis.module";
 import { HttpModule } from "@nestjs/axios";
 import { InvoicesModule } from "./domain/invoices/invoices.module";
-
 import { CategoriesModule } from "@/domain/categories/categories.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { PayOSModule } from "@/common/payos/payos.module";
@@ -50,8 +49,11 @@ import { JwtModule } from "@nestjs/jwt";
 
 import { InvoiceProductsModule } from "@/domain/invoice-products/invoice-products.module";
 
+import { AnswerHistoriesModule } from "@/domain/answer-histories/answer-histories.module";
+
 @Module({
   imports: [
+    AnswerHistoriesModule,
     InvoiceProductsModule,
     CategoriesModule,
     HttpModule,

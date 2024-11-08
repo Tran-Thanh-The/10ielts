@@ -2,9 +2,19 @@ import { Module } from "@nestjs/common";
 import { QuestionsService } from "./questions.service";
 import { QuestionsController } from "./questions.controller";
 import { RelationalQuestionPersistenceModule } from "./infrastructure/persistence/relational/relational-persistence.module";
+import { LessonsModule } from "../lessons/lessons.module";
+import { FilesLocalModule } from "@/files/infrastructure/uploader/local/files.module";
+import { CategoriesModule } from "../categories/categories.module";
+import { LessonCoursesModule } from "../lesson-courses/lesson-courses.module";
 
 @Module({
-  imports: [RelationalQuestionPersistenceModule],
+  imports: [
+    RelationalQuestionPersistenceModule,
+    LessonsModule,
+    CategoriesModule,
+    FilesLocalModule,
+    LessonCoursesModule,
+  ],
   controllers: [QuestionsController],
   providers: [QuestionsService],
   exports: [QuestionsService, RelationalQuestionPersistenceModule],

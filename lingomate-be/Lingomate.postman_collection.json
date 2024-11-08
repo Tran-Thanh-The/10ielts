@@ -1,0 +1,1574 @@
+{
+	"info": {
+		"_postman_id": "31a1f4f4-4e5f-4741-ba7f-b8a3419dd035",
+		"name": "Lingomate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27048953",
+		"_collection_link": "https://restless-star-284637.postman.co/workspace/Team-Workspace~f7b00c24-6202-49bd-8c42-3526b8e9896d/collection/27048953-31a1f4f4-4e5f-4741-ba7f-b8a3419dd035?action=share&source=collection_link&creator=27048953"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "token",
+					"item": [
+						{
+							"name": "New Request",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOjE0LCJoYXNoIjoiNmUyNjA3NWI1YzczNjc5YzhmMjQ4ZGVjNjE1ZDI2MjNkMDJlMWY0OGEwMzE2YzZjNTdlMTdiYmJkYzgzYTlmNSIsImlhdCI6MTcyOTc1ODA5NywiZXhwIjoyMDQ1MTE4MDk3fQ.-ib3edKq77l4-IVH98LWSYNJRwqTX_b2YALUqjGkB1Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/auth/refresh",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"refresh"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"admin1@gmail.comm\",\r\n  \"password\": \"password\",\r\n  \"confirmPassword\": \"password\",\r\n  \"fullName\": \"Tien\",\r\n  \"dob\": \"2002-02-10\",\r\n  \"role\": {\r\n    \"id\": 1\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/auth/email/register",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"email",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MSwiaWF0IjoxNzI4NDgzNTI5LCJleHAiOjE3Mjg0ODQ0Mjl9.HhhGTMZoldouJfNzENgs-UAmz6c9dtYc7ibFcuZ5bGM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/users/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"tien226anh@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/auth/email/login",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"email",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "confirm regiseter email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"hash\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25maXJtRW1haWxVc2VySWQiOjMsImlhdCI6MTcyOTk1OTI3NSwiZXhwIjoxNzMwMDQ1Njc1fQ.ZCPNy0MsjZyOATjpcaBm9s6WrAlLBkyDQaBQs6k2OVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/auth/email/confirm",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"email",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forrgot pasword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"vuhtienit@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/forgot/password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"forgot",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get me",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo1LCJpYXQiOjE3MjkwNDQ0NDIsImV4cCI6MTcyOTA0NTM0Mn0.4ex-2fCIzl1JoCXo2Jy29IiEkQlSf0tVtPeXKYBUqsQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo1LCJpYXQiOjE3MjkwNDQ0NDIsImV4cCI6MTcyOTA0NTM0Mn0.4ex-2fCIzl1JoCXo2Jy29IiEkQlSf0tVtPeXKYBUqsQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "course",
+			"item": [
+				{
+					"name": "create course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NTUsImlhdCI6MTcyOTk2MjkzNCwiZXhwIjoxNzI5OTY0NzM0fQ.FmzTrSbZPxmRiU11d3suElCiIUMqoN-RhhwmHI-hS84",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/OneDrive/Pictures/Background/7f151bc26ead8d7e458bb7688d36fd82.jpg"
+								},
+								{
+									"key": "name",
+									"value": "English 5",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Course 5",
+									"type": "text"
+								},
+								{
+									"key": "category_id",
+									"value": "2d2e6a02-0acd-4c1d-add4-187e2c279ab8",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "200000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/courses/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"courses",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllcourse",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MiwiaWF0IjoxNzMwMDgxODAwLCJleHAiOjE3MzAwODM2MDB9.U6_MizKOcPS7osXc6x-3DUSzJGfGiNC1Qwcd_7246ZQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/courses/list?status=ACTIVE&userId=3",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"courses",
+								"list"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "ACTIVE"
+								},
+								{
+									"key": "invoiceId",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "name:DESC",
+									"disabled": true
+								},
+								{
+									"key": "orderBy",
+									"value": "createdAt:ASC",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "u",
+									"disabled": true
+								},
+								{
+									"key": "isMyCourse",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "userId",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findOne",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MzMsImlhdCI6MTcyOTYxMTU2NSwiZXhwIjoxNzI5NjEzMzY1fQ.7lExQse9gFUh4NP4yVc7uTZBaAu7w7e1f9qp-9lWXeA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/courses/4cbaef6c-3508-4fa4-aabd-e4ca86bf248d",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"courses",
+								"4cbaef6c-3508-4fa4-aabd-e4ca86bf248d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetDetails",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MiwiaWF0IjoxNzMwMDgxODAwLCJleHAiOjE3MzAwODM2MDB9.U6_MizKOcPS7osXc6x-3DUSzJGfGiNC1Qwcd_7246ZQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/courses/dfdfc103-b252-412f-8c17-d57eaa1e7315/details",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"courses",
+								"dfdfc103-b252-412f-8c17-d57eaa1e7315",
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NTUsImlhdCI6MTcyOTk2MjkzNCwiZXhwIjoxNzI5OTY0NzM0fQ.FmzTrSbZPxmRiU11d3suElCiIUMqoN-RhhwmHI-hS84",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/courses/744c8eec-e38c-4cbf-a043-1a9b779f844c",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"courses",
+								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTEsImlhdCI6MTcyOTI0NTQzNSwiZXhwIjoxNzI5MjQ3MjM1fQ.zH_a45UILktmlZQqNGXVYnuTy-3G6quHSW9DvnxTA18",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/courses/4ed7ce2b-449a-4976-9297-b9be7621a2d4",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"courses",
+								"4ed7ce2b-449a-4976-9297-b9be7621a2d4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find course by",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTMsImlhdCI6MTcyOTI2MzIyMywiZXhwIjoxNzI5MjY1MDIzfQ.rnRfKDqyT36yFS9QyuWzHBiYEZj9fDnVVqqd0euW1o0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/courses/list?userId=2&invoiceId=5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"courses",
+								"list"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "2"
+								},
+								{
+									"key": "invoiceId",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category",
+			"item": [
+				{
+					"name": "Create category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NywiaWF0IjoxNzI5NzUyMDExLCJleHAiOjE3Mjk3NTM4MTF9.gc77fOxIS79gBA29RZglRwG-k83Ycwd6kXhTLB5u3Fg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Math\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/categories/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "lesson",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Program Files/Oracle/VirtualBox/doc/UserManual.pdf"
+								},
+								{
+									"key": "title",
+									"value": "Lesson 4",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "lessonType",
+									"value": "DOCS",
+									"type": "text"
+								},
+								{
+									"key": "stars",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "totalStars",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "isSequence",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons/744c8eec-e38c-4cbf-a043-1a9b779f844c",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons",
+								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons?page=1&limit=10",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MzMsImlhdCI6MTcyOTYxMTU2NSwiZXhwIjoxNzI5NjEzMzY1fQ.7lExQse9gFUh4NP4yVc7uTZBaAu7w7e1f9qp-9lWXeA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons/7368df02-110e-494e-8801-c7c9091283d5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons",
+								"7368df02-110e-494e-8801-c7c9091283d5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find one",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons/9c8c2ba9-d39a-4c8d-be55-9dae3b706ecc",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons",
+								"9c8c2ba9-d39a-4c8d-be55-9dae3b706ecc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllByCourseId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons/course/744c8eec-e38c-4cbf-a043-1a9b779f844c?page=1&limit=10",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons",
+								"course",
+								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDetails",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons/5fbe6012-aac9-45b4-89eb-f7a75b1e9d24/detail",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons",
+								"5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
+								"detail"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "file",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MjksImlhdCI6MTcyOTc4MTk2MCwiZXhwIjoxNzI5NzgzNzYwfQ.IfR-yHFJsWLNcVaDbjNPxsogrqYO591BMS1ZnPZqQsk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/OneDrive/Pictures/Background/2fae3ee9e687bc0ab83c6301893b782d.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/files/upload",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user-course",
+			"item": [
+				{
+					"name": "create user-course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MSwiaWF0IjoxNzMwMDMyNzc1LCJleHAiOjE3MzAwMzQ1NzV9.mI_kVruOvDDK-6XEwjPney0KU5YsLVThpF1mvqU4Dvo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"course_id\": \"dfdfc103-b252-412f-8c17-d57eaa1e7315\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/user-courses",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user-courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update current-lesson",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MSwiaWF0IjoxNzMwMDMyNzc1LCJleHAiOjE3MzAwMzQ1NzV9.mI_kVruOvDDK-6XEwjPney0KU5YsLVThpF1mvqU4Dvo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/user-courses/a8232e26-97fb-4fb3-8d55-e3f534bb7411/current-lesson",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user-courses",
+								"a8232e26-97fb-4fb3-8d55-e3f534bb7411",
+								"current-lesson"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "question",
+			"item": [
+				{
+					"name": "create-question",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzUsImlhdCI6MTczMTA0Nzg2NSwiZXhwIjoxNzMxMDQ5NjY1fQ.D7W6qCnZkgbJcFEMwNCCJWRhLlowm-OrIDmXbWIBSIQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Program Files/Oracle/VirtualBox/doc/UserManual.pdf"
+								},
+								{
+									"key": "title",
+									"value": "Câu hỏi 4",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "explain",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "position",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "questionType",
+									"value": "CHOICE",
+									"type": "text"
+								},
+								{
+									"key": "fileType",
+									"value": "AUDIO",
+									"type": "text"
+								},
+								{
+									"key": "time",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "category_id",
+									"value": "2d2e6a02-0acd-4c1d-add4-187e2c279ab8",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/questions/5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"5fbe6012-aac9-45b4-89eb-f7a75b1e9d24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/questions?page=1&limit=10",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find one",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/questions/9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/questions/fede1e0a-0d9b-4c4e-bf9b-3955c4d89695",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"fede1e0a-0d9b-4c4e-bf9b-3955c4d89695"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Câu hỏi 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/questions/9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"questions",
+								"9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "answer",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Program Files/Oracle/VirtualBox/doc/UserManual.pdf"
+								},
+								{
+									"key": "content",
+									"value": "Đáp án A",
+									"type": "text"
+								},
+								{
+									"key": "answerType",
+									"value": "CHOICE",
+									"type": "text"
+								},
+								{
+									"key": "isCorrect",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/answers/9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"answers",
+								"9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/answers/519e39dc-7395-412a-9f44-1a1ab5a20ea6",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"answers",
+								"519e39dc-7395-412a-9f44-1a1ab5a20ea6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/answers",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"answers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find one",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/answers/3213c95d-0b30-441a-b862-04585711ac17",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"answers",
+								"3213c95d-0b30-441a-b862-04585711ac17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "create user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"test@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"fullName\": \"Vũ Hoàng Tiến\",\r\n    \"dob\": \"2002/21/12\",\r\n    \"role\": {\r\n    \"id\": 1,\r\n    \"name\": \"admin\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/users",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"role\": {\r\n        \"id\": 2,\r\n        \"name\": \"staff\"\r\n    }\r\n }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/users/28",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"28"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find one",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "find all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/users?page=1&&limit=10",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": null,
+									"value": null
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/users/28",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"28"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

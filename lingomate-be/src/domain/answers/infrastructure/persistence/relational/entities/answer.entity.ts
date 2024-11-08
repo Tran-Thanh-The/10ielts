@@ -2,7 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -11,6 +13,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
 import { AnswerTypesEnum } from "@/common/enums/answer.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 
 @Entity({
   name: "answer",
@@ -19,6 +22,10 @@ export class AnswerEntity extends EntityRelationalHelper {
   @ApiProperty()
   @PrimaryGeneratedColumn("uuid")
   id: string;
+
+  @ApiProperty({ type: String })
+  @Column({ type: String })
+  content?: string | null;
 
   @ApiProperty({
     enum: AnswerTypesEnum,
@@ -29,21 +36,18 @@ export class AnswerEntity extends EntityRelationalHelper {
   })
   answerType: AnswerTypesEnum;
 
-  @ApiProperty({ type: String })
-  @Column({ type: String })
-  answerAudio: string;
-
-  @ApiProperty({ type: String })
-  @Column({ type: String })
-  answerText: string;
+  @ApiProperty({
+    type: () => FileEntity,
+  })
+  @OneToOne(() => FileEntity, {
+    eager: true,
+  })
+  @JoinColumn()
+  file?: FileEntity | null;
 
   @ApiProperty({ type: Boolean })
-  @Column({ type: Boolean })
-  isCorrect: boolean;
-
-  @ApiProperty({ type: Number })
-  @Column({ type: "int", nullable: false })
-  position: number;
+  @Column({ type: "boolean", default: false })
+  isCorrect?: boolean | null;
 
   @ApiProperty({
     type: () => QuestionEntity,
@@ -59,7 +63,7 @@ export class AnswerEntity extends EntityRelationalHelper {
   @Column({
     type: "enum",
     enum: StatusEnum,
-    default: StatusEnum.ACTIVE,
+    default: StatusEnum.IN_ACTIVE,
   })
   status: StatusEnum;
 

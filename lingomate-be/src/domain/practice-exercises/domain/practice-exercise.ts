@@ -1,13 +1,55 @@
+import { DifficultyEnum, PracticeTypeEnum } from "@/common/enums/practice.enum";
+import { StatusEnum } from "@/common/enums/status.enum";
+import { AnswerHistory } from "@/domain/answer-histories/domain/answer-history";
+import { Question } from "@/domain/questions/domain/question";
+import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class PracticeExercise {
   @ApiProperty()
-  price: number;
+  id: string;
 
   @ApiProperty({
-    type: String,
+    type: () => UserEntity,
   })
-  id: string;
+  user: UserEntity;
+
+  @ApiProperty({ type: () => Question })
+  questions?: Question[];
+
+  @ApiProperty({ type: () => AnswerHistory })
+  answerHistory: AnswerHistory[];
+
+  @ApiProperty({ type: String })
+  title: string;
+
+  @ApiProperty({ type: String })
+  description: string;
+
+  @ApiProperty({
+    type: Number,
+    description: "Price of the course in dollars, allowing decimal values",
+    example: 49.99,
+  })
+  price: number;
+
+  @ApiProperty({ type: String })
+  content: string;
+
+  @ApiProperty({
+    enum: PracticeTypeEnum,
+  })
+  practiceType: PracticeTypeEnum;
+
+  @ApiProperty({
+    enum: DifficultyEnum,
+  })
+  difficulty: DifficultyEnum;
+
+  @ApiProperty({
+    enum: StatusEnum,
+  })
+  status: StatusEnum;
 
   @ApiProperty()
   createdAt: Date;

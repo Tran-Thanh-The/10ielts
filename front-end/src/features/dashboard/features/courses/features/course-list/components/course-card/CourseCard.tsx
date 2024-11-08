@@ -28,6 +28,7 @@ interface CourseCardProps {
   isMyCourse: boolean;
   photo: string;
   onDeleted: () => void;
+  onEdit?: (id: string) => void;
 }
 
 const CourseCard = ({
@@ -41,6 +42,7 @@ const CourseCard = ({
   photo,
   isMyCourse,
   onDeleted,
+  onEdit,
 }: CourseCardProps) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -61,7 +63,7 @@ const CourseCard = ({
 
   const handleEdit = (event) => {
     event.stopPropagation();
-    navigate(`/dashboard/courses/update/${id}`);
+    onEdit && onEdit(id);
     handleMenuClose();
   };
 

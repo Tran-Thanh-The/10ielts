@@ -8,12 +8,17 @@ import {
   Delete,
   UseGuards,
   Query,
+  UseInterceptors,
+  UploadedFile,
+  InternalServerErrorException,
+  NotFoundException,
 } from "@nestjs/common";
 import { AnswersService } from "./answers.service";
 import { CreateAnswerDto } from "./dto/create-answer.dto";
 import { UpdateAnswerDto } from "./dto/update-answer.dto";
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
@@ -27,10 +32,15 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllAnswersDto } from "./dto/find-all-answers.dto";
+import { RolesGuard } from "../roles/roles.guard";
+import { RoleEnum } from "../roles/roles.enum";
+import { Roles } from "../roles/roles.decorator";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 
 @ApiTags("Answers")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"))
+@UseGuards(AuthGuard("jwt"), RolesGuard)
 @Controller({
   path: "answers",
   version: "1",
@@ -38,14 +48,35 @@ import { FindAllAnswersDto } from "./dto/find-all-answers.dto";
 export class AnswersController {
   constructor(private readonly answersService: AnswersService) {}
 
-  @Post()
+  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Post(":questionId")
+  @UseInterceptors(FileInterceptor("file", multerConfig))
+  @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: Answer,
   })
-  create(@Body() createAnswerDto: CreateAnswerDto) {
-    return this.answersService.create(createAnswerDto);
+  async create(
+    @Param("questionId") questionId: string,
+    @Body() createAnswerDto: CreateAnswerDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      return await this.answersService.create(
+        questionId,
+        createAnswerDto,
+        file,
+      );
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        "An error occurred while creating the lesson. Please try again later.",
+      );
+    }
   }
 
+  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(Answer),
@@ -70,6 +101,7 @@ export class AnswersController {
     );
   }
 
+  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -83,6 +115,7 @@ export class AnswersController {
     return this.answersService.findOne(id);
   }
 
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -96,6 +129,7 @@ export class AnswersController {
     return this.answersService.update(id, updateAnswerDto);
   }
 
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Delete(":id")
   @ApiParam({
     name: "id",

@@ -186,7 +186,7 @@ export default function CreateCourseModal({
                     src={
                       data?.id
                         ? formData.image
-                        : URL.createObjectURL(formData.image)
+                        : formData.image ?? URL.createObjectURL(formData.image)
                     }
                     alt="Course Preview"
                     style={{

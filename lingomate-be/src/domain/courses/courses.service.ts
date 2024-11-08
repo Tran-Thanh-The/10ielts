@@ -134,7 +134,11 @@ export class CoursesService {
     return course;
   }
 
-  update(id: Course["id"], updateCourseDto: UpdateCourseDto) {
+  async update(id: Course["id"], updateCourseDto: UpdateCourseDto) {
+    const existingCourse = await this.courseRepository.findById(id);
+    if (!existingCourse) {
+      throw new NotFoundException(`Course with id "${id}" not found.`);
+    }
     return this.courseRepository.update(id, updateCourseDto);
   }
 

@@ -1,8 +1,10 @@
 import { CreateLessonDto } from "@/domain/lessons/dto/create-lesson.dto";
+import { QuestionMapper } from "@/domain/questions/infrastructure/persistence/relational/mappers/question.mapper";
 import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 import { Lesson } from "../../../../domain/lesson";
 import { LessonEntity } from "../entities/lesson.entity";
 import { LessonResponseDto } from "./../../../../dto/response-lesson.dto";
+import { AnswerMapper } from "@/domain/answers/infrastructure/persistence/relational/mappers/answer.mapper";
 
 export class LessonMapper {
   static toDomain(raw: LessonEntity): Lesson {
@@ -10,8 +12,8 @@ export class LessonMapper {
     domainEntity.id = raw.id;
     domainEntity.title = raw.title;
     domainEntity.content = raw.content;
-    if (raw.videoUrl) {
-      domainEntity.videoUrl = FileMapper.toDomain(raw.videoUrl);
+    if (raw.file) {
+      domainEntity.file = FileMapper.toDomain(raw.file);
     }
     domainEntity.status = raw.status;
     domainEntity.lessonType = raw.lessonType;
@@ -21,6 +23,24 @@ export class LessonMapper {
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
     domainEntity.deletedAt = raw.deletedAt;
+
+    if (raw.questions) {
+      domainEntity.questions = raw.questions.map((question) => {
+        const questionDomain = QuestionMapper.toDomain(question);
+
+        // Map từng answer trong question và loại bỏ reference đến question trong answer
+        questionDomain.answers = question.answers
+          ? question.answers.map((answer) => {
+              const answerDomain = AnswerMapper.toDomain(answer);
+              // Loại bỏ mối quan hệ ngược để tránh vòng lặp
+              delete answerDomain.question;
+              return answerDomain;
+            })
+          : [];
+
+        return questionDomain;
+      });
+    }
 
     return domainEntity;
   }
@@ -32,12 +52,17 @@ export class LessonMapper {
     }
     persistenceEntity.title = domainEntity.title;
     persistenceEntity.content = domainEntity.content;
-    if (domainEntity.videoUrl) {
-      persistenceEntity.videoUrl = FileMapper.toPersistence(
-        domainEntity.videoUrl,
+    if (domainEntity.file) {
+      persistenceEntity.file = FileMapper.toPersistence(domainEntity.file);
+    } else {
+      persistenceEntity.file = null;
+    }
+    if (domainEntity.questions) {
+      persistenceEntity.questions = domainEntity.questions.map((question) =>
+        QuestionMapper.toPersistence(question),
       );
     } else {
-      persistenceEntity.videoUrl = null;
+      persistenceEntity.questions = [];
     }
     persistenceEntity.lessonType = domainEntity.lessonType;
     persistenceEntity.status = domainEntity.status;
@@ -67,14 +92,25 @@ export class LessonMapper {
     dto.id = model.id;
     dto.title = model.title;
     dto.content = model.content;
-    if (model.videoUrl) {
-      dto.videoUrl = model.videoUrl;
+    if (model.file) {
+      dto.file = model.file;
     }
     dto.lessonType = model.lessonType;
     dto.stars = model.stars;
     dto.totalStars = model.totalStars;
     dto.isSequence = model.isSequence;
     dto.status = model.status;
+    dto.createdAt = model.createdAt;
+    dto.updatedAt = model.updatedAt;
+    dto.questions = model.questions
+      ? model.questions.map((question) => {
+          const questionDto = QuestionMapper.toDto(question);
+          questionDto.answers = question.answers
+            ? question.answers.map((answer) => AnswerMapper.toDto(answer))
+            : [];
+          return questionDto;
+        })
+      : [];
     return dto;
   }
 }

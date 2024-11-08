@@ -11,6 +11,7 @@ import Chat from '@/features/dashboard/features/chat/Chat';
 import Payment from '@/features/public-pages/pages/payment/Payment';
 import UserManagement from '@/features/dashboard/features/user-management/UserManagement';
 import CourseRouter from '@/features/dashboard/features/courses/CourseRouter';
+import PaymentSuccess from '@/features/public-pages/pages/payment/components/payment-success/PaymentSuccess';
 
 const Home = lazy(() => import('@/features/public-pages/pages/home/Home'));
 const Login = lazy(() => import('@/features/auth/pages/login/Login'));
@@ -50,6 +51,8 @@ function AppRoutes() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/" element={<Home />} />
         <Route path="/:id" element={<ListCourse />} />
+        <Route path="payment" element={<Payment />} />
+        <Route path="payment/success" element={<PaymentSuccess />} />
 
         {/* User navigation */}
         <Route
@@ -74,7 +77,6 @@ function AppRoutes() {
           <Route path="chat" element={<Chat />} />
           <Route path="courses/*" element={<CourseRouter />} />
           <Route path="practices" element={<Practices />} />
-          <Route path="payments" element={<Payment />} />
           <Route path="user-management/*" element={<UserManagement />} />
           <Route path="*" />
         </Route>

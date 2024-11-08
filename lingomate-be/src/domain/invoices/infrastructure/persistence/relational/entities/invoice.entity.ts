@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Generated,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -16,6 +17,14 @@ import {
   name: "invoice",
 })
 export class InvoiceEntity extends EntityRelationalHelper {
+  @ApiProperty({
+    type: Number,
+    description: "Unique order code for the invoice",
+  })
+  @Column()
+  @Generated("increment")
+  orderCode: number;
+
   @ApiProperty({ type: String })
   @PrimaryGeneratedColumn("uuid")
   id: string;

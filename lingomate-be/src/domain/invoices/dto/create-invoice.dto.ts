@@ -3,11 +3,16 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString, // decorators here
 } from "class-validator";
 
 export class CreateInvoiceDto {
+  @ApiProperty()
+  @IsNumber()
+  orderCode: number;
+
   @ApiProperty({ type: String })
   @IsString()
   @IsNotEmpty()

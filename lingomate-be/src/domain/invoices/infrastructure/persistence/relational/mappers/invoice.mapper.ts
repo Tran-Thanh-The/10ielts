@@ -5,6 +5,7 @@ import { InvoiceEntity } from "../entities/invoice.entity";
 export class InvoiceMapper {
   static toDomain(raw: InvoiceEntity): Invoice {
     const domainEntity = new Invoice();
+    domainEntity.orderCode = raw.orderCode;
     domainEntity.id = raw.id;
     domainEntity.status = raw.status;
     domainEntity.description = raw.description;
@@ -19,6 +20,7 @@ export class InvoiceMapper {
 
   static toPersistence(domainEntity: Invoice): InvoiceEntity {
     const persistenceEntity = new InvoiceEntity();
+    persistenceEntity.orderCode = domainEntity.orderCode;
     persistenceEntity.status = domainEntity.status;
     persistenceEntity.description = domainEntity.description;
     persistenceEntity.money = domainEntity.money;

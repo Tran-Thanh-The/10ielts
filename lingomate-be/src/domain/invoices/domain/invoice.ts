@@ -3,6 +3,11 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class Invoice {
   @ApiProperty({
+    type: Number,
+  })
+  orderCode: number;
+
+  @ApiProperty({
     type: String,
   })
   id: string;

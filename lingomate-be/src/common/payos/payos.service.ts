@@ -7,19 +7,43 @@ import {
   WebhookDataType,
   WebhookType,
 } from "@payos/node/lib/type";
+import { ConfigService } from "@nestjs/config";
+import { CreatePaymentDto } from "@/utils/dto/request/payos-request-payment.dto";
 
 @Injectable()
 export class PayOSService {
-  constructor(@Inject("PAYOS_CLIENT") private readonly payosClient: PayOS) {}
+  private returnUrl: string;
+  private cancelUrl: string;
+
+  constructor(
+    @Inject("PAYOS_CLIENT") private readonly payosClient: PayOS,
+    private configService: ConfigService,
+  ) {
+    this.returnUrl =
+      this.configService.get<string>("PAYOS_RETURN_URL", {
+        infer: true,
+      }) ?? "";
+    this.cancelUrl =
+      this.configService.get<string>("PAYOS_CANCEL_URL", {
+        infer: true,
+      }) ?? "";
+  }
 
   async createPaymentLink(
-    request: CheckoutRequestType,
+    request: CreatePaymentDto,
   ): Promise<CheckoutResponseDataType> {
-    const result = await this.payosClient.createPaymentLink(request);
+    const paymentData: CheckoutRequestType = {
+      ...request,
+      returnUrl: this.returnUrl,
+      cancelUrl: this.cancelUrl,
+    };
+    const result = await this.payosClient.createPaymentLink(paymentData);
     return result;
   }
 
-  async getPaymentLinkInformation(id: string): Promise<PaymentLinkDataType> {
+  async getPaymentLinkInformation(
+    id: string | number,
+  ): Promise<PaymentLinkDataType> {
     const result = await this.payosClient.getPaymentLinkInformation(id);
     return result;
   }

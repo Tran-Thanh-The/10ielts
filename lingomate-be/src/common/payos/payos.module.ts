@@ -21,6 +21,9 @@ import { PayOSService } from "@/common/payos/payos.service";
           configService.get<string>("PAYOS_CHECKSUM_KEY", {
             infer: true,
           }) ?? "";
+        console.log("PAYOS_CLIENT_ID", clientId);
+        console.log("PAYOS_API_KEY", apiKey);
+        console.log("PAYOS_CHECKSUM_KEY", checksumKey);
         return new PayOS(clientId, apiKey, checksumKey);
       },
       inject: [ConfigService],

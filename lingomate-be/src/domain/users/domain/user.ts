@@ -1,5 +1,5 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
 import { FileType } from "../../../files/domain/file";
 import { Role } from "../../roles/domain/role";
@@ -58,10 +58,10 @@ export class User {
   })
   role?: Role | null;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     enum: StatusEnum,
   })
-  status: StatusEnum;
+  status?: StatusEnum | null;
 
   @ApiProperty()
   createdAt: Date;

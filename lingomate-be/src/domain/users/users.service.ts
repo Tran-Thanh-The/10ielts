@@ -78,19 +78,20 @@ export class UsersService {
       clonedPayload.role = { id: RoleEnum.user };
     }
 
-    if (clonedPayload.status) {
-      const statusObject = Object.values(StatusEnum)
-        .map(String)
-        .includes(String(clonedPayload.status));
-      if (!statusObject) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            status: "statusNotExists",
-          },
-        });
-      }
-    }
+    // if (clonedPayload.status) {
+    //   const statusObject = Object.values(StatusEnum)
+    //     .map(String)
+    //     .includes(String(clonedPayload.status));
+    //   if (!statusObject) {
+    //     throw new UnprocessableEntityException({
+    //       status: HttpStatus.UNPROCESSABLE_ENTITY,
+    //       errors: {
+    //         status: "statusNotExists",
+    //       },
+    //     });
+    //   }
+    // }
+    clonedPayload.status = StatusEnum.ACTIVE;
 
     return this.usersRepository.create(clonedPayload);
   }

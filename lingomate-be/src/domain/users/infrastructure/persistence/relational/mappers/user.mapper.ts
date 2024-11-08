@@ -1,4 +1,4 @@
-import { FileEntity } from "../../../../../../files/infrastructure/persistence/relational/entities/file.entity";
+import { StatusEnum } from "@/common/enums/status.enum";
 import { FileMapper } from "../../../../../../files/infrastructure/persistence/relational/mappers/file.mapper";
 import { RoleEntity } from "../../../../../roles/infrastructure/persistence/relational/entities/role.entity";
 import { User } from "../../../../domain/user";
@@ -34,21 +34,11 @@ export class UserMapper {
       role.id = Number(domainEntity.role.id);
     }
 
-    let photo: FileEntity | undefined | null = undefined;
-
-    if (domainEntity.photo) {
-      photo = new FileEntity();
-      photo.id = domainEntity.photo.id;
-      photo.path = domainEntity.photo.path;
-    } else if (domainEntity.photo === null) {
-      photo = null;
-    }
-
     const persistenceEntity = new UserEntity();
     if (domainEntity.id && typeof domainEntity.id === "number") {
       persistenceEntity.id = domainEntity.id;
     }
-    persistenceEntity.status = domainEntity.status;
+    persistenceEntity.status = domainEntity.status ?? StatusEnum.IN_ACTIVE;
     persistenceEntity.email = domainEntity.email;
     persistenceEntity.dob = domainEntity.dob;
     persistenceEntity.password = domainEntity.password;
@@ -56,7 +46,11 @@ export class UserMapper {
     persistenceEntity.provider = domainEntity.provider;
     persistenceEntity.socialId = domainEntity.socialId;
     persistenceEntity.fullName = domainEntity.fullName;
-    persistenceEntity.photo = photo;
+    if (domainEntity.photo) {
+      persistenceEntity.photo = FileMapper.toPersistence(domainEntity.photo);
+    } else {
+      persistenceEntity.photo = null;
+    }
     persistenceEntity.role = role;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;

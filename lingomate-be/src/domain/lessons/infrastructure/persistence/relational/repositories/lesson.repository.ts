@@ -12,13 +12,13 @@ import { Lesson } from "./../../../../domain/lesson";
 export class LessonRelationalRepository implements LessonRepository {
   constructor(
     @InjectRepository(LessonEntity)
-    private readonly lessonRepository: Repository<LessonEntity>
+    private readonly lessonRepository: Repository<LessonEntity>,
   ) {}
 
   async create(data: Lesson): Promise<Lesson> {
     const persistenceModel = LessonMapper.toPersistence(data);
     const newEntity = await this.lessonRepository.save(
-      this.lessonRepository.create(persistenceModel)
+      this.lessonRepository.create(persistenceModel),
     );
     return LessonMapper.toDomain(newEntity);
   }
@@ -63,7 +63,7 @@ export class LessonRelationalRepository implements LessonRepository {
         "lesson.lessonCourses",
         "lessonCourse",
         "lessonCourse.course.id = :courseId",
-        { courseId }
+        { courseId },
       )
       .leftJoinAndSelect("lesson.file", "file")
       .leftJoinAndSelect("lesson.questions", "question")
@@ -123,8 +123,8 @@ export class LessonRelationalRepository implements LessonRepository {
         LessonMapper.toPersistence({
           ...LessonMapper.toDomain(entity),
           ...payload,
-        })
-      )
+        }),
+      ),
     );
 
     return LessonMapper.toDomain(updatedEntity);

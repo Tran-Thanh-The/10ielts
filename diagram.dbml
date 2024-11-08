@@ -34,6 +34,19 @@ Enum AuthProvidersEnum {
   apple
 }
 
+Enum PracticeTypeEnum {
+  READING
+  LISTENING
+  WRITING 
+  SPEAKING
+}
+
+Enum DifficultyEnum {
+  EASY
+  MEDIUM 
+  HARD
+}
+
 Table answer {
   id uuid [pk]
   content string
@@ -113,23 +126,57 @@ Table lesson {
 
 Table practice_exercise {
   id uuid [pk]
+  user_id number
+  title string
+  description string
+  price decimal
+  content string // Nội dung bài luyện tập
+  practiceType PracticeTypeEnum
+  difficulty DifficultyEnum
+  status StatusEnum
   createdAt timestamp
   updatedAt timestamp
 }
 
+Table answer_history {
+    id uuid [pk]
+    practice_id uuid [ref: > practice_exercise.id, null]  // Null nếu làm bài trong lesson
+    lesson_id uuid [ref: > lesson.id, null]  // Null nếu làm practice
+    total_score decimal
+    status StatusEnum // COMPLETED, IN_PROGRESS
+    startedAt timestamp  
+    completedAt timestamp
+    createdAt timestamp
+    updatedAt timestamp
+}
+
 Table question {
-  id uuid [pk]
-  title string
-  content string
-  position int
-  file_id uuid 
-  questionType QuestionTypesEnum
-  fileType QuestionFileTypesEnum
-  status StatusEnum
-  category_id uuid
-  time number
-  createdAt timestamp
-  updatedAt timestamp
+    id uuid [pk]
+    title string
+    content string
+    position int
+    file_id uuid 
+    questionType QuestionTypesEnum
+    fileType QuestionFileTypesEnum
+    status StatusEnum
+    category_id uuid
+    time number
+    explain string
+    lesson_id uuid [null]  // Null nếu thuộc practice
+    practice_id uuid [null]  // Null nếu thuộc lesson
+    createdAt timestamp
+    updatedAt timestamp
+}
+
+Table user_question {
+    id uuid [pk]
+    answer_history_id uuid [ref: > answer_history.id] // Thêm trường này
+    question_id uuid
+    user_id int 
+    answerPick string
+    status StatusEnum
+    createdAt timestamp
+    updatedAt timestamp
 }
 
 Table role {
@@ -171,21 +218,12 @@ Table user_lesson {
   status StatusEnum
   user_id int
   lesson_id uuid (nullable)
-  practice_id uuid (nullable)
-  point number
+  isCompleted boolean
   createdAt timestamp
   updatedAt timestamp
 }
 
-Table user_question {
-  id uuid [pk]
-  status StatusEnum
-  user_id int
-  question_id uuid
-  answerPick string
-  createdAt timestamp
-  updatedAt timestamp
-}
+
 
 Table file {
   id uuid [pk]
@@ -230,3 +268,6 @@ Ref: user.photo_id > file.id
 Ref: user.role_id > role.id
 Ref: lesson.file_id > file.id
 Ref: question.file_id > file.id
+Ref: practice_exercise.user_id > user.id
+Ref: question.lesson_id > lesson.id
+Ref: question.practice_id > practice_exercise.id

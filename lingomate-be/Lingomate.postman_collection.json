@@ -667,7 +667,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NjksImlhdCI6MTczMDEwMzA3NiwiZXhwIjoxNzMwMTA0ODc2fQ.Qc8a93aU9hlQPA0YuSQn9klutt7VFCi_a82Wmyff0Ww",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
 									"type": "string"
 								}
 							]
@@ -684,7 +684,7 @@
 								},
 								{
 									"key": "title",
-									"value": "Lesson 3",
+									"value": "Lesson 4",
 									"type": "text"
 								},
 								{
@@ -717,7 +717,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/dfdfc103-b252-412f-8c17-d57eaa1e7315",
+							"raw": "{{HOST}}/api/v1/lessons/744c8eec-e38c-4cbf-a043-1a9b779f844c",
 							"host": [
 								"{{HOST}}"
 							],
@@ -725,7 +725,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"dfdfc103-b252-412f-8c17-d57eaa1e7315"
+								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
 							]
 						}
 					},
@@ -733,19 +733,26 @@
 				},
 				{
 					"name": "getAll",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NjksImlhdCI6MTczMDEwMzA3NiwiZXhwIjoxNzMwMTA0ODc2fQ.Qc8a93aU9hlQPA0YuSQn9klutt7VFCi_a82Wmyff0Ww",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
 						"url": {
 							"raw": "{{HOST}}/api/v1/lessons?page=1&limit=10",
 							"host": [
@@ -808,7 +815,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NjksImlhdCI6MTczMDEwMzA3NiwiZXhwIjoxNzMwMTA0ODc2fQ.Qc8a93aU9hlQPA0YuSQn9klutt7VFCi_a82Wmyff0Ww",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
 									"type": "string"
 								}
 							]
@@ -825,6 +832,78 @@
 								"v1",
 								"lessons",
 								"9c8c2ba9-d39a-4c8d-be55-9dae3b706ecc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllByCourseId",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons/course/744c8eec-e38c-4cbf-a043-1a9b779f844c?page=1&limit=10",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons",
+								"course",
+								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDetails",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons/5fbe6012-aac9-45b4-89eb-f7a75b1e9d24/detail",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons",
+								"5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
+								"detail"
 							]
 						}
 					},
@@ -962,7 +1041,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzUsImlhdCI6MTczMTA0Nzg2NSwiZXhwIjoxNzMxMDQ5NjY1fQ.D7W6qCnZkgbJcFEMwNCCJWRhLlowm-OrIDmXbWIBSIQ",
 									"type": "string"
 								}
 							]
@@ -1025,20 +1104,15 @@
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/questions?lessonId=5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
+							"raw": "{{HOST}}/api/v1/questions/5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
 							"host": [
 								"{{HOST}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"questions"
-							],
-							"query": [
-								{
-									"key": "lessonId",
-									"value": "5fbe6012-aac9-45b4-89eb-f7a75b1e9d24"
-								}
+								"questions",
+								"5fbe6012-aac9-45b4-89eb-f7a75b1e9d24"
 							]
 						}
 					},

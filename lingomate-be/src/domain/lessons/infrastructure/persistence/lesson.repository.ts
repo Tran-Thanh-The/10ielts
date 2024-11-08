@@ -8,15 +8,28 @@ export abstract class LessonRepository {
     data: Omit<Lesson, "id" | "createdAt" | "updatedAt" | "deletedAt">,
   ): Promise<Lesson>;
 
+  abstract findAll(): Promise<Lesson[]>;
+
   abstract findAllWithPagination({
     paginationOptions,
   }: {
     paginationOptions: IPaginationOptions;
   }): Promise<Lesson[]>;
 
+  abstract findAllWithPaginationAndCourseId({
+    courseId,
+    paginationOptions,
+  }: {
+    courseId: string;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Lesson[]>;
+
+  abstract getLessonDetail(id: Lesson["id"]): Promise<NullableType<Lesson>>;
+
   abstract findById(id: Lesson["id"]): Promise<NullableType<Lesson>>;
   abstract findByQuestionId(questionId: string): Promise<NullableType<Lesson>>;
   abstract findByTitle(title: Lesson["title"]): Promise<NullableType<Lesson>>;
+
   abstract update(
     id: Lesson["id"],
     payload: DeepPartial<Lesson>,

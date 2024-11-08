@@ -6,6 +6,7 @@ import { StatusEnum } from "@/common/enums/status.enum";
 import { AnswerEntity } from "@/domain/answers/infrastructure/persistence/relational/entities/answer.entity";
 import { CategoryEntity } from "@/domain/categories/infrastructure/persistence/relational/entities/category.entity";
 import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { UserQuestionEntity } from "@/domain/user-questions/infrastructure/persistence/relational/entities/user-question.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
@@ -83,13 +84,19 @@ export class QuestionEntity extends EntityRelationalHelper {
   @Column({
     type: "enum",
     enum: StatusEnum,
-    default: StatusEnum.ACTIVE,
+    default: StatusEnum.IN_ACTIVE,
   })
   status: StatusEnum;
 
+  @ApiProperty({
+    type: () => LessonEntity,
+  })
   @ManyToOne(() => LessonEntity, (lesson) => lesson.questions)
-  lesson: LessonEntity;
+  lesson?: LessonEntity | null;
 
+  @ApiProperty({
+    type: () => UserQuestionEntity,
+  })
   @OneToMany(
     () => UserQuestionEntity,
     (userQuestion) => userQuestion.question,
@@ -97,8 +104,17 @@ export class QuestionEntity extends EntityRelationalHelper {
   )
   userQuestion: UserQuestionEntity[];
 
+  @ApiProperty({
+    type: () => AnswerEntity,
+  })
   @OneToMany(() => AnswerEntity, (answer) => answer.question, { cascade: true })
   answers: AnswerEntity[];
+
+  @ApiProperty({
+    type: () => PracticeExerciseEntity,
+  })
+  @ManyToOne(() => PracticeExerciseEntity)
+  practice?: PracticeExerciseEntity | null;
 
   @ApiProperty({
     type: () => CategoryEntity,

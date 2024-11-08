@@ -3,7 +3,7 @@ import {
   QuestionTypesEnum,
 } from "@/common/enums/question.enum";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateQuestionDto {
   // Don't forget to use the class-validator decorators in the DTO properties.
@@ -46,8 +46,17 @@ export class CreateQuestionDto {
   })
   category_id: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: () => String,
   })
-  lesson_id: string;
+  @IsOptional()
+  @IsString()
+  lesson_id?: string | null;
+
+  @ApiPropertyOptional({
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  practice_id?: string | null;
 }

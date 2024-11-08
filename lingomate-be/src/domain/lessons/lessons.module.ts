@@ -5,11 +5,13 @@ import { LessonCoursesModule } from "../lesson-courses/lesson-courses.module";
 import { RelationalLessonPersistenceModule } from "./infrastructure/persistence/relational/relational-persistence.module";
 import { LessonsController } from "./lessons.controller";
 import { LessonsService } from "./lessons.service";
+import { UserLessonsModule } from "../user-lessons/user-lessons.module";
 
 @Module({
   imports: [
     RelationalLessonPersistenceModule,
     LessonCoursesModule,
+    UserLessonsModule,
     CoursesModule,
     FilesLocalModule,
   ],

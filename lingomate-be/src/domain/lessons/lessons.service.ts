@@ -14,17 +14,22 @@ import { LessonMapper } from "./infrastructure/persistence/relational/mappers/le
 import { StatusEnum } from "@/common/enums/status.enum";
 import { CourseRepository } from "../courses/infrastructure/persistence/course.repository";
 import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
+import { UserLessonMapper } from "../user-lessons/infrastructure/persistence/relational/mappers/user-lesson.mapper";
+import { UserLessonRepository } from "../user-lessons/infrastructure/persistence/user-lesson.repository";
+import { NullableType } from "@/utils/types/nullable.type";
 
 @Injectable()
 export class LessonsService {
   constructor(
     private readonly lessonRepository: LessonRepository,
     private readonly lessonCourseRepository: LessonCourseRepository,
+    private readonly userLessonRepository: UserLessonRepository,
     private readonly courseRepository: CourseRepository,
     private readonly filesLocalService: FilesLocalService,
   ) {}
 
   async create(
+    userId: string,
     courseId: string,
     createLessonDto: CreateLessonDto,
     fileLesson: Express.Multer.File,
@@ -63,9 +68,21 @@ export class LessonsService {
         status: StatusEnum.ACTIVE,
       });
       await this.lessonCourseRepository.create(lessonCourse);
+
+      //Thêm vào bảng user_lesson: xác định ai là người thêm lesson
+      const userLesson = UserLessonMapper.toModel({
+        user_id: Number(userId),
+        lesson_id: savedLesson.id,
+        status: StatusEnum.ACTIVE,
+      });
+      await this.userLessonRepository.create(userLesson);
     }
 
     return savedLesson;
+  }
+
+  async findAll(): Promise<Lesson[]> {
+    return this.lessonRepository.findAll();
   }
 
   async findAllWithPagination({
@@ -82,7 +99,24 @@ export class LessonsService {
     return entities;
   }
 
-  findOne(id: Lesson["id"]) {
+  async findAllWithPaginationAndCourseId({
+    courseId,
+    paginationOptions,
+  }: {
+    courseId: string;
+    paginationOptions: IPaginationOptions;
+  }): Promise<Lesson[]> {
+    return this.lessonRepository.findAllWithPaginationAndCourseId({
+      courseId,
+      paginationOptions,
+    });
+  }
+
+  async getLessonDetail(id: Lesson["id"]): Promise<NullableType<Lesson>> {
+    return this.lessonRepository.getLessonDetail(id);
+  }
+
+  async findById(id: Lesson["id"]): Promise<NullableType<Lesson>> {
     return this.lessonRepository.findById(id);
   }
 

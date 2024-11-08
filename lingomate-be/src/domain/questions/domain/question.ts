@@ -6,8 +6,9 @@ import { StatusEnum } from "@/common/enums/status.enum";
 import { Answer } from "@/domain/answers/domain/answer";
 import { CategoryEntity } from "@/domain/categories/infrastructure/persistence/relational/entities/category.entity";
 import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { FileType } from "@/files/domain/file";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class Question {
   @ApiProperty({
@@ -45,10 +46,15 @@ export class Question {
   })
   fileType: QuestionFileTypesEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: () => LessonEntity,
   })
-  lesson: LessonEntity;
+  lesson?: LessonEntity | null;
+
+  @ApiPropertyOptional({
+    type: () => PracticeExerciseEntity,
+  })
+  practice?: PracticeExerciseEntity | null;
 
   @ApiProperty({
     type: () => CategoryEntity,

@@ -23,19 +23,25 @@ export class LessonMapper {
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
     domainEntity.deletedAt = raw.deletedAt;
+
     if (raw.questions) {
       domainEntity.questions = raw.questions.map((question) => {
         const questionDomain = QuestionMapper.toDomain(question);
-        if (question.answers) {
-          questionDomain.answers = question.answers.map((answer) =>
-            AnswerMapper.toDomain(answer),
-          );
-        } else {
-          questionDomain.answers = [];
-        }
+
+        // Map từng answer trong question và loại bỏ reference đến question trong answer
+        questionDomain.answers = question.answers
+          ? question.answers.map((answer) => {
+              const answerDomain = AnswerMapper.toDomain(answer);
+              // Loại bỏ mối quan hệ ngược để tránh vòng lặp
+              delete answerDomain.question;
+              return answerDomain;
+            })
+          : [];
+
         return questionDomain;
       });
     }
+
     return domainEntity;
   }
 
@@ -94,6 +100,8 @@ export class LessonMapper {
     dto.totalStars = model.totalStars;
     dto.isSequence = model.isSequence;
     dto.status = model.status;
+    dto.createdAt = model.createdAt;
+    dto.updatedAt = model.updatedAt;
     dto.questions = model.questions
       ? model.questions.map((question) => {
           const questionDto = QuestionMapper.toDto(question);

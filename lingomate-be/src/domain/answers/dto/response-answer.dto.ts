@@ -3,13 +3,7 @@ import { StatusEnum } from "@/common/enums/status.enum";
 import { QuestionResponseDto } from "@/domain/questions/dto/response-question.dto";
 import { FileDto } from "@/files/dto/file.dto";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import {
-  IsBoolean,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class AnswerResponseDto {
   @ApiProperty({ type: String })

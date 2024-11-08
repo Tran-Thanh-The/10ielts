@@ -5,6 +5,9 @@ import { QuestionResponseDto } from "@/domain/questions/dto/response-question.dt
 import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 import { Question } from "../../../../domain/question";
 import { QuestionEntity } from "../entities/question.entity";
+import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
+import { PracticeResponseDto } from "@/domain/practice-exercises/dto/response-practice-exercise.dto";
 
 export class QuestionMapper {
   static toDomain(raw: QuestionEntity): Question {
@@ -27,6 +30,7 @@ export class QuestionMapper {
     domainEntity.fileType = raw.fileType;
     domainEntity.status = raw.status;
     domainEntity.lesson = raw.lesson;
+    domainEntity.practice = raw.practice;
     domainEntity.category = raw.category;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
@@ -53,6 +57,7 @@ export class QuestionMapper {
     persistenceEntity.fileType = domainEntity.fileType;
     persistenceEntity.status = domainEntity.status;
     persistenceEntity.lesson = domainEntity.lesson;
+    persistenceEntity.practice = domainEntity.practice;
     persistenceEntity.category = domainEntity.category;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
@@ -69,6 +74,15 @@ export class QuestionMapper {
     model.time = dto.time;
     model.questionType = dto.questionType;
     model.fileType = dto.fileType;
+    if (dto.lesson_id) {
+      model.lesson = new LessonEntity();
+      model.lesson.id = dto.lesson_id;
+    }
+    if (dto.practice_id) {
+      model.practice = new PracticeExerciseEntity();
+      model.practice.id = dto.practice_id;
+    }
+
     return model;
   }
 
@@ -93,6 +107,11 @@ export class QuestionMapper {
       dto.lesson = new LessonResponseDto();
       Object.assign(dto.lesson, model.lesson);
     }
+    if (model.practice) {
+      dto.practice = new PracticeResponseDto();
+      Object.assign(dto.practice, model.practice);
+    }
+
     dto.answers =
       model.answers?.map((answer) => AnswerMapper.toDto(answer)) ?? [];
 

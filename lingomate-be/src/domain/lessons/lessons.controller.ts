@@ -13,6 +13,7 @@ import {
   NotFoundException,
   UseInterceptors,
   UploadedFile,
+  Req,
 } from "@nestjs/common";
 import { LessonsService } from "./lessons.service";
 import { CreateLessonDto } from "./dto/create-lesson.dto";
@@ -60,9 +61,16 @@ export class LessonsController {
     @Param("courseId") courseId: string,
     @Body() createLessonDto: CreateLessonDto,
     @UploadedFile() file: Express.Multer.File,
+    @Req() req,
   ) {
     try {
-      return await this.lessonsService.create(courseId, createLessonDto, file);
+      const userId = req.user.id;
+      return await this.lessonsService.create(
+        userId,
+        courseId,
+        createLessonDto,
+        file,
+      );
     } catch (error) {
       if (error instanceof ConflictException) {
         throw new ConflictException("Conflict title");
@@ -101,6 +109,51 @@ export class LessonsController {
   }
 
   @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
+  @Get("course/:courseId")
+  @ApiParam({
+    name: "courseId",
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(Lesson),
+  })
+  async findAllByCourse(
+    @Param("courseId") courseId: string,
+    @Query() query: FindAllLessonsDto,
+  ): Promise<InfinityPaginationResponseDto<Lesson>> {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
+    }
+    return infinityPagination(
+      await this.lessonsService.findAllWithPaginationAndCourseId({
+        courseId,
+        paginationOptions: {
+          page,
+          limit,
+        },
+      }),
+      { page, limit },
+    );
+  }
+
+  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
+  @Get(":id/detail")
+  @ApiParam({
+    name: "id",
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({
+    type: Lesson,
+  })
+  async getDetail(@Param("id") id: string) {
+    return this.lessonsService.getLessonDetail(id);
+  }
+
+  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -111,7 +164,7 @@ export class LessonsController {
     type: Lesson,
   })
   findOne(@Param("id") id: string) {
-    return this.lessonsService.findOne(id);
+    return this.lessonsService.findById(id);
   }
 
   @Roles(RoleEnum.admin, RoleEnum.staff)

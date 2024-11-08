@@ -41,11 +41,13 @@ import redisConfig from "@/common/redis/config/redis.config";
 import { RedisModule } from "@/common/redis/redis.module";
 import { HttpModule } from "@nestjs/axios";
 import { InvoicesModule } from "./domain/invoices/invoices.module";
-
 import { CategoriesModule } from "@/domain/categories/categories.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { AnswerHistoriesModule } from "@/domain/answer-histories/answer-histories.module";
+
 @Module({
   imports: [
+    AnswerHistoriesModule,
     CategoriesModule,
     HttpModule,
     InvoicesModule,

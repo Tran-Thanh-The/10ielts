@@ -1,5 +1,6 @@
 import { LessonTypesEnum } from "@/common/enums/lesson.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { AnswerHistoryEntity } from "@/domain/answer-histories/infrastructure/persistence/relational/entities/answer-history.entity";
 import { LessonCourseEntity } from "@/domain/lesson-courses/infrastructure/persistence/relational/entities/lesson-course.entity";
 import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
@@ -62,7 +63,7 @@ export class LessonEntity extends EntityRelationalHelper {
   @Column({
     type: "enum",
     enum: StatusEnum,
-    default: StatusEnum.ACTIVE,
+    default: StatusEnum.IN_ACTIVE,
   })
   status: StatusEnum;
 
@@ -84,6 +85,9 @@ export class LessonEntity extends EntityRelationalHelper {
     },
   )
   lessonCourses: LessonCourseEntity[];
+
+  @OneToMany(() => AnswerHistoryEntity, (answerHistory) => answerHistory.lesson)
+  answerHistories: AnswerHistoryEntity[];
 
   @ApiProperty({ type: Number })
   @Column({

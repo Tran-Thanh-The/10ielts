@@ -8,6 +8,9 @@ import {
   Delete,
   UseGuards,
   Query,
+  Req,
+  NotFoundException,
+  InternalServerErrorException,
 } from "@nestjs/common";
 import { PracticeExercisesService } from "./practice-exercises.service";
 import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
@@ -27,10 +30,13 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllPracticeExercisesDto } from "./dto/find-all-practice-exercises.dto";
+import { RolesGuard } from "../roles/roles.guard";
+import { Roles } from "../roles/roles.decorator";
+import { RoleEnum } from "../roles/roles.enum";
 
 @ApiTags("Practiceexercises")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"))
+@UseGuards(AuthGuard("jwt"), RolesGuard)
 @Controller({
   path: "practice-exercises",
   version: "1",
@@ -40,14 +46,32 @@ export class PracticeExercisesController {
     private readonly practiceExercisesService: PracticeExercisesService,
   ) {}
 
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post()
   @ApiCreatedResponse({
     type: PracticeExercise,
   })
-  create(@Body() createPracticeExerciseDto: CreatePracticeExerciseDto) {
-    return this.practiceExercisesService.create(createPracticeExerciseDto);
+  create(
+    @Body() createPracticeExerciseDto: CreatePracticeExerciseDto,
+    @Req() req,
+  ) {
+    try {
+      const userId = req.user.id;
+      return this.practiceExercisesService.create(
+        userId,
+        createPracticeExerciseDto,
+      );
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        "An error occurred while creating the lesson. Please try again later.",
+      );
+    }
   }
 
+  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(PracticeExercise),
@@ -72,6 +96,7 @@ export class PracticeExercisesController {
     );
   }
 
+  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -85,6 +110,7 @@ export class PracticeExercisesController {
     return this.practiceExercisesService.findOne(id);
   }
 
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -101,6 +127,7 @@ export class PracticeExercisesController {
     return this.practiceExercisesService.update(id, updatePracticeExerciseDto);
   }
 
+  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Delete(":id")
   @ApiParam({
     name: "id",

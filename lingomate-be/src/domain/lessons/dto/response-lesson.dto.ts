@@ -64,6 +64,12 @@ export class LessonResponseDto {
   @IsOptional()
   status?: StatusEnum;
 
+  @ApiProperty({ type: Date })
+  createdAt?: Date;
+
+  @ApiProperty({ type: Date })
+  updatedAt?: Date;
+
   @ApiProperty({
     type: [QuestionResponseDto],
     description: "Array of Questions in the lesson",

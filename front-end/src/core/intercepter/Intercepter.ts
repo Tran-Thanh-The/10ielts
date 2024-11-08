@@ -1,8 +1,10 @@
 import axios from 'axios';
-import loginApi from '@/api/loginApi';
+import { API_ENDPOINT } from '@/utils/constants/constants';
+
+const baseUrl = localStorage.getItem('apiUrl') || 'http://localhost:3002/api/v1';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3002/api/v1',
+  baseURL: baseUrl,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -33,13 +35,24 @@ axiosInstance.interceptors.response.use(
       const { status } = error.response;
 
       if (status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
         const authDataString = localStorage.getItem('auth');
         const authData = authDataString ? JSON.parse(authDataString) : null;
         const refreshToken = authData?.refreshToken;
-        const response = await loginApi.postRefreshToken({ refreshToken });
+        const response: any = await axios.post(
+          API_ENDPOINT.REFRESH_TOKEN,
+          {},
+          {
+            baseURL: baseUrl,
+            headers: {
+              Authorization: `Bearer ${refreshToken}`,
+            },
+          },
+        );
         const token = response.data.token;
         const updatedAuthData = {
           ...authData,
+          refreshToken: response.data.refreshToken,
           token: response.data.token,
           tokenExpires: response.data.tokenExpires,
         };

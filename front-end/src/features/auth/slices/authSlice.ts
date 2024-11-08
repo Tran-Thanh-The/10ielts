@@ -8,6 +8,8 @@ interface User {
   provider: string;
   socialId: string | null;
   fullName: string;
+  dob: any;
+  address: string;
 }
 
 interface AuthState {

@@ -1,3 +1,5 @@
+import UserFilter from '@/features/dashboard/features/user-management/features/user-list/components/user-filter/UserFilter';
+import UserListTab from '@/features/dashboard/features/user-management/features/user-list/components/user-list-tab/UserListTab';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
 import FeatureLayout from '@/features/dashboard/layouts/feature-layout/FeatureLayout';
 import { Box, Tab, Tabs } from '@mui/material';
@@ -20,7 +22,7 @@ function CustomTabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{ p: '12px 0' }}>{children}</Box>}
     </div>
   );
 }
@@ -43,25 +45,32 @@ function UserList() {
       <FeatureHeader title="Quản lý người dùng" />
 
       <Box sx={{ width: '100%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '12px 0',
+          }}
+        >
           <Tabs
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example"
+            sx={{
+              borderTop: 'unset',
+            }}
           >
-            <Tab label="Item One" {...a11yProps(0)} />
-            <Tab label="Item Two" {...a11yProps(1)} />
-            <Tab label="Item Three" {...a11yProps(2)} />
+            <Tab label="Học sinh" {...a11yProps(0)} />
+            <Tab label="Nhân viên" {...a11yProps(1)} />
           </Tabs>
+          <UserFilter />
         </Box>
         <CustomTabPanel value={value} index={0}>
-          Item One
+          <UserListTab />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          Item Two
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
-          Item Three
+          <UserListTab />
         </CustomTabPanel>
       </Box>
     </FeatureLayout>

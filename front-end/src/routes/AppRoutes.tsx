@@ -11,6 +11,7 @@ import Chat from '@/features/dashboard/features/chat/Chat';
 import Payment from '@/features/public-pages/pages/payment/Payment';
 import UserManagement from '@/features/dashboard/features/user-management/UserManagement';
 import CourseRouter from '@/features/dashboard/features/courses/CourseRouter';
+import AppLoading from '@/components/app-loading/AppLoading';
 
 const Home = lazy(() => import('@/features/public-pages/pages/home/Home'));
 const Login = lazy(() => import('@/features/auth/pages/login/Login'));
@@ -44,6 +45,7 @@ function AppRoutes() {
 
   return (
     <Suspense fallback={<Loading />}>
+      <AppLoading />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

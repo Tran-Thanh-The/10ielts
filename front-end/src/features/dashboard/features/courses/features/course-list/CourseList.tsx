@@ -4,8 +4,10 @@ import CourseFilter from '@/features/dashboard/features/courses/features/course-
 import CreateCourseModal from '@/features/dashboard/features/courses/features/course-list/components/create-course-modal/CreateCourseModal';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
 import FeatureLayout from '@/features/dashboard/layouts/feature-layout/FeatureLayout';
+import { setAppLoading } from '@/stores/slices/appSlice';
 import { Box, Button, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 interface Course {
   id: string;
@@ -23,6 +25,7 @@ interface Course {
 }
 
 export default function CourseList() {
+  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
   const [selectedCourse, setSelectedCourse] = React.useState<Course | null>(
     null,
@@ -38,12 +41,12 @@ export default function CourseList() {
     setReload(!reload);
   };
 
-  console.log('danh sách khóa học: ', courses);
-
   const fetchCourses = async () => {
     try {
+      dispatch(setAppLoading(true));
       const response = await courseApi.getCourses();
       setCourses(response.data.data);
+      dispatch(setAppLoading(false));
     } catch (error) {
       console.error('Failed to fetch courses:', error);
     }

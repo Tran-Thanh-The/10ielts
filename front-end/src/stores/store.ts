@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import cartReducer from '@/features/public-pages/pages/course/slices/cartSlice';
 import authReducer from '@/features/auth/slices/authSlice';
+import appReducer from '@/stores/slices/appSlice';
 
 const persistConfig = {
   key: 'root',
@@ -14,6 +15,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   cart: cartReducer,
   auth: authReducer,
+  appState: appReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

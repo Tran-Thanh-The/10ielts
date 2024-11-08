@@ -33,9 +33,12 @@ const loginApi = {
   },
 
   postRefreshToken: ({ refreshToken }: RefreshToken) => {
-    // Sửa đổi ở đây
     const url = `${API_ENDPOINT.REFRESH_TOKEN}`;
-    return axiosInstance.post(url, { refreshToken }); // Gửi refresh token qua payload
+    return axiosInstance.post(url, { refreshToken }, {
+      headers: {
+        'Authorization': `Bearer ${refreshToken}`,
+      }
+    });
   },
 
   // API: Logout

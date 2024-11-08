@@ -29,6 +29,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import LessonCard from '../../components/lesson-card/LessonCard';
+import { setAppLoading } from '@/stores/slices/appSlice';
+import { useDispatch } from 'react-redux';
 
 const MOCK_LESSONS = [
   {
@@ -88,7 +90,8 @@ const MOCK_LESSONS = [
 ];
 
 export default function CourseDetail() {
-  const [course, setCourse] = useState<CourseResponse | null>({});
+  const dispatch = useDispatch();
+  const [course, setCourse] = useState<CourseResponse | null>({} as CourseResponse);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const open = Boolean(anchorEl);
@@ -103,12 +106,13 @@ export default function CourseDetail() {
     if (!idCourse) {
       return;
     }
+    dispatch(setAppLoading(true));
     courseApi.getCourseById(idCourse).then((response) => {
-      console.log('Course detail:', response.data);
       setCourse({
         ...response.data,
         lessons: MOCK_LESSONS,
       });
+      dispatch(setAppLoading(false));
     });
   }, [idCourse, reload]);
 
@@ -212,6 +216,7 @@ export default function CourseDetail() {
         denyButtonText: `Hủy`,
       }).then(async (result) => {
         if (result.isConfirmed) {
+          dispatch(setAppLoading(true));
           await courseApi.deleteCourse(idCourse);
           navigate('/dashboard/courses');
         }

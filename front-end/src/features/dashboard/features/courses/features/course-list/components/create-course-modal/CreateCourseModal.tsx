@@ -1,4 +1,5 @@
 import courseApi from '@/api/courseApi';
+import { setAppLoading } from '@/stores/slices/appSlice';
 import { Add as AddIcon } from '@mui/icons-material';
 import {
   Box,
@@ -11,6 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
 export default function CreateCourseModal({
@@ -19,6 +21,7 @@ export default function CreateCourseModal({
   onOk,
   data = null,
 }) {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -130,6 +133,7 @@ export default function CreateCourseModal({
     }
 
     try {
+      dispatch(setAppLoading(true));
       if (data?.id) {
         await courseApi.updateCourse(data.id, form); // Pass FormData
         toast.success('Course updated successfully!');

@@ -111,7 +111,7 @@ export class LessonsService {
       paginationOptions,
     });
   }
-
+  
   async getLessonDetail(
     id: Lesson["id"],
     paginationOptions: IPaginationOptions & {

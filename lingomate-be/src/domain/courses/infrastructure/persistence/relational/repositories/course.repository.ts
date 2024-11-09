@@ -6,7 +6,7 @@ import { UserCourseEntity } from "@/domain/user-courses/infrastructure/persisten
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
 import { NullableType } from "@/utils/types/nullable.type";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { isUUID } from "class-validator";
 import { Repository } from "typeorm";
@@ -16,6 +16,7 @@ import { CourseMapper } from "../mappers/course.mapper";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { CourseInvoicesEntity } from "@/domain/course-invoices/infrastructure/persistence/relational/entities/course-invoices.entity";
 import { UserInvoicesEntity } from "@/domain/user-invoices/infrastructure/persistence/relational/entities/user-invoices.entity";
+import { log } from "console";
 
 @Injectable()
 export class CourseRelationalRepository implements CourseRepository {
@@ -142,6 +143,7 @@ export class CourseRelationalRepository implements CourseRepository {
     const courseEntity = await this.courseRepository
       .createQueryBuilder("course")
       .leftJoinAndSelect("course.category", "category")
+      .leftJoinAndSelect("course.photo", "photo") 
       .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
       .leftJoinAndSelect("lessonCourse.lesson", "lesson")
       .leftJoinAndSelect(
@@ -156,7 +158,8 @@ export class CourseRelationalRepository implements CourseRepository {
     if (!courseEntity) {
       return null;
     }
-
+    console.log(courseEntity);
+    
     const courseDetail: Omit<CourseWithDetailsDTO, "isMyCourse"> = {
       id: courseEntity.id,
       title: courseEntity.name,

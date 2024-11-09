@@ -1,5 +1,6 @@
 import { LessonTypesEnum } from "@/common/enums/lesson.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { LessonCourse } from "@/domain/lesson-courses/domain/lesson-course";
 import { Question } from "@/domain/questions/domain/question";
 import { FileType } from "@/files/domain/file";
 import { ApiProperty } from "@nestjs/swagger";
@@ -54,4 +55,7 @@ export class Lesson {
 
   @ApiProperty({ type: () => Question })
   questions?: Question[];
+
+  @ApiProperty({ type: () => LessonCourse })
+  lessonCourses?: LessonCourse[];
 }

@@ -67,6 +67,11 @@ npm run generate:resource:relational -- --name=Category
 npm run add:property:to-relational
 ```
 
+# Generata a new migration
+```bash
+npm run migration:generate -- src/database/migrations/<migration-name>
+```
+
 # Run migrations
    ```bash
    npm run migration:run

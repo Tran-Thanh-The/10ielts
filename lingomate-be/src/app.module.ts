@@ -43,11 +43,18 @@ import { HttpModule } from "@nestjs/axios";
 import { InvoicesModule } from "./domain/invoices/invoices.module";
 import { CategoriesModule } from "@/domain/categories/categories.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
+import { PayOSModule } from "@/common/payos/payos.module";
+import { PaymentModule } from "@/domain/payment/payment.module";
+import { JwtModule } from "@nestjs/jwt";
+
+import { InvoiceProductsModule } from "@/domain/invoice-products/invoice-products.module";
+
 import { AnswerHistoriesModule } from "@/domain/answer-histories/answer-histories.module";
 
 @Module({
   imports: [
     AnswerHistoriesModule,
+    InvoiceProductsModule,
     CategoriesModule,
     HttpModule,
     InvoicesModule,
@@ -64,6 +71,11 @@ import { AnswerHistoriesModule } from "@/domain/answer-histories/answer-historie
     MailerModule,
     HomeModule,
     RedisModule,
+    PayOSModule,
+    PaymentModule,
+    JwtModule.register({
+      global: true,
+    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "client"),
     }),

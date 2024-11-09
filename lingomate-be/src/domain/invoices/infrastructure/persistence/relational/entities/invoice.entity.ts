@@ -1,5 +1,4 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { UserInvoicesEntity } from "@/domain/user-invoices/infrastructure/persistence/relational/entities/user-invoices.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 import { ApiProperty } from "@nestjs/swagger";
 import {
@@ -7,15 +6,40 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
+import { CourseEntity } from "@/domain/courses/infrastructure/persistence/relational/entities/course.entity";
+import { InvoiceProductEntity } from "@/domain/invoice-products/infrastructure/persistence/relational/entities/invoice-product.entity";
 
 @Entity({
   name: "invoice",
 })
 export class InvoiceEntity extends EntityRelationalHelper {
+  @ApiProperty({
+    type: Boolean,
+    description: "Indicates whether the invoice has been paid",
+    default: false,
+  })
+  @Column({ default: false })
+  paymentStatus: boolean;
+
+  @ApiProperty({
+    type: Number,
+    description: "Unique order code for the invoice",
+  })
+  @Column({
+    unique: true,
+    type: "bigint",
+  })
+  orderCode: number;
+
   @ApiProperty({ type: String })
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -46,10 +70,24 @@ export class InvoiceEntity extends EntityRelationalHelper {
   })
   status: StatusEnum;
 
-  @OneToMany(() => UserInvoicesEntity, (userInvoice) => userInvoice.user, {
-    cascade: true,
+  @ManyToOne(() => UserEntity, (user) => user.invoices, {
+    eager: true,
   })
-  userInvoice: UserInvoicesEntity[];
+  @JoinColumn({ name: "userId" })
+  user: UserEntity;
+
+  @Column("uuid")
+  @Index()
+  userId: string;
+
+  @OneToMany(
+    () => InvoiceProductEntity,
+    (invoiceProduct) => invoiceProduct.invoice,
+    {
+      cascade: true,
+    },
+  )
+  invoiceProducts: InvoiceProductEntity[];
 
   @ApiProperty()
   @CreateDateColumn()

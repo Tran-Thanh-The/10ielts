@@ -10,6 +10,7 @@ import { UserEntity } from "@/domain/users/infrastructure/persistence/relational
 export class PracticeExerciseMapper {
   static toDomain(raw: PracticeExerciseEntity): PracticeExercise {
     const domainEntity = new PracticeExercise();
+    domainEntity.price = raw.price;
     domainEntity.id = raw.id;
     domainEntity.user = raw.user;
     domainEntity.title = raw.title;
@@ -44,6 +45,7 @@ export class PracticeExerciseMapper {
 
   static toPersistence(domainEntity: PracticeExercise): PracticeExerciseEntity {
     const persistenceEntity = new PracticeExerciseEntity();
+    persistenceEntity.price = domainEntity.price;
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;
     }

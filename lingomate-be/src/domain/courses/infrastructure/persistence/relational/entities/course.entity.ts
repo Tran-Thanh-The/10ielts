@@ -1,6 +1,5 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { CategoryEntity } from "@/domain/categories/infrastructure/persistence/relational/entities/category.entity";
-import { CourseInvoicesEntity } from "@/domain/course-invoices/infrastructure/persistence/relational/entities/course-invoices.entity";
 import { LessonCourseEntity } from "@/domain/lesson-courses/infrastructure/persistence/relational/entities/lesson-course.entity";
 import { UserCourseEntity } from "@/domain/user-courses/infrastructure/persistence/relational/entities/user-course.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
@@ -12,12 +11,15 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { InvoiceEntity } from "@/domain/invoices/infrastructure/persistence/relational/entities/invoice.entity";
+import { InvoiceProductEntity } from "@/domain/invoice-products/infrastructure/persistence/relational/entities/invoice-product.entity";
 
 @Entity({
   name: "course",
@@ -64,13 +66,13 @@ export class CourseEntity extends EntityRelationalHelper {
   photo?: FileEntity | null;
 
   @OneToMany(
-    () => CourseInvoicesEntity,
-    (courseInvoices) => courseInvoices.course,
+    () => InvoiceProductEntity,
+    (invoiceProducts) => invoiceProducts.course,
     {
       cascade: true,
     },
   )
-  courseInvoices: CourseInvoicesEntity[];
+  invoiceProducts: InvoiceProductEntity[];
 
   @OneToMany(() => UserCourseEntity, (userCourses) => userCourses.course, {
     cascade: true,

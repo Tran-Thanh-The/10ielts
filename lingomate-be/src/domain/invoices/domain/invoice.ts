@@ -2,6 +2,17 @@ import { StatusEnum } from "@/common/enums/status.enum";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class Invoice {
+  @ApiProperty()
+  userId: string;
+
+  @ApiProperty()
+  paymentStatus: boolean;
+
+  @ApiProperty({
+    type: Number,
+  })
+  orderCode: number;
+
   @ApiProperty({
     type: String,
   })

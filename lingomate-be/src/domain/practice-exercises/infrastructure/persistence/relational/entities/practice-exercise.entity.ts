@@ -14,6 +14,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
+import { InvoiceProductEntity } from "@/domain/invoice-products/infrastructure/persistence/relational/entities/invoice-product.entity";
 
 @Entity({
   name: "practice_exercise",
@@ -98,6 +100,15 @@ export class PracticeExerciseEntity extends EntityRelationalHelper {
     default: StatusEnum.IN_ACTIVE,
   })
   status: StatusEnum;
+
+  @OneToMany(
+    () => InvoiceProductEntity,
+    (invoiceProduct) => invoiceProduct.practice,
+    {
+      cascade: true,
+    },
+  )
+  invoiceProducts: InvoiceProductEntity[];
 
   @ApiProperty()
   @CreateDateColumn()

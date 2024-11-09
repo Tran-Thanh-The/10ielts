@@ -29,6 +29,7 @@ import { Exclude, Expose } from "class-transformer";
 import { InvoiceEntity } from "@/domain/invoices/infrastructure/persistence/relational/entities/invoice.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
+import { ChatEntity } from "@/domain/chats/infrastructure/persistence/relational/entities/chat.entity";
 
 @Entity({
   name: "user",
@@ -144,4 +145,9 @@ export class UserEntity extends EntityRelationalHelper {
 
   @OneToMany(() => UserCourseEntity, (userCourse) => userCourse.user)
   userCourse: UserCourseEntity[];
+
+  @OneToMany(() => ChatEntity, (chat) => chat.user, {
+    cascade: true,
+  })
+  chats: ChatEntity[];
 }

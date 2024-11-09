@@ -27,7 +27,7 @@ export class CreatePracticeExerciseDto {
 
   @ApiPropertyOptional({ type: Number })
   @IsOptional()
-  price?: number | null;
+  price: number | null;
 
   @ApiProperty({
     enum: PracticeTypeEnum,

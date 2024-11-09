@@ -58,13 +58,13 @@ export class PaymentService {
       const invoiceDescription = `ORDER_${orderCode}_${req.user?.["id"]}`;
       const paymentRequest = {
         orderCode,
-        amount: Math.round(product.price),
+        amount: product.price ? Math.round(product.price) : 0,
         description: invoiceDescription,
       };
       console.log(orderCode, product.price, invoiceDescription);
       const invoiceCreated = await this.invoicesService.create({
         orderCode: orderCode,
-        money: product.price,
+        money: product.price ? product.price : 0,
         description: invoiceDescription,
         status: StatusEnum.ACTIVE,
         name: invoiceDescription,

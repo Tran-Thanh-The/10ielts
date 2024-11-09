@@ -31,7 +31,7 @@ export class PracticeExercise {
     description: "Price of the course in dollars, allowing decimal values",
     example: 49.99,
   })
-  price?: number | null;
+  price: number | null;
 
   @ApiProperty({ type: String })
   content: string;

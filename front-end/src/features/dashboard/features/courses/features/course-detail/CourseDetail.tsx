@@ -91,7 +91,9 @@ const MOCK_LESSONS = [
 
 export default function CourseDetail() {
   const dispatch = useDispatch();
-  const [course, setCourse] = useState<CourseResponse | null>({} as CourseResponse);
+  const [course, setCourse] = useState<CourseResponse | null>(
+    {} as CourseResponse,
+  );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const open = Boolean(anchorEl);
@@ -207,6 +209,10 @@ export default function CourseDetail() {
     setOpenCourseForm(true);
   };
 
+  const handlePayment = () => {
+    navigate(`/payment?id=${idCourse}&type=course`);
+  };
+
   const handleDeleteCourse = () => {
     if (idCourse) {
       Swal.fire({
@@ -259,7 +265,11 @@ export default function CourseDetail() {
                     variant="body1"
                     color="text.secondary"
                     align="justify"
-                    sx={{ marginBottom: 2, whiteSpace: 'pre-line', marginTop: 2 }}
+                    sx={{
+                      marginBottom: 2,
+                      whiteSpace: 'pre-line',
+                      marginTop: 2,
+                    }}
                   >
                     {course.description}
                   </Typography>
@@ -315,7 +325,7 @@ export default function CourseDetail() {
                       variant="contained"
                       color="primary"
                       size="small"
-                      onClick={handleUpdateCourse}
+                      onClick={handlePayment}
                     >
                       Đăng ký khóa học
                     </Button>

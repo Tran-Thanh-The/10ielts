@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -49,10 +49,15 @@ const StyledInfoBox = styled(Box)({
 });
 
 const Checkout = () => {
-  const { type, id } = useParams<{ type: string; id: string }>();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const type = searchParams.get('type');
+  const id = searchParams.get('id');
   const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  console.log(type, id);
 
   const fetchPaymentData = async () => {
     try {
@@ -66,6 +71,11 @@ const Checkout = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log('Type:', typeof type);
+    console.log('ID:', typeof id);
+  }, [type, id]);
 
   useEffect(() => {
     fetchPaymentData();

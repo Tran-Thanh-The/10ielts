@@ -5,6 +5,8 @@ import { PracticeExerciseRepository } from "./infrastructure/persistence/practic
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { PracticeExercise } from "./domain/practice-exercise";
 import { PracticeExerciseMapper } from "./infrastructure/persistence/relational/mappers/practice-exercise.mapper";
+import { StatusEnum } from "@/common/enums/status.enum";
+import { NullableType } from "@/utils/types/nullable.type";
 
 @Injectable()
 export class PracticeExercisesService {
@@ -38,6 +40,16 @@ export class PracticeExercisesService {
       },
     });
   }
+
+  // async getPracticeExerciseDetail(
+  //   id: PracticeExercise["id"],
+  //   paginationOptions: IPaginationOptions & {
+  //     order: "ASC" | "DESC";
+  //     status?: StatusEnum;
+  //   },
+  // ): Promise<NullableType<PracticeExercise>> {
+  //   return this.practiceExerciseRepository.getPracticeExerciseDetail(id, paginationOptions);
+  // }
 
   findOne(id: PracticeExercise["id"]) {
     return this.practiceExerciseRepository.findById(id);

@@ -22,6 +22,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
 import { PracticeExercise } from "./domain/practice-exercise";
@@ -37,6 +38,8 @@ import { Roles } from "../roles/roles.decorator";
 import { RoleEnum } from "../roles/roles.enum";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import { StatusEnum } from "@/common/enums/status.enum";
+import { NullableType } from "@/utils/types/nullable.type";
 
 @ApiTags("Practiceexercises")
 @ApiBearerAuth()
@@ -115,6 +118,38 @@ export class PracticeExercisesController {
   findOne(@Param("id") id: string) {
     return this.practiceExercisesService.findOne(id);
   }
+
+  // @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
+  // @Get(":id/detail")
+  // @ApiQuery({
+  //   name: "order",
+  //   required: false,
+  //   enum: ["ASC", "DESC"],
+  //   description: "Order of questions by position (ASC or DESC)",
+  // })
+  // @ApiQuery({
+  //   name: "status",
+  //   required: false,
+  //   enum: StatusEnum,
+  //   description: "Status filter for questions",
+  // })
+  // async getDetail(
+  //   @Param("id") id: string,
+  //   @Query("page") page = 1,
+  //   @Query("limit") limit = 10,
+  //   @Query("order") order: "ASC" | "DESC" = "ASC",
+  //   @Query("status") status?: StatusEnum,
+  // ): Promise<NullableType<PracticeExercise>> {
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
+  //   return this.practiceExercisesService.getPracticeExerciseDetail(id, {
+  //     page,
+  //     limit,
+  //     order,
+  //     status,
+  //   });
+  // }
 
   @Roles(RoleEnum.admin, RoleEnum.staff)
   @Patch(":id")

@@ -15,7 +15,6 @@ export class LessonRelationalRepository implements LessonRepository {
     @InjectRepository(LessonEntity)
     private readonly lessonRepository: Repository<LessonEntity>,
   ) {}
-
   async create(data: Lesson): Promise<Lesson> {
     const persistenceModel = LessonMapper.toPersistence(data);
     const newEntity = await this.lessonRepository.save(
@@ -57,13 +56,13 @@ export class LessonRelationalRepository implements LessonRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<Lesson[]> {
     const { page, limit } = paginationOptions;
-
+  
     const entities = await this.lessonRepository
       .createQueryBuilder("lesson")
       .innerJoinAndSelect(
         "lesson.lessonCourses",
         "lessonCourse",
-        "lessonCourse.course.id = :courseId",
+        "lessonCourse.courseId = :courseId",
         { courseId },
       )
       .leftJoinAndSelect("lesson.file", "file")
@@ -71,11 +70,12 @@ export class LessonRelationalRepository implements LessonRepository {
       .leftJoinAndSelect("question.answers", "answer")
       .skip((page - 1) * limit)
       .take(limit)
-      .orderBy("lesson.createdAt", "DESC")
+      .orderBy("lessonCourse.position", "ASC")
       .getMany();
-
+  
     return entities.map((entity) => LessonMapper.toDomain(entity));
   }
+  
 
   async getLessonDetail(
     id: Lesson["id"],
@@ -103,6 +103,39 @@ export class LessonRelationalRepository implements LessonRepository {
     const entity = await queryBuilder.getOne();
     return entity ? LessonMapper.toDomain(entity) : null;
   }
+
+  // async getLessonDetail(
+  //   id: Lesson["id"],
+  //   {
+  //     page,
+  //     limit,
+  //     order,
+  //     status,
+  //   }: IPaginationOptions & { order: "ASC" | "DESC"; status?: StatusEnum; courseId?: string },
+  // ): Promise<NullableType<Lesson>> {
+  //   const queryBuilder = this.lessonRepository
+  //     .createQueryBuilder("lesson")
+  //     .leftJoinAndSelect("lesson.file", "file")
+  //     .leftJoinAndSelect("lesson.lessonCourses", "lessonCourse")
+  //     .addSelect("lessonCourse.position")
+  //     .leftJoinAndSelect("lesson.questions", "question") 
+  //     .leftJoinAndSelect("question.answers", "answer")
+  //     .where("lesson.id = :id", { id })
+  //     .orderBy("question.position", order)
+  //     .skip((page - 1) * limit)
+  //     .take(limit);
+
+  //   if (courseId) {
+  //     queryBuilder.andWhere("lessonCourse.courseId = :courseId", { courseId });
+  //   }
+
+  //   if (status) {
+  //     queryBuilder.andWhere("question.status = :status", { status });
+  //   }
+
+  //   const entity = await queryBuilder.getOne();
+  //   return entity ? LessonMapper.toDomain(entity) : null;
+  // }
 
   async findById(id: Lesson["id"]): Promise<NullableType<Lesson>> {
     const entity = await this.lessonRepository.findOne({

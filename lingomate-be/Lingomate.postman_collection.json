@@ -301,7 +301,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NTUsImlhdCI6MTcyOTk2MjkzNCwiZXhwIjoxNzI5OTY0NzM0fQ.FmzTrSbZPxmRiU11d3suElCiIUMqoN-RhhwmHI-hS84",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
 									"type": "string"
 								}
 							]
@@ -314,16 +314,16 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/E:/OneDrive/Pictures/Background/7f151bc26ead8d7e458bb7688d36fd82.jpg"
+									"src": "postman-cloud:///1ef91c79-fcfc-4d50-9440-29516ab65eee"
 								},
 								{
 									"key": "name",
-									"value": "English 5",
+									"value": "English 6",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "Course 5",
+									"value": "Course 6",
 									"type": "text"
 								},
 								{
@@ -361,7 +361,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MiwiaWF0IjoxNzMwMDgxODAwLCJleHAiOjE3MzAwODM2MDB9.U6_MizKOcPS7osXc6x-3DUSzJGfGiNC1Qwcd_7246ZQ",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODcsImlhdCI6MTczMTEyNTEyOCwiZXhwIjoxNzMxMTI2OTI4fQ.faAhCTA74Mgg_HOV2WWH-vSTCYy0z1pRWpgP4vxAk7I",
 									"type": "string"
 								}
 							]
@@ -466,7 +466,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MiwiaWF0IjoxNzMwMDgxODAwLCJleHAiOjE3MzAwODM2MDB9.U6_MizKOcPS7osXc6x-3DUSzJGfGiNC1Qwcd_7246ZQ",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
 									"type": "string"
 								}
 							]
@@ -474,7 +474,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/dfdfc103-b252-412f-8c17-d57eaa1e7315/details",
+							"raw": "{{HOST}}/api/v1/courses/a2a8bea1-93e8-41bc-b654-9c4653c7f1f0/details",
 							"host": [
 								"{{HOST}}"
 							],
@@ -482,7 +482,7 @@
 								"api",
 								"v1",
 								"courses",
-								"dfdfc103-b252-412f-8c17-d57eaa1e7315",
+								"a2a8bea1-93e8-41bc-b654-9c4653c7f1f0",
 								"details"
 							]
 						}
@@ -845,7 +845,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODksImlhdCI6MTczMTEyODc5MCwiZXhwIjoxNzMxMTMwNTkwfQ.xveHFNivMm0l--qUsFO35HrkSh5Z6grOfRt5-1GGE6k",
 									"type": "string"
 								}
 							]
@@ -886,7 +886,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODQsImlhdCI6MTczMTA5MDgxMSwiZXhwIjoxNzMxMDkyNjExfQ.NvXuVUS5TEVUU-HgKZZiqQcM2UqRUjLqcf_O_TGxMuU",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
 									"type": "string"
 								}
 							]
@@ -1154,6 +1154,9 @@
 				},
 				{
 					"name": "find all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1167,6 +1170,10 @@
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
 						"url": {
 							"raw": "{{HOST}}/api/v1/questions?page=1&limit=10",
 							"host": [
@@ -1678,7 +1685,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODUsImlhdCI6MTczMTA5MzAzNCwiZXhwIjoxNzMxMDk0ODM0fQ.XMbu_Fiwh_okar5sYjTISjgT-gWL_EnBwzWlgjAPlqY",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODgsImlhdCI6MTczMTEyNjUyNiwiZXhwIjoxNzMxMTI4MzI2fQ.uQD_SDGrYXFRPd_yq_nljv9ESRNc36s2eP_au3Ql9w4",
 									"type": "string"
 								}
 							]
@@ -1690,7 +1697,7 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "Bài thực hành 1",
+									"value": "Bài thực hành 4",
 									"type": "text"
 								},
 								{
@@ -1708,12 +1715,11 @@
 								{
 									"key": "price",
 									"value": "100",
-									"type": "text",
-									"disabled": true
+									"type": "text"
 								},
 								{
 									"key": "practiceType",
-									"value": "READING",
+									"value": "LISTENING",
 									"type": "text"
 								},
 								{
@@ -1751,7 +1757,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODUsImlhdCI6MTczMTA5MzAzNCwiZXhwIjoxNzMxMDk0ODM0fQ.XMbu_Fiwh_okar5sYjTISjgT-gWL_EnBwzWlgjAPlqY",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
 									"type": "string"
 								}
 							]
@@ -1759,7 +1765,75 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "{{HOST}}/api/v1/practice-exercises/11ca653b-d7ec-4ecc-a103-c2128e1a41d4",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"practice-exercises",
+								"11ca653b-d7ec-4ecc-a103-c2128e1a41d4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/practice-exercises?page=1&limit=1",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"practice-exercises"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/practice-exercises/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"practice-exercises",
+								""
+							]
 						}
 					},
 					"response": []

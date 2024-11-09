@@ -1,3 +1,4 @@
+import { LessonCourse } from './../../../../../lesson-courses/domain/lesson-course';
 import { CreateLessonDto } from "@/domain/lessons/dto/create-lesson.dto";
 import { QuestionMapper } from "@/domain/questions/infrastructure/persistence/relational/mappers/question.mapper";
 import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
@@ -5,6 +6,7 @@ import { Lesson } from "../../../../domain/lesson";
 import { LessonEntity } from "../entities/lesson.entity";
 import { LessonResponseDto } from "./../../../../dto/response-lesson.dto";
 import { AnswerMapper } from "@/domain/answers/infrastructure/persistence/relational/mappers/answer.mapper";
+import { CourseEntity } from '@/domain/courses/infrastructure/persistence/relational/entities/course.entity';
 
 export class LessonMapper {
   static toDomain(raw: LessonEntity): Lesson {
@@ -23,6 +25,20 @@ export class LessonMapper {
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
     domainEntity.deletedAt = raw.deletedAt;
+
+    if (raw.lessonCourses) {
+      domainEntity.lessonCourses = raw.lessonCourses.map(lessonCourse => {
+        const course = new LessonCourse();
+        course.id = lessonCourse.id;
+        course.lesson = lessonCourse.lesson;
+        course.course = lessonCourse.course;
+        course.status = lessonCourse.status;
+        course.position = lessonCourse.position;
+        course.createdAt = lessonCourse.createdAt;
+        course.updatedAt = lessonCourse.updatedAt;
+        return course;
+      });
+    }
 
     if (raw.questions) {
       domainEntity.questions = raw.questions.map((question) => {
@@ -102,6 +118,9 @@ export class LessonMapper {
     dto.status = model.status;
     dto.createdAt = model.createdAt;
     dto.updatedAt = model.updatedAt;
+
+    dto.position = model.lessonCourses?.[0]?.position ?? null;
+
     dto.questions = model.questions
       ? model.questions.map((question) => {
           const questionDto = QuestionMapper.toDto(question);

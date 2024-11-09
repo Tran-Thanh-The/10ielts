@@ -23,6 +23,7 @@ import lessonApi from '@/api/lessonApi';
 import { LessonRequest } from '@/types/interface/Lesson';
 import Breadcrumb from '@/features/dashboard/components/breadcrumb/Breadcrumb';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import courseApi from '@/api/courseApi';
 
 interface LessonApiRequest extends LessonRequest {
   append(name: string, value: string | Blob, fileName?: string): void;
@@ -73,6 +74,7 @@ const CreateUpdateLesson = () => {
   const [error, setError] = useState<string | null>(null);
   const [lessonType, setLessonType] = useState<LessonTypes | ''>('');
   const [selectedFileName, setSelectedFileName] = useState<string>('');
+  const [course, setCourse] = useState<any>(null);
 
   const {
     control,
@@ -90,9 +92,17 @@ const CreateUpdateLesson = () => {
     },
   });
 
+  useEffect(() => {
+    courseApi.getCourseDetailsById(idCourse as string).then((res) => {
+      setCourse(res.data);
+    });
+  }, []);
+
   const selectedLessonType = watch('lessonType');
 
   const onSubmit = async (data: LessonRequest) => {
+    console.log(data);
+    // return;
     try {
       setIsLoading(true);
       setError(null);
@@ -102,7 +112,7 @@ const CreateUpdateLesson = () => {
       formData.append('content', data.content || '');
       formData.append('lessonType', data.lessonType || '');
       if (data.videoUrl) {
-        formData.append('videoUrl', data.videoUrl);
+        formData.append('file', data.videoUrl);
       }
 
       console.log(formData);
@@ -140,7 +150,11 @@ const CreateUpdateLesson = () => {
           icon={<LibraryBooksIcon fontSize="small" />}
           onClick={() => navigate('/dashboard/courses')}
         />
-        <Breadcrumb label={'course?.name'} component="a" href="#" />
+        <Breadcrumb
+          label={course?.title}
+          component="a"
+          onClick={() => navigate(`/dashboard/courses/${idCourse}`)}
+        />
         <Breadcrumb label={'Tạo mới bài học'} component="a" href="#" />
       </Breadcrumbs>
 
@@ -216,7 +230,8 @@ const CreateUpdateLesson = () => {
           )}
         />
 
-        {selectedLessonType === LessonTypes.Video && (
+        {(selectedLessonType === LessonTypes.Video ||
+          selectedLessonType === LessonTypes.Docs) && (
           <Controller
             name="videoUrl"
             control={control}
@@ -236,12 +251,15 @@ const CreateUpdateLesson = () => {
                     startIcon={<CloudUpload />}
                     sx={{ flexGrow: 1 }}
                   >
-                    {selectedFileName || 'Upload Video File'}
+                    {selectedFileName || 'Upload  File'}
                     <Input
                       type="file"
                       sx={{ display: 'none' }}
                       inputProps={{
-                        accept: 'video/mp4',
+                        accept:
+                          selectedLessonType === LessonTypes.Video
+                            ? 'video/mp4'
+                            : 'application/pdf',
                         'data-testid': 'video-upload',
                       }}
                       onChange={(e) => {

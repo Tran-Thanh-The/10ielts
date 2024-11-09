@@ -23,6 +23,9 @@ const courseApi = {
   getCourseById: (id: string) => {
     return axiosInstance.get<any>(`/courses/${id}`);
   },
+  getCourseDetailsById: (id: string) => {
+    return axiosInstance.get<any>(`/courses/${id}/details`);
+  },
 };
 
 export default courseApi;

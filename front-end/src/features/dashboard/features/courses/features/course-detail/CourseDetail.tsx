@@ -105,18 +105,22 @@ export default function CourseDetail() {
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
+    handleFetchCourse();
+  }, [idCourse, reload]);
+
+  const handleFetchCourse = async () => {
     if (!idCourse) {
       return;
     }
     dispatch(setAppLoading(true));
-    courseApi.getCourseById(idCourse).then((response) => {
-      setCourse({
-        ...response.data,
-        lessons: MOCK_LESSONS,
-      });
-      dispatch(setAppLoading(false));
+    const courseResponse = await courseApi.getCourseById(idCourse);
+    const courseDetailsResponse = await courseApi.getCourseDetailsById(idCourse);
+    setCourse({
+      ...courseResponse.data,
+      lessons: courseDetailsResponse.data.lessons,
     });
-  }, [idCourse, reload]);
+    dispatch(setAppLoading(false));
+  }
 
   const triggerReload = () => {
     setReload(!reload);
@@ -415,9 +419,10 @@ export default function CourseDetail() {
               {tabIndex === 2 && 'Danh sách bài học Docs'}
               {tabIndex === 3 && 'Danh sách Exercises'}
             </Typography>
-            {paginatedFilteredLessons.map((lesson) => (
+            {paginatedFilteredLessons.map((lesson, index) => (
               <LessonCard
                 key={lesson.id}
+                index={index}
                 lesson={lesson}
                 onMenuOpen={handleMenuOpen}
                 handRouterLessonDetail={handRouterLessonDetail}

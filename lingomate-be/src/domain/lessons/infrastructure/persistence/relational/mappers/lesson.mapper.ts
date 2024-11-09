@@ -1,12 +1,11 @@
-import { LessonCourse } from './../../../../../lesson-courses/domain/lesson-course';
+import { AnswerMapper } from "@/domain/answers/infrastructure/persistence/relational/mappers/answer.mapper";
 import { CreateLessonDto } from "@/domain/lessons/dto/create-lesson.dto";
 import { QuestionMapper } from "@/domain/questions/infrastructure/persistence/relational/mappers/question.mapper";
 import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 import { Lesson } from "../../../../domain/lesson";
 import { LessonEntity } from "../entities/lesson.entity";
+import { LessonCourse } from './../../../../../lesson-courses/domain/lesson-course';
 import { LessonResponseDto } from "./../../../../dto/response-lesson.dto";
-import { AnswerMapper } from "@/domain/answers/infrastructure/persistence/relational/mappers/answer.mapper";
-import { CourseEntity } from '@/domain/courses/infrastructure/persistence/relational/entities/course.entity';
 
 export class LessonMapper {
   static toDomain(raw: LessonEntity): Lesson {
@@ -40,16 +39,27 @@ export class LessonMapper {
       });
     }
 
-    if (raw.questions) {
+     if (raw.questions) {
       domainEntity.questions = raw.questions.map((question) => {
         const questionDomain = QuestionMapper.toDomain(question);
 
-        // Map từng answer trong question và loại bỏ reference đến question trong answer
+        // Map file của question nếu có
+        if (question.file) {
+          questionDomain.file = FileMapper.toDomain(question.file);
+        }
+
+        // Map answers và loại bỏ reference ngược
         questionDomain.answers = question.answers
           ? question.answers.map((answer) => {
               const answerDomain = AnswerMapper.toDomain(answer);
-              // Loại bỏ mối quan hệ ngược để tránh vòng lặp
+              // Loại bỏ mối quan hệ ngược
               delete answerDomain.question;
+              
+              // Map file của answer nếu có
+              if (answer.file) {
+                answerDomain.file = FileMapper.toDomain(answer.file);
+              }
+
               return answerDomain;
             })
           : [];
@@ -121,15 +131,29 @@ export class LessonMapper {
 
     dto.position = model.lessonCourses?.[0]?.position ?? null;
 
-    dto.questions = model.questions
-      ? model.questions.map((question) => {
-          const questionDto = QuestionMapper.toDto(question);
-          questionDto.answers = question.answers
-            ? question.answers.map((answer) => AnswerMapper.toDto(answer))
-            : [];
-          return questionDto;
-        })
-      : [];
+     // Map questions và answers
+     dto.questions = model.questions
+     ? model.questions.map((question) => {
+         const questionDto = QuestionMapper.toDto(question);
+         
+         if (question.file) {
+           questionDto.file = question.file;
+         }
+
+         questionDto.answers = question.answers
+           ? question.answers.map((answer) => {
+               const answerDto = AnswerMapper.toDto(answer);
+
+               if (answer.file) {
+                 answerDto.file = answer.file;
+               }
+
+               return answerDto;
+             })
+           : [];
+         return questionDto;
+       })
+     : [];
     return dto;
   }
 }

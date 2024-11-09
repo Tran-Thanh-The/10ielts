@@ -51,8 +51,14 @@ import { InvoiceProductsModule } from "@/domain/invoice-products/invoice-product
 
 import { AnswerHistoriesModule } from "@/domain/answer-histories/answer-histories.module";
 
+import { ConversationsModule } from "@/domain/conversations/conversations.module";
+
+import { ChatsModule } from "@/domain/chats/chats.module";
+
 @Module({
   imports: [
+    ChatsModule,
+    ConversationsModule,
     AnswerHistoriesModule,
     InvoiceProductsModule,
     CategoriesModule,

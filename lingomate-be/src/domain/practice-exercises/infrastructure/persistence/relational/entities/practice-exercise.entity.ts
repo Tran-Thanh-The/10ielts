@@ -67,7 +67,7 @@ export class PracticeExerciseEntity extends EntityRelationalHelper {
     scale: 2,
     nullable: true,
   })
-  price?: number | null;
+  price: number | null;
 
   @ApiProperty({ type: String })
   @Column({ type: String, nullable: true })

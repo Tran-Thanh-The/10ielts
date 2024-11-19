@@ -96,5 +96,32 @@ export class UserSeedService {
         }),
       );
     }
+
+    const countTeacher = await this.repository.count({
+      where: {
+        role: {
+          id: RoleEnum.teacher,
+        },
+      },
+    });
+
+    if (!countTeacher) {
+      const salt = await bcrypt.genSalt();
+      const password = await bcrypt.hash("string", salt);
+
+      await this.repository.save(
+        this.repository.create({
+          fullName: "Teacher Test",
+          email: "teacher1@gmail.com",
+          password,
+          role: {
+            id: RoleEnum.teacher,
+            name: "Teacher",
+          },
+          status: StatusEnum.ACTIVE,
+          dob: this.dateCreatedSeed,
+        }),
+      );
+    }
   }
 }

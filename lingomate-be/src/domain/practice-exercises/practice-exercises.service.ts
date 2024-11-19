@@ -1,12 +1,10 @@
+import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { PracticeExercise } from "./domain/practice-exercise";
 import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
 import { UpdatePracticeExerciseDto } from "./dto/update-practice-exercise.dto";
 import { PracticeExerciseRepository } from "./infrastructure/persistence/practice-exercise.repository";
-import { IPaginationOptions } from "@/utils/types/pagination-options";
-import { PracticeExercise } from "./domain/practice-exercise";
 import { PracticeExerciseMapper } from "./infrastructure/persistence/relational/mappers/practice-exercise.mapper";
-import { StatusEnum } from "@/common/enums/status.enum";
-import { NullableType } from "@/utils/types/nullable.type";
 
 @Injectable()
 export class PracticeExercisesService {

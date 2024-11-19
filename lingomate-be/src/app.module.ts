@@ -3,7 +3,7 @@ import authConfig from "@/domain/auth/config/auth.config";
 import { HomeModule } from "@/domain/home/home.module";
 import { SessionModule } from "@/domain/session/session.module";
 import { UsersModule } from "@/domain/users/users.module";
-import { Module } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { HeaderResolver } from "nestjs-i18n";
@@ -54,6 +54,7 @@ import { AnswerHistoriesModule } from "@/domain/answer-histories/answer-historie
 import { ConversationsModule } from "@/domain/conversations/conversations.module";
 
 import { ChatsModule } from "@/domain/chats/chats.module";
+import { PermissionMiddleware } from "./middlewares/permission.middleware";
 
 @Module({
   imports: [
@@ -129,4 +130,12 @@ import { ChatsModule } from "@/domain/chats/chats.module";
     }),
   ],
 })
-export class AppModule {}
+// export class AppModule {}
+
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(PermissionMiddleware)
+      .forRoutes('*');
+  }
+}

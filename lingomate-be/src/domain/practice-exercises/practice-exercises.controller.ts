@@ -1,45 +1,42 @@
 import {
-  Controller,
-  Get,
-  Post,
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from "@/utils/dto/infinity-pagination-response.dto";
+import { infinityPagination } from "@/utils/infinity-pagination";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import {
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
   Query,
   Req,
-  NotFoundException,
-  InternalServerErrorException,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
-import { PracticeExercisesService } from "./practice-exercises.service";
-import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
-import { UpdatePracticeExerciseDto } from "./dto/update-practice-exercise.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
   ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
-  ApiQuery,
-  ApiTags,
+  ApiTags
 } from "@nestjs/swagger";
-import { PracticeExercise } from "./domain/practice-exercise";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
-import { FindAllPracticeExercisesDto } from "./dto/find-all-practice-exercises.dto";
-import { RolesGuard } from "../roles/roles.guard";
 import { Roles } from "../roles/roles.decorator";
 import { RoleEnum } from "../roles/roles.enum";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
-import { StatusEnum } from "@/common/enums/status.enum";
-import { NullableType } from "@/utils/types/nullable.type";
+import { RolesGuard } from "../roles/roles.guard";
+import { PracticeExercise } from "./domain/practice-exercise";
+import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
+import { FindAllPracticeExercisesDto } from "./dto/find-all-practice-exercises.dto";
+import { UpdatePracticeExerciseDto } from "./dto/update-practice-exercise.dto";
+import { PracticeExercisesService } from "./practice-exercises.service";
 
 @ApiTags("Practiceexercises")
 @ApiBearerAuth()
@@ -53,7 +50,6 @@ export class PracticeExercisesController {
     private readonly practiceExercisesService: PracticeExercisesService,
   ) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post()
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")

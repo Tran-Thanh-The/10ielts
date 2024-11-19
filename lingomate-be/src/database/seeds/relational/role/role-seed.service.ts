@@ -56,5 +56,20 @@ export class RoleSeedService {
         }),
       );
     }
+
+    const countTeacher = await this.repository.count({
+      where: {
+        id: RoleEnum.teacher,
+      },
+    });
+
+    if (!countTeacher) {
+      await this.repository.save(
+        this.repository.create({
+          id: RoleEnum.teacher,
+          name: "Teacher",
+        }),
+      );
+    }
   }
 }

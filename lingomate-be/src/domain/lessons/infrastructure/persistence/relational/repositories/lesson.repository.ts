@@ -56,7 +56,7 @@ export class LessonRelationalRepository implements LessonRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<Lesson[]> {
     const { page, limit } = paginationOptions;
-  
+
     const entities = await this.lessonRepository
       .createQueryBuilder("lesson")
       .innerJoinAndSelect(
@@ -75,7 +75,7 @@ export class LessonRelationalRepository implements LessonRepository {
       .take(limit)
       .orderBy("lessonCourse.position", "ASC")
       .getMany();
-  
+
     return entities.map((entity) => LessonMapper.toDomain(entity));
   }
   // async findAllWithPaginationAndCourseId({
@@ -86,13 +86,13 @@ export class LessonRelationalRepository implements LessonRepository {
   //   paginationOptions: IPaginationOptions;
   // }): Promise<Lesson[]> {
   //   const { page, limit } = paginationOptions;
-  
+
   //   const entities = await this.lessonRepository
   //     .createQueryBuilder("lesson")
   //     .innerJoinAndSelect(
   //       "lesson.lessonCourses",
   //       "lessonCourse",
-  //       "lessonCourse.courseId = :courseId", 
+  //       "lessonCourse.courseId = :courseId",
   //       { courseId }
   //     )
   //     .leftJoinAndSelect("lesson.file", "file")
@@ -107,11 +107,9 @@ export class LessonRelationalRepository implements LessonRepository {
   //     .addOrderBy("question.position", "ASC")
   //     .addOrderBy("answer.position", "ASC")
   //     .getMany();
-  
+
   //   return entities.map((entity) => LessonMapper.toDomain(entity));
   // }
-  
-  
 
   async getLessonDetail(
     id: Lesson["id"],

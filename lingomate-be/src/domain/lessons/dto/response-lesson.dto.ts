@@ -79,7 +79,10 @@ export class LessonResponseDto {
   @Type(() => QuestionResponseDto)
   questions: QuestionResponseDto[];
 
-  @ApiPropertyOptional({ type: Number, description: "Position of the lesson in the course" })
+  @ApiPropertyOptional({
+    type: Number,
+    description: "Position of the lesson in the course",
+  })
   @IsOptional()
   position?: number | null;
 }

@@ -129,7 +129,11 @@ export class AnswersController {
   @ApiOkResponse({
     type: Answer,
   })
-  update(@Req() req, @Param("id") id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
+  update(
+    @Req() req,
+    @Param("id") id: string,
+    @Body() updateAnswerDto: UpdateAnswerDto,
+  ) {
     const userId = req.user.id;
     return this.answersService.update(userId, id, updateAnswerDto);
   }

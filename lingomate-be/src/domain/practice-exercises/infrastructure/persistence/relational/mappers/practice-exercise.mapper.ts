@@ -22,6 +22,9 @@ export class PracticeExerciseMapper {
     domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.createdBy = raw.createdBy;
+    domainEntity.updatedBy = raw.updatedBy;
+    domainEntity.deletedAt = raw.deletedAt;
     if (raw.questions) {
       domainEntity.questions = raw.questions.map((question) => {
         const questionDomain = QuestionMapper.toDomain(question);
@@ -56,6 +59,9 @@ export class PracticeExerciseMapper {
     persistenceEntity.status = domainEntity.status;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
+    persistenceEntity.createdBy = domainEntity.createdBy;
+    persistenceEntity.updatedBy = domainEntity.updatedBy;
+    persistenceEntity.deletedAt = domainEntity.deletedAt;
     if (domainEntity.questions) {
       persistenceEntity.questions = domainEntity.questions.map((question) =>
         QuestionMapper.toPersistence(question),
@@ -96,6 +102,9 @@ export class PracticeExerciseMapper {
     dto.status = model.status;
     dto.createdAt = model.createdAt;
     dto.updatedAt = model.updatedAt;
+    dto.createdBy = model.createdBy;
+    dto.updatedBy = model.updatedBy;
+    dto.deletedAt = model.deletedAt;
     dto.questions = model.questions
       ? model.questions.map((question) => {
           const questionDto = QuestionMapper.toDto(question);

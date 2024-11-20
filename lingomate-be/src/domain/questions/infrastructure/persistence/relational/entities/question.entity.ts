@@ -7,7 +7,7 @@ import { AnswerEntity } from "@/domain/answers/infrastructure/persistence/relati
 import { CategoryEntity } from "@/domain/categories/infrastructure/persistence/relational/entities/category.entity";
 import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
 import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
-import { UserQuestionEntity } from "@/domain/user-questions/infrastructure/persistence/relational/entities/user-question.entity";
+import { UserAnswerEntity } from "@/domain/user-answers/infrastructure/persistence/relational/entities/user-answer.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
@@ -95,14 +95,14 @@ export class QuestionEntity extends EntityRelationalHelper {
   lesson?: LessonEntity | null;
 
   @ApiProperty({
-    type: () => UserQuestionEntity,
+    type: () => UserAnswerEntity,
   })
   @OneToMany(
-    () => UserQuestionEntity,
-    (userQuestion) => userQuestion.question,
+    () => UserAnswerEntity,
+    (userAnswer) => userAnswer.question,
     { cascade: true },
   )
-  userQuestion: UserQuestionEntity[];
+  userAnswers: UserAnswerEntity[];
 
   @ApiProperty({
     type: () => AnswerEntity,
@@ -133,10 +133,10 @@ export class QuestionEntity extends EntityRelationalHelper {
   updatedAt: Date;
 
   @ApiProperty({ type: Number })
-  @Column({ type: Number})
+  @Column({ type: Number, nullable: true })
   createdBy: number;
 
   @ApiPropertyOptional({ type: Number })
-  @Column({ type: Number })
+  @Column({ type: Number, nullable: true })
   updatedBy?: number | null;
 }

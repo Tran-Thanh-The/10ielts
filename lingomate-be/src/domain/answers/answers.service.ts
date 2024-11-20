@@ -61,17 +61,18 @@ export class AnswersService {
 
   async update(
     userId: string,
-    id: Answer["id"], 
-    updateAnswerDto: UpdateAnswerDto) {
+    id: Answer["id"],
+    updateAnswerDto: UpdateAnswerDto,
+  ) {
     const existingAnswer = await this.answerRepository.findById(id);
     if (!existingAnswer) {
-      throw new NotFoundException(`Answer with id "${id}" not found.`)
+      throw new NotFoundException(`Answer with id "${id}" not found.`);
     }
 
     const updatedData = {
       ...updateAnswerDto,
       updatedBy: Number(userId),
-    }
+    };
     return this.answerRepository.update(id, updatedData);
   }
 

@@ -56,4 +56,13 @@ export class PracticeExercise {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty()
+  deletedAt: Date;
+
+  @ApiProperty({ type: Number })
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  updatedBy?: number | null;
 }

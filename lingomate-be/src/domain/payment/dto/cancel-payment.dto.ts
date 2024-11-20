@@ -3,9 +3,9 @@ import { IsOptional, IsString, Validate } from "class-validator";
 
 // Custom validator to allow either string or number
 import {
+  ValidationArguments,
   ValidatorConstraint,
   ValidatorConstraintInterface,
-  ValidationArguments,
 } from "class-validator";
 
 @ValidatorConstraint({ name: "isStringOrNumber", async: false })

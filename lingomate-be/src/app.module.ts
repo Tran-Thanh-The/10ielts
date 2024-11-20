@@ -56,8 +56,11 @@ import { ConversationsModule } from "@/domain/conversations/conversations.module
 import { ChatsModule } from "@/domain/chats/chats.module";
 import { PermissionMiddleware } from "./middlewares/permission.middleware";
 
+import { UserAnswersModule } from "@/domain/user-answers/user-answers.module";
+
 @Module({
   imports: [
+    UserAnswersModule,
     ChatsModule,
     ConversationsModule,
     AnswerHistoriesModule,
@@ -131,11 +134,8 @@ import { PermissionMiddleware } from "./middlewares/permission.middleware";
   ],
 })
 // export class AppModule {}
-
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(PermissionMiddleware)
-      .forRoutes('*');
+    consumer.apply(PermissionMiddleware).forRoutes("*");
   }
 }

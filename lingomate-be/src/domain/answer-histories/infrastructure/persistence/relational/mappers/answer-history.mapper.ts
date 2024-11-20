@@ -6,11 +6,13 @@ import { CreateAnswerHistoryDto } from "@/domain/answer-histories/dto/create-ans
 import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { UserMapper } from "@/domain/users/infrastructure/persistence/relational/mappers/user.mapper";
 
 export class AnswerHistoryMapper {
   static toDomain(raw: AnswerHistoryEntity): AnswerHistory {
     const domainEntity = new AnswerHistory();
     domainEntity.id = raw.id;
+    domainEntity.user = raw.user;
     domainEntity.practice = raw.practice;
     domainEntity.lesson = raw.lesson;
     domainEntity.totalScore = raw.totalScore;
@@ -32,6 +34,7 @@ export class AnswerHistoryMapper {
       domainEntity.practice,
     );
     persistenceEntity.lesson = LessonMapper.toPersistence(domainEntity.lesson);
+    persistenceEntity.user = UserMapper.toPersistence(domainEntity.user);
     persistenceEntity.totalScore = domainEntity.totalScore;
     persistenceEntity.startedAt = domainEntity.startedAt;
     persistenceEntity.completedAt = domainEntity.completedAt;

@@ -21,6 +21,7 @@ export class PracticeExercisesService {
       createPracticeExerciseDto.price = 0;
     }
     const model = PracticeExerciseMapper.toModel(createPracticeExerciseDto);
+    model.createdBy = Number(userId);
     const savedPracticeExercise =
       await this.practiceExerciseRepository.create(model);
     return savedPracticeExercise;
@@ -54,6 +55,7 @@ export class PracticeExercisesService {
   }
 
   async update(
+    userId: string,
     id: PracticeExercise["id"],
     updatePracticeExerciseDto: UpdatePracticeExerciseDto,
   ) {
@@ -61,9 +63,13 @@ export class PracticeExercisesService {
     if (!existingPractice) {
       throw new NotFoundException(`Practice with id "${id}" not found.`);
     }
+    const updatedData = {
+      ...updatePracticeExerciseDto,
+      updatedBy: Number(userId),
+    }
     return this.practiceExerciseRepository.update(
       id,
-      updatePracticeExerciseDto,
+      updatedData,
     );
   }
 

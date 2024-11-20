@@ -7,7 +7,6 @@ import { FilesLocalModule } from "@/files/infrastructure/uploader/local/files.mo
 import { CategoriesModule } from "../categories/categories.module";
 import { LessonCoursesModule } from "../lesson-courses/lesson-courses.module";
 import { PracticeExercisesModule } from "../practice-exercises/practice-exercises.module";
-import { UserQuestionsModule } from "../user-questions/user-questions.module";
 
 @Module({
   imports: [
@@ -17,7 +16,6 @@ import { UserQuestionsModule } from "../user-questions/user-questions.module";
     FilesLocalModule,
     LessonCoursesModule,
     PracticeExercisesModule,
-    UserQuestionsModule,
   ],
   controllers: [QuestionsController],
   providers: [QuestionsService],

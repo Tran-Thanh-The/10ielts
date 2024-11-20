@@ -27,7 +27,7 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
-  ApiTags
+  ApiTags,
 } from "@nestjs/swagger";
 import { Roles } from "../roles/roles.decorator";
 import { RoleEnum } from "../roles/roles.enum";
@@ -158,10 +158,12 @@ export class PracticeExercisesController {
     type: PracticeExercise,
   })
   update(
+    @Req() req,
     @Param("id") id: string,
     @Body() updatePracticeExerciseDto: UpdatePracticeExerciseDto,
   ) {
-    return this.practiceExercisesService.update(id, updatePracticeExerciseDto);
+    const userId = req.user.id;
+    return this.practiceExercisesService.update(userId, id, updatePracticeExerciseDto);
   }
 
   @Roles(RoleEnum.admin, RoleEnum.staff)

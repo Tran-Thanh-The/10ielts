@@ -6,6 +6,9 @@ export class ResponseAnswerHistoryDto {
   @ApiProperty({ type: String })
   id: string;
 
+  @ApiProperty({ type: Number })
+  user_id: number;
+
   @ApiPropertyOptional({ type: String })
   @IsString()
   @IsOptional()

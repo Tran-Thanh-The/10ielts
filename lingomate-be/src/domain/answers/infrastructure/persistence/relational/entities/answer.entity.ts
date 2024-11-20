@@ -76,10 +76,10 @@ export class AnswerEntity extends EntityRelationalHelper {
   updatedAt: Date;
 
   @ApiProperty({ type: Number })
-  @Column({ type: Number})
+  @Column({ type: Number, nullable: true })
   createdBy: number;
 
   @ApiPropertyOptional({ type: Number })
-  @Column({ type: Number })
+  @Column({ type: Number, nullable: true })
   updatedBy?: number | null;
 }

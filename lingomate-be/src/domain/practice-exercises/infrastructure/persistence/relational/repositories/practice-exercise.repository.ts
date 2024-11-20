@@ -81,7 +81,7 @@ export class PracticeExerciseRelationalRepository
     queryBuilder
       .orderBy("question.position", order)
       .addOrderBy("answer.position", order);
-      
+
     const entity = await queryBuilder.getOne();
     return entity ? PracticeExerciseMapper.toDomain(entity) : null;
   }

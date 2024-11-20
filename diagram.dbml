@@ -57,6 +57,8 @@ Table answer {
   question_id uuid
   createdAt timestamp
   updatedAt timestamp
+  createdBy int
+  updatedBy int
 }
 
 Table category {
@@ -136,10 +138,14 @@ Table practice_exercise {
   status StatusEnum
   createdAt timestamp
   updatedAt timestamp
+  deletedAt timestamp
+  createdBy int
+  updatedBy int
 }
 
 Table answer_history {
     id uuid [pk]
+    user_id int [ref: > user.id]
     practice_id uuid [ref: > practice_exercise.id, null]  // Null nếu làm bài trong lesson
     lesson_id uuid [ref: > lesson.id, null]  // Null nếu làm practice
     total_score decimal
@@ -166,18 +172,30 @@ Table question {
     practice_id uuid [null]  // Null nếu thuộc lesson
     createdAt timestamp
     updatedAt timestamp
+    createdBy int
+    updatedBy int
 }
 
-Table user_question {
+Table user_answers {
     id uuid [pk]
     answer_history_id uuid [ref: > answer_history.id] // Thêm trường này
-    question_id uuid
-    user_id int 
-    answerPick string
+    question_id uuid [ref: > question.id]
+    answerPick string //Câu trả lời cuả user
     status StatusEnum
     createdAt timestamp
     updatedAt timestamp
 }
+
+// Table user_question {
+//     id uuid [pk]
+//     question_id uuid
+//     user_id int 
+//     status StatusEnum
+//     createdAt timestamp
+//     updatedAt timestamp
+//     createdBy int
+//     updatedBy int
+// }
 
 Table role {
   id int [pk]
@@ -262,8 +280,7 @@ Ref: user_invoices.user_id > user.id
 Ref: user_invoices.invoice_id > invoice.id
 Ref: user_lesson.user_id > user.id
 Ref: user_lesson.lesson_id > lesson.id
-Ref: user_question.user_id > user.id
-Ref: user_question.question_id > question.id
+
 Ref: user.photo_id > file.id
 Ref: user.role_id > role.id
 Ref: lesson.file_id > file.id
@@ -271,3 +288,5 @@ Ref: question.file_id > file.id
 Ref: practice_exercise.user_id > user.id
 Ref: question.lesson_id > lesson.id
 Ref: question.practice_id > practice_exercise.id
+
+Ref: "answer_history"."status" < "answer_history"."startedAt"

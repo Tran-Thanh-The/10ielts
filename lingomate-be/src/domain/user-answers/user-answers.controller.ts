@@ -9,9 +9,9 @@ import {
   UseGuards,
   Query,
 } from "@nestjs/common";
-import { UserQuestionsService } from "./user-questions.service";
-import { CreateUserQuestionDto } from "./dto/create-user-question.dto";
-import { UpdateUserQuestionDto } from "./dto/update-user-question.dto";
+import { UserAnswersService } from "./user-answers.service";
+import { CreateUserAnswerDto } from "./dto/create-user-answer.dto";
+import { UpdateUserAnswerDto } from "./dto/update-user-answer.dto";
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -19,40 +19,40 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger";
-import { UserQuestion } from "./domain/user-question";
+import { UserAnswer } from "./domain/user-answer";
 import { AuthGuard } from "@nestjs/passport";
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
-import { FindAllUserQuestionsDto } from "./dto/find-all-user-questions.dto";
+import { FindAllUserAnswersDto } from "./dto/find-all-user-answers.dto";
 
-@ApiTags("Userquestions")
+@ApiTags("Useranswers")
 @ApiBearerAuth()
 @UseGuards(AuthGuard("jwt"))
 @Controller({
-  path: "user-questions",
+  path: "user-answers",
   version: "1",
 })
-export class UserQuestionsController {
-  constructor(private readonly userQuestionsService: UserQuestionsService) {}
+export class UserAnswersController {
+  constructor(private readonly userAnswersService: UserAnswersService) {}
 
   @Post()
   @ApiCreatedResponse({
-    type: UserQuestion,
+    type: UserAnswer,
   })
-  create(@Body() createUserQuestionDto: CreateUserQuestionDto) {
-    return this.userQuestionsService.create(createUserQuestionDto);
+  create(@Body() createUserAnswerDto: CreateUserAnswerDto) {
+    return this.userAnswersService.create(createUserAnswerDto);
   }
 
   @Get()
   @ApiOkResponse({
-    type: InfinityPaginationResponse(UserQuestion),
+    type: InfinityPaginationResponse(UserAnswer),
   })
   async findAll(
-    @Query() query: FindAllUserQuestionsDto,
-  ): Promise<InfinityPaginationResponseDto<UserQuestion>> {
+    @Query() query: FindAllUserAnswersDto,
+  ): Promise<InfinityPaginationResponseDto<UserAnswer>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -60,7 +60,7 @@ export class UserQuestionsController {
     }
 
     return infinityPagination(
-      await this.userQuestionsService.findAllWithPagination({
+      await this.userAnswersService.findAllWithPagination({
         paginationOptions: {
           page,
           limit,
@@ -77,10 +77,10 @@ export class UserQuestionsController {
     required: true,
   })
   @ApiOkResponse({
-    type: UserQuestion,
+    type: UserAnswer,
   })
   findOne(@Param("id") id: string) {
-    return this.userQuestionsService.findOne(id);
+    return this.userAnswersService.findOne(id);
   }
 
   @Patch(":id")
@@ -90,13 +90,13 @@ export class UserQuestionsController {
     required: true,
   })
   @ApiOkResponse({
-    type: UserQuestion,
+    type: UserAnswer,
   })
   update(
     @Param("id") id: string,
-    @Body() updateUserQuestionDto: UpdateUserQuestionDto,
+    @Body() updateUserAnswerDto: UpdateUserAnswerDto,
   ) {
-    return this.userQuestionsService.update(id, updateUserQuestionDto);
+    return this.userAnswersService.update(id, updateUserAnswerDto);
   }
 
   @Delete(":id")
@@ -106,6 +106,6 @@ export class UserQuestionsController {
     required: true,
   })
   remove(@Param("id") id: string) {
-    return this.userQuestionsService.remove(id);
+    return this.userAnswersService.remove(id);
   }
 }

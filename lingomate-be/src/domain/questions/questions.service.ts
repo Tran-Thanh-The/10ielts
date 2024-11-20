@@ -119,7 +119,8 @@ export class QuestionsService {
   async update(
     userId: string,
     id: Question["id"],
-    updateQuestionDto: UpdateQuestionDto) {
+    updateQuestionDto: UpdateQuestionDto,
+  ) {
     const existingQuestion = await this.questionRepository.findById(id);
     if (!existingQuestion) {
       throw new NotFoundException(`Question with id "${id}" not found.`);

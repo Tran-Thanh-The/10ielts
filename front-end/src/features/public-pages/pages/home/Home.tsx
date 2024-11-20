@@ -1,3 +1,4 @@
+import ChatPopup from '../../components/chat-popup/ChatPopup';
 import Banner from './components/banner/Banner';
 import Chat from './components/chat/Chat';
 import Partner from './components/partner/Partner';
@@ -16,6 +17,7 @@ const Home = () => {
       <ScrollToTopButton />
       <Chat />
       <Partner />
+      <ChatPopup />
     </>
   );
 };

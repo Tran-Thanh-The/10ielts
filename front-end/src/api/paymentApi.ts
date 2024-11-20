@@ -1,9 +1,9 @@
 import axiosInstance from '@/core/intercepter/Intercepter';
 
 const paymentApi = {
-  postPayment: (type: string, courseId: string) => {
-    const url = '';
-    return axiosInstance.post(url, { type, courseId });
+  postPayment: (type: string, id: string) => {
+    const url = '/payment/create-embedded-payment';
+    return axiosInstance.post(url, { type, id });
   },
 };
 

@@ -12,6 +12,7 @@ import {
   UploadedFile,
   InternalServerErrorException,
   NotFoundException,
+  Req,
 } from "@nestjs/common";
 import { AnswersService } from "./answers.service";
 import { CreateAnswerDto } from "./dto/create-answer.dto";
@@ -56,12 +57,15 @@ export class AnswersController {
     type: Answer,
   })
   async create(
+    @Req() req,
     @Param("questionId") questionId: string,
     @Body() createAnswerDto: CreateAnswerDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {
+      const userId = req.user.id;
       return await this.answersService.create(
+        userId,
         questionId,
         createAnswerDto,
         file,
@@ -125,8 +129,9 @@ export class AnswersController {
   @ApiOkResponse({
     type: Answer,
   })
-  update(@Param("id") id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
-    return this.answersService.update(id, updateAnswerDto);
+  update(@Req() req, @Param("id") id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
+    const userId = req.user.id;
+    return this.answersService.update(userId, id, updateAnswerDto);
   }
 
   @Roles(RoleEnum.admin, RoleEnum.staff)

@@ -30,6 +30,7 @@ import { InvoiceEntity } from "@/domain/invoices/infrastructure/persistence/rela
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
 import { ChatEntity } from "@/domain/chats/infrastructure/persistence/relational/entities/chat.entity";
+import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
 
 @Entity({
   name: "user",
@@ -136,9 +137,6 @@ export class UserEntity extends EntityRelationalHelper {
 
   @OneToMany(() => UserInvoicesEntity, (userInvoice) => userInvoice.user)
   invoices: InvoiceEntity[];
-
-  @OneToMany(() => UserQuestionEntity, (userQuestion) => userQuestion.user)
-  userQuestion: UserQuestionEntity[];
 
   @OneToMany(() => UserLessonEntity, (userLesson) => userLesson.user)
   userLesson: UserLessonEntity[];

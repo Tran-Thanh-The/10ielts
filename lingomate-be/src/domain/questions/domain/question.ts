@@ -72,6 +72,12 @@ export class Question {
   @ApiProperty()
   updatedAt: Date;
 
+  @ApiProperty({ type: Number })
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  updatedBy?: number | null;
+
   @ApiProperty({ type: () => Answer })
   answers: Answer[];
 }

@@ -7,8 +7,6 @@ import { LessonRepository } from "../lessons/infrastructure/persistence/lesson.r
 import { LessonMapper } from "../lessons/infrastructure/persistence/relational/mappers/lesson.mapper";
 import { PracticeExerciseRepository } from "../practice-exercises/infrastructure/persistence/practice-exercise.repository";
 import { PracticeExerciseMapper } from "../practice-exercises/infrastructure/persistence/relational/mappers/practice-exercise.mapper";
-import { UserQuestionMapper } from "../user-questions/infrastructure/persistence/relational/mappers/user-question.mapper";
-import { UserQuestionRepository } from "../user-questions/infrastructure/persistence/user-question.repository";
 import { CategoryMapper } from "./../categories/infrastructure/persistence/relational/mappers/category.mapper";
 import { Question } from "./domain/question";
 import { CreateQuestionDto } from "./dto/create-question.dto";
@@ -24,7 +22,6 @@ export class QuestionsService {
     private readonly filesLocalService: FilesLocalService,
     private readonly categoryRepository: CategoryRepository,
     private readonly practiceExerciseRepository: PracticeExerciseRepository,
-    private readonly userQuestionRepository: UserQuestionRepository,
   ) {}
 
   async create(
@@ -33,6 +30,7 @@ export class QuestionsService {
     fileQuestion: Express.Multer.File,
   ) {
     const model = QuestionMapper.toModel(createQuestionDto);
+    model.createdBy = Number(userId);
     console.log("Created question model:", model);
 
     if (createQuestionDto.category_id) {
@@ -98,14 +96,6 @@ export class QuestionsService {
     }
 
     const savedQuestion = await this.questionRepository.create(model);
-
-    //Thêm vào bảng user_question: xác định ai là người thêm question
-    const userQuestion = UserQuestionMapper.toModel({
-      user_id: Number(userId),
-      question_id: savedQuestion.id,
-      status: StatusEnum.ACTIVE,
-    });
-    await this.userQuestionRepository.create(userQuestion);
     return savedQuestion;
   }
 
@@ -126,13 +116,20 @@ export class QuestionsService {
     return this.questionRepository.findById(id);
   }
 
-  async update(id: Question["id"], updateQuestionDto: UpdateQuestionDto) {
+  async update(
+    userId: string,
+    id: Question["id"],
+    updateQuestionDto: UpdateQuestionDto) {
     const existingQuestion = await this.questionRepository.findById(id);
     if (!existingQuestion) {
       throw new NotFoundException(`Question with id "${id}" not found.`);
     }
+    const updatedData = {
+      ...updateQuestionDto,
+      updatedBy: Number(userId),
+    };
 
-    return this.questionRepository.update(id, updateQuestionDto);
+    return this.questionRepository.update(id, updatedData);
   }
 
   async remove(id: Question["id"]) {

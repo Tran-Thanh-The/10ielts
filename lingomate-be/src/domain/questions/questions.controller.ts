@@ -128,10 +128,12 @@ export class QuestionsController {
     type: Question,
   })
   update(
+    @Req() req,
     @Param("id") id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,
   ) {
-    return this.questionsService.update(id, updateQuestionDto);
+    const userId = req.user.id;
+    return this.questionsService.update(userId, id, updateQuestionDto);
   }
 
   @Roles(RoleEnum.admin, RoleEnum.staff)

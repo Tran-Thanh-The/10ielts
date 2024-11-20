@@ -28,7 +28,9 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
       
       // Answers
       Permission.READ_ANSWER,
+      Permission.CREATE_ANSWER,
       Permission.UPDATE_ANSWER,
+      Permission.DELETE_ANSWER,
 
       // Answers History
       Permission.READ_ANSWER_HISTORY,
@@ -68,7 +70,6 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
       Permission.READ_QUESTION,
       Permission.READ_LESSON,
       Permission.READ_COURSE,
-      Permission.CREATE_ANSWER,
       Permission.READ_ANSWER,
       Permission.CREATE_ANSWER_HISTORY,
       Permission.READ_ANSWER_HISTORY,

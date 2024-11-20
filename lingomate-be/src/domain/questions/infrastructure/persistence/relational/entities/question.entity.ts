@@ -10,7 +10,7 @@ import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructu
 import { UserQuestionEntity } from "@/domain/user-questions/infrastructure/persistence/relational/entities/user-question.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   Column,
   CreateDateColumn,
@@ -131,4 +131,12 @@ export class QuestionEntity extends EntityRelationalHelper {
   @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: Number})
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  @Column({ type: Number })
+  updatedBy?: number | null;
 }

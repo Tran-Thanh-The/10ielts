@@ -99,4 +99,11 @@ export class QuestionResponseDto {
 
   @ApiProperty({ type: Date })
   updatedAt?: Date;
+
+  @ApiProperty({ type: Number })
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  @IsOptional()
+  updatedBy?: number | null;
 }

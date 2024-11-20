@@ -32,6 +32,8 @@ export class QuestionMapper {
     domainEntity.category = raw.category;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.createdBy = raw.createdBy;
+    domainEntity.updatedBy = raw.updatedBy;
 
     return domainEntity;
   }
@@ -59,6 +61,8 @@ export class QuestionMapper {
     persistenceEntity.category = domainEntity.category;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
+    persistenceEntity.createdBy = domainEntity.createdBy;
+    persistenceEntity.updatedBy = domainEntity.updatedBy;
 
     return persistenceEntity;
   }
@@ -100,7 +104,8 @@ export class QuestionMapper {
     dto.status = model.status;
     dto.createdAt = model.createdAt;
     dto.updatedAt = model.updatedAt;
-
+    dto.createdBy = model.createdBy;
+    dto.updatedBy = model.updatedBy;
     if (model.lesson) {
       dto.lesson_id = model.lesson.id;
     }

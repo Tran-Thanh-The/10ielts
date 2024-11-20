@@ -10,9 +10,13 @@ export class PermissionMiddleware implements NestMiddleware {
   private readonly publicPaths = [
     '/api/v1/auth/email/login',
     '/api/v1/auth/email/register',
+    '/api/v1/auth/email/confirm',
+    '/api/v1/auth/email/confirm/new',
     '/api/v1/auth/forgot/password',
+    '/api/v1/auth/reset/password',
     '/api/v1/auth/refresh',
-    '/api/v1/auth/email/confirm'
+    '/api/v1/auth/logout',
+    '/api/v1/auth/me',
   ];
 
   constructor(private readonly jwtService: JwtService) {}

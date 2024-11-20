@@ -6,6 +6,7 @@ import { IPaginationOptions } from "@/utils/types/pagination-options";
 import {
   HttpStatus,
   Injectable,
+  NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
 import bcrypt from "bcryptjs";
@@ -16,6 +17,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { FilterUserDto, SortUserDto } from "./dto/query-user.dto";
 import { UserRepository } from "./infrastructure/persistence/user.repository";
 
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -23,10 +25,11 @@ export class UsersService {
     private readonly filesService: FilesService,
   ) {}
 
-  async create(createProfileDto: CreateUserDto): Promise<User> {
+  async create( userId: string | null, createProfileDto: CreateUserDto): Promise<User> {
     const clonedPayload = {
       provider: AuthProvidersEnum.email,
       ...createProfileDto,
+      createdBy: Number(userId),
     };
     if (clonedPayload.password) {
       const salt = await bcrypt.genSalt();
@@ -77,22 +80,8 @@ export class UsersService {
     } else {
       clonedPayload.role = { id: RoleEnum.user };
     }
-
-    // if (clonedPayload.status) {
-    //   const statusObject = Object.values(StatusEnum)
-    //     .map(String)
-    //     .includes(String(clonedPayload.status));
-    //   if (!statusObject) {
-    //     throw new UnprocessableEntityException({
-    //       status: HttpStatus.UNPROCESSABLE_ENTITY,
-    //       errors: {
-    //         status: "statusNotExists",
-    //       },
-    //     });
-    //   }
-    // }
     clonedPayload.status = StatusEnum.ACTIVE;
-
+    
     return this.usersRepository.create(clonedPayload);
   }
 
@@ -134,6 +123,7 @@ export class UsersService {
   }
 
   async update(
+    userId: string | null,
     id: User["id"],
     payload: DeepPartial<User>,
   ): Promise<User | null> {
@@ -204,11 +194,23 @@ export class UsersService {
         });
       }
     }
-
+    if (userId) {
+      clonedPayload.updatedBy = Number(userId);
+    }
     return this.usersRepository.update(id, clonedPayload);
   }
 
-  async remove(id: User["id"]): Promise<void> {
+  async remove(userId: string | null, id: User["id"]): Promise<void> {
+    if (userId) {
+      const user = await this.usersRepository.findById(id);
+      if (!user) {
+        throw new NotFoundException(`User with ID ${id} not found.`);
+      }
+        // Cập nhật deletedBy
+      user.deletedBy = Number(userId);
+      await this.usersRepository.save(user);
+    }
+
     await this.usersRepository.remove(id);
   }
 }

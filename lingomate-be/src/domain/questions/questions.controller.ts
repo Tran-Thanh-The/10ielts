@@ -49,7 +49,7 @@ import { RoleEnum } from "../roles/roles.enum";
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Post()
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
@@ -78,7 +78,6 @@ export class QuestionsController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(Question),
@@ -103,7 +102,6 @@ export class QuestionsController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -117,7 +115,7 @@ export class QuestionsController {
     return this.questionsService.findOne(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -136,7 +134,7 @@ export class QuestionsController {
     return this.questionsService.update(userId, id, updateQuestionDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Delete(":id")
   @ApiParam({
     name: "id",

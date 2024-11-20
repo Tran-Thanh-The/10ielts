@@ -53,7 +53,7 @@ import { StatusEnum } from "@/common/enums/status.enum";
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Post(":courseId")
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
@@ -87,7 +87,6 @@ export class LessonsController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(Lesson),
@@ -111,7 +110,6 @@ export class LessonsController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get("course/:courseId")
   @ApiParam({
     name: "courseId",
@@ -142,7 +140,6 @@ export class LessonsController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id/detail")
   @ApiQuery({
     name: "order",
@@ -174,7 +171,6 @@ export class LessonsController {
     });
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -188,7 +184,7 @@ export class LessonsController {
     return this.lessonsService.findById(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -214,7 +210,7 @@ export class LessonsController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Delete(":id")
   @ApiParam({
     name: "id",

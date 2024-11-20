@@ -27,7 +27,7 @@ import { UserCourseEntity } from "@/domain/user-courses/infrastructure/persisten
 import { UserInvoicesEntity } from "@/domain/user-invoices/infrastructure/persistence/relational/entities/user-invoices.entity";
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
 import { AnswerHistoryEntity } from "@/domain/answer-histories/infrastructure/persistence/relational/entities/answer-history.entity";
 import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
@@ -133,6 +133,18 @@ export class UserEntity extends EntityRelationalHelper {
   @ApiProperty()
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: Number, nullable: true })
+  createdBy?: number | null;
+
+  @ApiPropertyOptional({ type: Number })
+  @Column({ type: Number, nullable: true })
+  updatedBy?: number | null;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: Number, nullable: true })
+  deletedBy?: number | null;
 
   @OneToMany(() => AnswerHistoryEntity, (answerHistory) => answerHistory.user)
   answerHistories: AnswerHistoryEntity[];

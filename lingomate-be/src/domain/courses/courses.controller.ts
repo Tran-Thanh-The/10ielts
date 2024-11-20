@@ -50,7 +50,7 @@ import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Post()
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
@@ -93,7 +93,6 @@ export class CoursesController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get("/list")
   @ApiOperation({ summary: "Get list of courses with filters and pagination" })
   @ApiResponse({
@@ -117,32 +116,6 @@ export class CoursesController {
     );
   }
 
-  // @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
-  // @Get()
-  // @ApiOkResponse({
-  //   type: InfinityPaginationResponse(Course),
-  // })
-  // async findAll(
-  //   @Query() query: FindAllCoursesDto,
-  // ): Promise<InfinityPaginationResponseDto<Course>> {
-  //   const page = query?.page ?? 1;
-  //   let limit = query?.limit ?? 10;
-  //   if (limit > 50) {
-  //     limit = 50;
-  //   }
-
-  //   return infinityPagination(
-  //     await this.coursesService.findAllWithPagination({
-  //       paginationOptions: {
-  //         page,
-  //         limit,
-  //       },
-  //     }),
-  //     { page, limit },
-  //   );
-  // }
-
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -156,7 +129,6 @@ export class CoursesController {
     return this.coursesService.findOne(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id/details")
   @ApiParam({
     name: "id",
@@ -171,7 +143,7 @@ export class CoursesController {
     return this.coursesService.getCourseDetails(id, userId);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -185,7 +157,7 @@ export class CoursesController {
     return this.coursesService.update(id, updateCourseDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Delete(":id")
   @ApiParam({
     name: "id",

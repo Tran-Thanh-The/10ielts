@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   SerializeOptions,
   UseGuards,
 } from "@nestjs/common";
@@ -35,9 +36,10 @@ import { RolesGuard } from "../roles/roles.guard";
 import { User } from "./domain/user";
 import { QueryUserDto } from "./dto/query-user.dto";
 import { UsersService } from "./users.service";
+import { RolesRestrictionGuard } from "./guards/roles.restriction.guard";
+import { DeleteUserGuard } from "./guards/roles.deleted.guard";
 
 @ApiBearerAuth()
-@Roles(RoleEnum.admin)
 @UseGuards(AuthGuard("jwt"), RolesGuard)
 @ApiTags("Users")
 @Controller({
@@ -47,6 +49,7 @@ import { UsersService } from "./users.service";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @Post()
+  @UseGuards(RolesRestrictionGuard)
   @ApiCreatedResponse({
     type: User,
   })
@@ -54,8 +57,9 @@ export class UsersController {
     groups: ["admin"],
   })
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProfileDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createProfileDto);
+  create(@Req() req, @Body() createProfileDto: CreateUserDto): Promise<User> {
+    const userId = req.user.id;
+    return this.usersService.create(userId, createProfileDto);
   }
 
   @ApiOkResponse({
@@ -112,6 +116,7 @@ export class UsersController {
     groups: ["admin"],
   })
   @Patch(":id")
+  @UseGuards(RolesRestrictionGuard)
   @HttpCode(HttpStatus.OK)
   @ApiParam({
     name: "id",
@@ -119,10 +124,12 @@ export class UsersController {
     required: true,
   })
   update(
+    @Req() req,
     @Param("id") id: User["id"],
     @Body() updateProfileDto: UpdateUserDto,
   ): Promise<User | null> {
-    return this.usersService.update(id, updateProfileDto);
+    const userId = req.user.id;
+    return this.usersService.update(userId, id, updateProfileDto);
   }
 
   @Delete(":id")
@@ -132,7 +139,8 @@ export class UsersController {
     required: true,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param("id") id: User["id"]): Promise<void> {
-    return this.usersService.remove(id);
+  remove(@Req() req, @Param("id") id: User["id"]): Promise<void> {
+    const userId = req.user.id;
+    return this.usersService.remove(userId, id);
   }
 }

@@ -262,6 +262,9 @@ Table user {
   createdAt timestamp
   updatedAt timestamp
   deletedAt timestamp
+  createdBy int (null)
+  updatedBy int (null)
+  deletedBy int (null)
 }
 
 // Relationships

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 
 import { FindOptionsWhere, Repository } from "typeorm";
@@ -113,5 +113,12 @@ export class UsersRelationalRepository implements UserRepository {
 
   async remove(id: User["id"]): Promise<void> {
     await this.usersRepository.softDelete(id);
+  }
+
+  async save(user: User): Promise<void> {
+    if (!user || !user.id) {
+      throw new NotFoundException("user not found");
+    }
+    await this.usersRepository.save(UserMapper.toPersistence(user));
   }
 }

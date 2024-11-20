@@ -123,7 +123,7 @@ export class AuthService {
         });
       }
 
-      const user = await this.usersService.create({
+      const user = await this.usersService.create(null,{
         ...restDto,
         email: dto.email,
         status: StatusEnum.IN_ACTIVE,
@@ -215,7 +215,7 @@ export class AuthService {
 
     user.status = StatusEnum.ACTIVE;
 
-    await this.usersService.update(user.id, user);
+    await this.usersService.update(null, user.id, user);
   }
 
   async confirmNewEmail(hash: string): Promise<void> {
@@ -255,7 +255,7 @@ export class AuthService {
     user.email = newEmail;
     user.status = StatusEnum.ACTIVE;
 
-    await this.usersService.update(user.id, user);
+    await this.usersService.update(null, user.id, user);
   }
 
   async forgotPassword(email: string): Promise<void> {
@@ -336,7 +336,7 @@ export class AuthService {
       userId: user.id,
     });
 
-    await this.usersService.update(user.id, user);
+    await this.usersService.update(null, user.id, user);
   }
 
   async me(userJwtPayload: JwtPayloadType): Promise<NullableType<User>> {
@@ -435,7 +435,7 @@ export class AuthService {
     delete userDto.email;
     delete userDto.oldPassword;
 
-    await this.usersService.update(userJwtPayload.id, userDto);
+    await this.usersService.update(null, userJwtPayload.id, userDto);
 
     return this.usersService.findById(userJwtPayload.id);
   }
@@ -485,7 +485,7 @@ export class AuthService {
   }
 
   async softDelete(user: User): Promise<void> {
-    await this.usersService.remove(user.id);
+    await this.usersService.remove(null, user.id);
   }
 
   async logout(data: Pick<JwtRefreshPayloadType, "sessionId">) {

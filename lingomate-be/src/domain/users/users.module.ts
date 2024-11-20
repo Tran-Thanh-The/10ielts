@@ -5,6 +5,7 @@ import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 import { RelationalUserPersistenceModule } from "./infrastructure/persistence/relational/relational-persistence.module";
 import { FilesModule } from "../../files/files.module";
+import { UserEntity } from "./infrastructure/persistence/relational/entities/user.entity";
 
 const infrastructurePersistenceModule = RelationalUserPersistenceModule;
 

@@ -76,7 +76,6 @@ export class PracticeExercisesController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(PracticeExercise),
@@ -101,7 +100,6 @@ export class PracticeExercisesController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -115,39 +113,7 @@ export class PracticeExercisesController {
     return this.practiceExercisesService.findOne(id);
   }
 
-  // @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
-  // @Get(":id/detail")
-  // @ApiQuery({
-  //   name: "order",
-  //   required: false,
-  //   enum: ["ASC", "DESC"],
-  //   description: "Order of questions by position (ASC or DESC)",
-  // })
-  // @ApiQuery({
-  //   name: "status",
-  //   required: false,
-  //   enum: StatusEnum,
-  //   description: "Status filter for questions",
-  // })
-  // async getDetail(
-  //   @Param("id") id: string,
-  //   @Query("page") page = 1,
-  //   @Query("limit") limit = 10,
-  //   @Query("order") order: "ASC" | "DESC" = "ASC",
-  //   @Query("status") status?: StatusEnum,
-  // ): Promise<NullableType<PracticeExercise>> {
-  //   if (limit > 50) {
-  //     limit = 50;
-  //   }
-  //   return this.practiceExercisesService.getPracticeExerciseDetail(id, {
-  //     page,
-  //     limit,
-  //     order,
-  //     status,
-  //   });
-  // }
-
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -166,7 +132,7 @@ export class PracticeExercisesController {
     return this.practiceExercisesService.update(userId, id, updatePracticeExerciseDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Delete(":id")
   @ApiParam({
     name: "id",

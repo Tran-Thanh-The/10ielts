@@ -46,6 +46,10 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
 
     // Users
     Permission.READ_USER,
+    Permission.READ_USER_BY_ID,
+    Permission.CREATE_USER,
+    Permission.UPDATE_USER,
+    Permission.DELETE_USER,
   ],
 
   [Role.staff]: [
@@ -61,11 +65,11 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     Permission.CREATE_USER,
     Permission.UPDATE_USER,
     Permission.READ_USER,
+    Permission.READ_USER_BY_ID,
     Permission.DELETE_USER,
   ],
 
   [Role.user]: [
-    Permission.READ_USER_BY_ID,
     Permission.READ_PRACTICE,
     Permission.READ_QUESTION,
     Permission.READ_LESSON,

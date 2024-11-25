@@ -2,35 +2,27 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
   Query,
+  Req,
+  Res,
+  HttpStatus,
 } from "@nestjs/common";
 import { ConversationsService } from "./conversations.service";
-import { CreateConversationDto } from "./dto/create-conversation.dto";
-import { UpdateConversationDto } from "./dto/update-conversation.dto";
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from "@nestjs/swagger";
-import { Conversation } from "./domain/conversation";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllConversationsDto } from "./dto/find-all-conversations.dto";
+import { Roles } from "@/domain/roles/roles.decorator";
+import { RoleEnum } from "@/domain/roles/roles.enum";
+import { JwtAuthGuard } from "@/domain/auth/guards/jwt.guard";
+import { Public } from "@/utils/decorators/public.decorator";
+import { Request, Response } from "express";
+import { FindAllMessageOfConversationRequestDto } from "./dto/find-messages-of-conversation.dto";
 
 @ApiTags("Conversations")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"))
+@UseGuards(JwtAuthGuard)
 @Controller({
   path: "conversations",
   version: "1",
@@ -38,74 +30,65 @@ import { FindAllConversationsDto } from "./dto/find-all-conversations.dto";
 export class ConversationsController {
   constructor(private readonly conversationsService: ConversationsService) {}
 
-  @Post()
-  @ApiCreatedResponse({
-    type: Conversation,
-  })
-  create(@Body() createConversationDto: CreateConversationDto) {
-    return this.conversationsService.create(createConversationDto);
+  @Public()
+  @Get("/hc")
+  healthCheck(): string {
+    return "Conversations service is up and running!";
+  }
+  @Get("/current")
+  async getCurrentUserConversation(@Req() req: Request, @Res() res: Response) {
+    const result = await this.conversationsService.getUserConversation(req);
+    res.status(result.statusCode).json(result.message);
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(Conversation),
-  })
-  async findAll(
-    @Query() query: FindAllConversationsDto,
-  ): Promise<InfinityPaginationResponseDto<Conversation>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
-    }
-
-    return infinityPagination(
-      await this.conversationsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
+  @Post("/")
+  async createConversation(@Req() req: Request, @Res() res: Response) {
+    const userId = req.user?.["id"];
+    const result = await this.conversationsService.createConversation(userId);
+    res.status(result.statusCode).json(result.message);
   }
 
-  @Get(":id")
-  @ApiParam({
-    name: "id",
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: Conversation,
-  })
-  findOne(@Param("id") id: string) {
-    return this.conversationsService.findOne(id);
-  }
-
-  @Patch(":id")
-  @ApiParam({
-    name: "id",
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: Conversation,
-  })
-  update(
+  @Post("/join/:id")
+  async joinConversation(
     @Param("id") id: string,
-    @Body() updateConversationDto: UpdateConversationDto,
+    @Req() req: Request,
+    @Res() res: Response,
   ) {
-    return this.conversationsService.update(id, updateConversationDto);
+    const result = await this.conversationsService.joinConversation(id, req);
+    res.status(result.statusCode).json(result.message);
   }
 
-  @Delete(":id")
-  @ApiParam({
-    name: "id",
-    type: String,
-    required: true,
-  })
-  remove(@Param("id") id: string) {
-    return this.conversationsService.remove(id);
+  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Get("/admin")
+  async getConversationsStaff(
+    @Query() query: FindAllConversationsDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const result = await this.conversationsService.getConversationsStaff(query);
+    res.status(result.statusCode).json(result.message);
+  }
+
+  @Get("/:id/messages")
+  async getConversationMessages(
+    @Param("id") conversationId: string,
+    @Query() query: FindAllMessageOfConversationRequestDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const result = await this.conversationsService.getConversationMessages(
+      conversationId,
+      query,
+      req,
+    );
+    res.status(HttpStatus.OK).json({
+      ...infinityPagination(result.chat, {
+        page: query.page,
+        limit: query.limit,
+      }),
+      page: query.page,
+      limit: query.limit,
+      total: result.count,
+    });
   }
 }

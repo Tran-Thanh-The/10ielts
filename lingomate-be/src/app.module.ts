@@ -55,8 +55,11 @@ import { ConversationsModule } from "@/domain/conversations/conversations.module
 
 import { ChatsModule } from "@/domain/chats/chats.module";
 
+import { UserConversationsModule } from "@/domain/user-conversations/user-conversations.module";
+
 @Module({
   imports: [
+    UserConversationsModule,
     ChatsModule,
     ConversationsModule,
     AnswerHistoriesModule,

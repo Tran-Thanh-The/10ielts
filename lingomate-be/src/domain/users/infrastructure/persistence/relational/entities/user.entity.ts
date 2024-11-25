@@ -30,6 +30,7 @@ import { InvoiceEntity } from "@/domain/invoices/infrastructure/persistence/rela
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
 import { ChatEntity } from "@/domain/chats/infrastructure/persistence/relational/entities/chat.entity";
+import { UserConversationEntity } from "@/domain/user-conversations/infrastructure/persistence/relational/entities/user-conversation.entity";
 
 @Entity({
   name: "user",
@@ -150,4 +151,13 @@ export class UserEntity extends EntityRelationalHelper {
     cascade: true,
   })
   chats: ChatEntity[];
+
+  @OneToMany(
+    () => UserConversationEntity,
+    (userConversation) => userConversation.user,
+    {
+      cascade: true,
+    },
+  )
+  userConversations: UserConversationEntity[];
 }

@@ -56,9 +56,11 @@ import { ConversationsModule } from "@/domain/conversations/conversations.module
 import { ChatsModule } from "@/domain/chats/chats.module";
 
 import { UserConversationsModule } from "@/domain/user-conversations/user-conversations.module";
+import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
 
 @Module({
   imports: [
+    SocketGatewayModule,
     UserConversationsModule,
     ChatsModule,
     ConversationsModule,

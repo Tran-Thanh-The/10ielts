@@ -6,6 +6,7 @@ import {
   UploadedFile,
   Req,
   UseInterceptors,
+  Res,
 } from "@nestjs/common";
 import { ChatsService } from "./chats.service";
 import { CreateChatDto } from "./dto/create-chat.dto";
@@ -18,7 +19,7 @@ import {
 } from "@nestjs/swagger";
 import { Chat } from "./domain/chat";
 import { AuthGuard } from "@nestjs/passport";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 
@@ -58,13 +59,10 @@ export class ChatsController {
   async sendMessage(
     @Body() body: CreateChatDto,
     @Req() req: Request,
+    @Res() res: Response,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    try {
-      const newMessage = await this.chatsService.create(body, req, file);
-      return newMessage;
-    } catch (error) {
-      throw error;
-    }
+    const result = await this.chatsService.create(body, req, file);
+    res.status(result.statusCode).json(result.message);
   }
 }

@@ -25,6 +25,7 @@
       "@/utils/*": ["src/utils/*"],
       "@/domain/*": ["src/domain/*"],
       "@/common/*": ["src/common/*"],
+      "@/socket-gateway/*": ["src/socket-gateway/*"],
     }
   }
 }

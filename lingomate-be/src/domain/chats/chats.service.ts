@@ -5,6 +5,8 @@ import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.s
 import { Request } from "express";
 import { ChatMapper } from "@/domain/chats/infrastructure/persistence/relational/mappers/chat.mapper";
 import { SocketGatewayService } from "@/socket-gateway/socket-gateway.service";
+import { RedisService } from "@/common/redis/redis.service";
+import { SocketEvent } from "@/common/constants/socket.constant";
 
 @Injectable()
 export class ChatsService {
@@ -12,6 +14,7 @@ export class ChatsService {
     private readonly chatRepository: ChatRepository,
     private readonly filesLocalService: FilesLocalService,
     private readonly socketGatewayService: SocketGatewayService,
+    private readonly redisService: RedisService,
   ) {}
 
   async create(
@@ -27,11 +30,17 @@ export class ChatsService {
         const uploadedFile = await this.filesLocalService.create(file);
         chatModel.file = uploadedFile.file;
       }
+      const socketClient = `socket:client:${userId}_${SocketEvent.NEW_MESSAGE}`;
+      const socketData = await this.redisService.get(socketClient);
+      if (!socketData) {
+        return {
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Socket client not found",
+        };
+      }
       const result = await this.chatRepository.create(chatModel);
-      console.log("Sending message to client...");
-      console.log("Message: ", chatModel.message);
       this.socketGatewayService.sendMessageToClient(
-        "testClient123", // Use the actual user ID from the request
+        `${userId}_${SocketEvent.NEW_MESSAGE}`,
         result.message,
       );
       return {

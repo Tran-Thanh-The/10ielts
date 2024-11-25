@@ -1,3 +1,3 @@
-export enum SocketEvent {
-  NEW_MESSAGE = "newMessage",
-}
+export const socketEvent = {
+  NEW_MESSAGE: "newMessage",
+};

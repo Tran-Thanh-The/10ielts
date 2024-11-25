@@ -1,3 +1,4 @@
+import { redisConstants } from "@/common/redis/redis.constants";
 import { RedisService } from "@/common/redis/redis.service";
 import {
   OnGatewayConnection,
@@ -15,48 +16,79 @@ export class SocketGatewayService
 
   @WebSocketServer() server: Server;
 
-  private clients: Map<string, Socket> = new Map();
+  private clients: Map<string, Set<Socket>> = new Map();
 
-  handleConnection(client: Socket) {
-    client.on("register", (data: { clientId: string }) => {
-      const { clientId } = data;
-      this.registerClient(clientId, client);
-      this.redisService
-        .set(
-          `socket:client:${clientId}`,
-          JSON.stringify({ socketId: client.id }),
-        )
-        .catch((error) => {
-          console.error(error);
-        });
-    });
+  public handleConnection(client: Socket) {
+    client.on(
+      "register",
+      (data: { clientId: string; conversationId: string }) => {
+        const { clientId, conversationId } = data;
+        this.registerClient(clientId, client);
+        this.redisService
+          .sadd(
+            `${redisConstants.CHAT_PREFIX}:${clientId}:${conversationId}`,
+            `${client.id}`,
+          )
+          .catch((error) => {
+            console.error(error);
+          });
+        client.emit("registered", "Registration successful");
+      },
+    );
   }
 
-  handleDisconnect(client: Socket) {
+  public handleDisconnect(client: Socket) {
     // Find and remove the client by its socket
-    const clientId = Array.from(this.clients.entries()).find(
-      ([, socket]) => socket.id === client.id,
+    const clientId = Array.from(this.clients.entries()).find(([, sockets]) =>
+      Array.from(sockets).some((socket) => socket.id === client.id),
     )?.[0];
 
     if (clientId) {
-      this.clients.delete(clientId);
-      this.redisService.del(`socket:client:${clientId}`).catch((error) => {
-        console.error(error);
-      });
+      const sockets = this.clients.get(clientId);
+      if (sockets) {
+        sockets.forEach((socket) => {
+          if (socket.id === client.id) {
+            sockets.delete(socket);
+          }
+        });
+        if (sockets.size === 0) {
+          this.clients.delete(clientId);
+        }
+      }
+      this.redisService
+        .srem(`${redisConstants.CHAT_PREFIX}:${clientId}`, client.id)
+        .catch((error) => {
+          console.error(error);
+        });
     }
-  }
-
-  private registerClient(clientId: string, client: Socket) {
-    this.clients.set(clientId, client);
   }
 
   // Send a message to a specific client
-  sendMessageToClient(clientId: string, message: string) {
-    const client = this.clients.get(clientId);
-    if (client) {
-      client.emit("newMessage", message);
-    } else {
-      console.error(`Client with ID: ${clientId} not found.`);
+  public sendMessageToClient(
+    clientId: string,
+    event: string,
+    tokenIds: string[],
+    message: string,
+  ) {
+    const sockets = this.clients.get(clientId);
+    const clients = tokenIds
+      .map((tokenId) =>
+        sockets
+          ? Array.from(sockets).find((socket) => socket.id === tokenId)
+          : undefined,
+      )
+      .filter((socket) => socket);
+    clients.map((client) => {
+      if (client) {
+        client.emit(event, message);
+      }
+    });
+  }
+
+  private registerClient(clientId: string, client: Socket) {
+    if (!this.clients.has(clientId)) {
+      this.clients.set(clientId, new Set());
     }
+    this.clients.get(clientId)?.add(client);
   }
 }

@@ -3,7 +3,8 @@ const { io } = require("socket.io-client");
 // Replace with your WebSocket server URL
 const SERVER_URL = "http://localhost:3001";
 
-const clientId = "2_testClient123";
+const clientId = "newMessage";
+const conversationId = "d7f593f5-cd9d-48ac-9864-0d0753ab4997";
 
 const socket = io(SERVER_URL);
 
@@ -12,7 +13,7 @@ socket.on("connect", () => {
   console.log(`Connected to server with socket ID: ${socket.id}`);
 
   // Register the client with the server
-  socket.emit("register", { clientId });
+  socket.emit("register", { clientId, conversationId });
 
   console.log(`Sent registration request for clientId: ${clientId}`);
 });
@@ -23,7 +24,7 @@ socket.on("registered", (message) => {
 });
 
 // Listen for new messages from the server
-socket.on("newMessage", (message) => {
+socket.on("message", (message) => {
   console.log(`Received new message: ${message}`);
 });
 

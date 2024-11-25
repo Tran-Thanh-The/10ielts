@@ -13,6 +13,18 @@ export class RedisService {
     }
   }
 
+  async sadd(key: string, value: string) {
+    await this.redisClient.sadd(key, value);
+  }
+
+  async srem(key: string, value: string) {
+    await this.redisClient.srem(key, value);
+  }
+
+  async smembers(key: string) {
+    return this.redisClient.smembers(key);
+  }
+
   async get(key: string): Promise<string | null> {
     return this.redisClient.get(key);
   }

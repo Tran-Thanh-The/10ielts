@@ -1,3 +1,4 @@
+import { redisConstants } from "@/common/redis/redis.constants";
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { CreateChatDto } from "./dto/create-chat.dto";
 import { ChatRepository } from "./infrastructure/persistence/chat.repository";
@@ -6,7 +7,11 @@ import { Request } from "express";
 import { ChatMapper } from "@/domain/chats/infrastructure/persistence/relational/mappers/chat.mapper";
 import { SocketGatewayService } from "@/socket-gateway/socket-gateway.service";
 import { RedisService } from "@/common/redis/redis.service";
-import { SocketEvent } from "@/common/constants/socket.constant";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+} from "@/utils/create-response";
+import { socketEvent } from "@/common/constants/socket.constant";
 
 @Injectable()
 export class ChatsService {
@@ -24,34 +29,31 @@ export class ChatsService {
   ) {
     try {
       const chatModel = ChatMapper.toModel(createChatDto);
-      const userId = req.user?.["id"];
+      const userId: string = req.user?.["id"];
       chatModel.userId = userId;
+
       if (file) {
         const uploadedFile = await this.filesLocalService.create(file);
         chatModel.file = uploadedFile.file;
       }
-      const socketClient = `socket:client:${userId}_${SocketEvent.NEW_MESSAGE}`;
-      const socketData = await this.redisService.get(socketClient);
-      if (!socketData) {
-        return {
-          statusCode: HttpStatus.NOT_FOUND,
-          message: "Socket client not found",
-        };
-      }
+
+      const socketClient = `${redisConstants.CHAT_PREFIX}:${socketEvent.NEW_MESSAGE}:${chatModel.conversationId}`;
+      const socketData = await this.redisService.smembers(socketClient);
+
       const result = await this.chatRepository.create(chatModel);
       this.socketGatewayService.sendMessageToClient(
-        `${userId}_${SocketEvent.NEW_MESSAGE}`,
-        result.message,
+        socketEvent.NEW_MESSAGE,
+        socketEvent.NEW_MESSAGE,
+        socketData,
+        JSON.stringify(result),
       );
-      return {
-        statusCode: HttpStatus.CREATED,
-        message: result,
-      };
+
+      return createSuccessResponse(HttpStatus.CREATED, result);
     } catch (error) {
-      return {
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message,
-      };
+      return createErrorResponse(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        error.message,
+      );
     }
   }
 }

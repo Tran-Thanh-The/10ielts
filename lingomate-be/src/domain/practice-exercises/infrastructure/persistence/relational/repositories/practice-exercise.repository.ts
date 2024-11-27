@@ -7,6 +7,7 @@ import { PracticeExercise } from "../../../../domain/practice-exercise";
 import { PracticeExerciseRepository } from "../../practice-exercise.repository";
 import { PracticeExerciseMapper } from "../mappers/practice-exercise.mapper";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
+import { StatusEnum } from "@/common/enums/status.enum";
 
 @Injectable()
 export class PracticeExerciseRelationalRepository
@@ -49,6 +50,39 @@ export class PracticeExerciseRelationalRepository
       where: { id },
     });
 
+    return entity ? PracticeExerciseMapper.toDomain(entity) : null;
+  }
+
+  async getPracticeExerciseDetail(
+    id: PracticeExercise["id"],
+    {
+      page,
+      limit,
+      order,
+      status,
+    }: IPaginationOptions & { order: "ASC" | "DESC"; status?: StatusEnum },
+  ): Promise<NullableType<PracticeExercise>> {
+    const queryBuilder = this.practiceExerciseRepository
+      .createQueryBuilder("practiceExercise")
+      .leftJoinAndSelect("practiceExercise.user", "user")
+      .leftJoinAndSelect("practiceExercise.answerHistory", "answerHistory")
+      .leftJoinAndSelect("practiceExercise.invoiceProducts", "invoiceProducts")
+      .leftJoinAndSelect("practiceExercise.questions", "question")
+      .leftJoinAndSelect("question.answers", "answer")
+      .where("practiceExercise.id = :id", { id })
+      .orderBy("question.position", order)
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    if (status) {
+      queryBuilder.andWhere("question.status = :status", { status });
+    }
+
+    queryBuilder
+      .orderBy("question.position", order)
+      .addOrderBy("answer.position", order);
+      
+    const entity = await queryBuilder.getOne();
     return entity ? PracticeExerciseMapper.toDomain(entity) : null;
   }
 

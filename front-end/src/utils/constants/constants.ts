@@ -1,3 +1,5 @@
+import { EPracticeFilter } from "@/types/enum/practice.enum";
+
 export const API_ENDPOINT = {
   ACCESS_TOKEN_KEY: 'ttb_atk',
   REFRESH_TOKEN_KEY: 'refresh_token',
@@ -40,3 +42,36 @@ export const ROLES = [
   { id: 2, name: 'Staff' },
   { id: 3, name: 'User' },
 ]
+
+export const PRACTICE_FILTER = [
+  {
+    title: 'Tất cả kỹ năng',
+    value: EPracticeFilter.ALL,
+    disabled: false,
+    icon: 'https://app.prepedu.com/imgs/test-practice/ic-book.svg',
+  },
+  {
+    title: 'Listening',
+    value: EPracticeFilter.LISTENING,
+    disabled: false,
+    icon: 'https://api.prep.vn/images/skills/test_practice/listening.png',
+  },
+  {
+    title: 'Reading',
+    value: EPracticeFilter.READING,
+    disabled: false,
+    icon: 'https://api.prep.vn/images/skills/test_practice/reading.png',
+  },
+  {
+    title: 'Writing',
+    value: EPracticeFilter.WRITING,
+    disabled: true,
+    icon: 'https://api.prep.vn/images/skills/test_practice/writing.png',
+  },
+  {
+    title: 'Speaking',
+    value: EPracticeFilter.SPEAKING,
+    disabled: true,
+    icon: 'https://api.prep.vn/images/skills/test_practice/speaking.png',
+  },
+];

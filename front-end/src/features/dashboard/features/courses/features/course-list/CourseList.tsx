@@ -1,10 +1,12 @@
 import courseApi from '@/api/courseApi';
+import RoleBasedComponent from '@/components/RoleBasedComponent';
 import CourseCard from '@/features/dashboard/features/courses/features/course-list/components/course-card/CourseCard';
 import CourseFilter from '@/features/dashboard/features/courses/features/course-list/components/course-filter/CourseFilter';
 import CreateCourseModal from '@/features/dashboard/features/courses/features/course-list/components/create-course-modal/CreateCourseModal';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
 import FeatureLayout from '@/features/dashboard/layouts/feature-layout/FeatureLayout';
 import { setAppLoading } from '@/stores/slices/appSlice';
+import { ROLE } from '@/utils/constants/constants';
 import { Box, Button, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -78,17 +80,19 @@ export default function CourseList() {
           }}
         >
           <CourseFilter />
-          <Button
-            variant="contained"
-            onClick={handleCreateCourse}
-            sx={{
-              width: 'unset',
-              padding: '12px 16px !important',
-              borderRadius: '12px',
-            }}
-          >
-            Tạo khóa học
-          </Button>
+          <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+            <Button
+              variant="contained"
+              onClick={handleCreateCourse}
+              sx={{
+                width: 'unset',
+                padding: '12px 16px !important',
+                borderRadius: '12px',
+              }}
+            >
+              Tạo khóa học
+            </Button>
+          </RoleBasedComponent>
         </Box>
 
         <Typography variant="h6" sx={{ marginBottom: 2 }}>

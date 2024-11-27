@@ -72,7 +72,7 @@ export default function LessonView() {
           component="a"
           onClick={() => navigate(`/dashboard/courses/${idCourse}`)}
         />
-        <Breadcrumb label={'Tạo mới bài học'} component="a" href="#" />
+        <Breadcrumb label={'Bài học'} component="a" href="#" />
       </Breadcrumbs>
 
       <FeatureHeader title={lesson?.title} />

@@ -199,7 +199,26 @@ export default function UserListTab() {
                   {dayjs(row.dob).format('DD/MM/YYYY')}
                 </TableCell>
                 <TableCell align="right">
-                  <Box sx={{ display: 'flex', gap: '12px' }}>
+                  {row.role.name === 'Admin' ? null : (
+                    <Box sx={{ display: 'flex', gap: '12px' }}>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => handleUpdateUser(row)}
+                      >
+                        Sửa
+                      </Button>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        color="error"
+                        onClick={() => handleDeleteUser(row.id)}
+                      >
+                        Xóa
+                      </Button>
+                    </Box>
+                  )}
+                  {/* <Box sx={{ display: 'flex', gap: '12px' }}>
                     <Button
                       variant="contained"
                       size="small"
@@ -215,7 +234,7 @@ export default function UserListTab() {
                     >
                       Xóa
                     </Button>
-                  </Box>
+                  </Box> */}
                 </TableCell>
               </TableRow>
             ))}

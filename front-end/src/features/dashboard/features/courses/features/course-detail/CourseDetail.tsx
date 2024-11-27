@@ -114,13 +114,14 @@ export default function CourseDetail() {
     }
     dispatch(setAppLoading(true));
     const courseResponse = await courseApi.getCourseById(idCourse);
-    const courseDetailsResponse = await courseApi.getCourseDetailsById(idCourse);
+    const courseDetailsResponse =
+      await courseApi.getCourseDetailsById(idCourse);
     setCourse({
       ...courseResponse.data,
       lessons: courseDetailsResponse.data.lessons,
     });
     dispatch(setAppLoading(false));
-  }
+  };
 
   const triggerReload = () => {
     setReload(!reload);
@@ -344,40 +345,42 @@ export default function CourseDetail() {
                 Ngày tạo: {new Date(course.createdAt).toLocaleDateString()}
               </Typography>
             </CardContent>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                justifyContent: 'flex-end',
-                padding: 2,
-              }}
-            >
-              <Button
-                variant="outlined"
-                color="success"
-                size="small"
-                onClick={handleDeleteCourse}
+            <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  justifyContent: 'flex-end',
+                  padding: 2,
+                }}
               >
-                Xuất bản khóa học
-              </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                size="small"
-                onClick={handleDeleteCourse}
-              >
-                Xóa khóa học
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                size="small"
-                onClick={handleUpdateCourse}
-              >
-                Sửa khóa học
-              </Button>
-            </Box>
+                <Button
+                  variant="outlined"
+                  color="success"
+                  size="small"
+                  onClick={handleDeleteCourse}
+                >
+                  Xuất bản khóa học
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  size="small"
+                  onClick={handleDeleteCourse}
+                >
+                  Xóa khóa học
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={handleUpdateCourse}
+                >
+                  Sửa khóa học
+                </Button>
+              </Box>
+            </RoleBasedComponent>
           </Card>
 
           <Box

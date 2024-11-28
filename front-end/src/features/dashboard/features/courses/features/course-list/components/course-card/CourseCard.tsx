@@ -16,6 +16,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Swal from 'sweetalert2';
 import courseApi from '@/api/courseApi';
 import dayjs from 'dayjs';
+import RoleBasedComponent from '@/components/RoleBasedComponent';
+import { ROLE } from '@/utils/constants/constants';
 
 interface CourseCardProps {
   id: string;
@@ -114,6 +116,7 @@ const CourseCard = ({
         <Typography variant="h6" sx={{ mb: 1 }}>
           {title}
         </Typography>
+
         <Typography
           variant="body1"
           color="text.secondary"
@@ -127,10 +130,12 @@ const CourseCard = ({
         >
           {description}
         </Typography>
-        <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-          <Chip label={`Giá: ${price} VND`} size="small"></Chip>
-          <Chip label="Đã đăng ký" color="success" size="small"></Chip>
-        </Box>
+        <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+          <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+            <Chip label={`Giá: ${price} VND`} size="small"></Chip>
+            <Chip label="Đã đăng ký" color="success" size="small"></Chip>
+          </Box>
+        </RoleBasedComponent>
         <Box sx={{ display: 'flex', gap: '8px' }}>
           <Box sx={{ mb: 1, flex: 1 }}>
             <Typography variant="caption">
@@ -142,20 +147,22 @@ const CourseCard = ({
               sx={{ mt: 1, height: 8, borderRadius: 5 }}
             />
           </Box>
-          <Box sx={{ alignSelf: 'flex-end' }}>
-            <IconButton onClick={handleMenuOpen}>
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleMenuClose}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <MenuItem onClick={handleEdit}>Chỉnh sửa</MenuItem>
-              <MenuItem onClick={handleDelete}>Xóa</MenuItem>
-            </Menu>
-          </Box>
+          <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+            <Box sx={{ alignSelf: 'flex-end' }}>
+              <IconButton onClick={handleMenuOpen}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleMenuClose}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MenuItem onClick={handleEdit}>Chỉnh sửa</MenuItem>
+                <MenuItem onClick={handleDelete}>Xóa</MenuItem>
+              </Menu>
+            </Box>
+          </RoleBasedComponent>
         </Box>
         {isMyCourse && <Chip label="Đã mua" color="success" size="small" />}
       </CardContent>

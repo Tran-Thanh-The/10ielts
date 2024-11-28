@@ -105,18 +105,23 @@ export default function CourseDetail() {
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
+    handleFetchCourse();
+  }, [idCourse, reload]);
+
+  const handleFetchCourse = async () => {
     if (!idCourse) {
       return;
     }
     dispatch(setAppLoading(true));
-    courseApi.getCourseById(idCourse).then((response) => {
-      setCourse({
-        ...response.data,
-        lessons: MOCK_LESSONS,
-      });
-      dispatch(setAppLoading(false));
+    const courseResponse = await courseApi.getCourseById(idCourse);
+    const courseDetailsResponse =
+      await courseApi.getCourseDetailsById(idCourse);
+    setCourse({
+      ...courseResponse.data,
+      lessons: courseDetailsResponse.data.lessons,
     });
-  }, [idCourse, reload]);
+    dispatch(setAppLoading(false));
+  };
 
   const triggerReload = () => {
     setReload(!reload);
@@ -340,40 +345,42 @@ export default function CourseDetail() {
                 Ngày tạo: {new Date(course.createdAt).toLocaleDateString()}
               </Typography>
             </CardContent>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                justifyContent: 'flex-end',
-                padding: 2,
-              }}
-            >
-              <Button
-                variant="outlined"
-                color="success"
-                size="small"
-                onClick={handleDeleteCourse}
+            <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  justifyContent: 'flex-end',
+                  padding: 2,
+                }}
               >
-                Xuất bản khóa học
-              </Button>
-              <Button
-                variant="outlined"
-                color="error"
-                size="small"
-                onClick={handleDeleteCourse}
-              >
-                Xóa khóa học
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                size="small"
-                onClick={handleUpdateCourse}
-              >
-                Sửa khóa học
-              </Button>
-            </Box>
+                <Button
+                  variant="outlined"
+                  color="success"
+                  size="small"
+                  onClick={handleDeleteCourse}
+                >
+                  Xuất bản khóa học
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  size="small"
+                  onClick={handleDeleteCourse}
+                >
+                  Xóa khóa học
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={handleUpdateCourse}
+                >
+                  Sửa khóa học
+                </Button>
+              </Box>
+            </RoleBasedComponent>
           </Card>
 
           <Box
@@ -415,9 +422,10 @@ export default function CourseDetail() {
               {tabIndex === 2 && 'Danh sách bài học Docs'}
               {tabIndex === 3 && 'Danh sách Exercises'}
             </Typography>
-            {paginatedFilteredLessons.map((lesson) => (
+            {paginatedFilteredLessons.map((lesson, index) => (
               <LessonCard
                 key={lesson.id}
+                index={index}
                 lesson={lesson}
                 onMenuOpen={handleMenuOpen}
                 handRouterLessonDetail={handRouterLessonDetail}

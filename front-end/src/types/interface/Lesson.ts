@@ -7,6 +7,7 @@ export interface LessonResponse {
   totalSections?: number;
   stars?: number;
   totalStars?: number;
+  content?: string;
 }
 export interface LessonRequest {
   title?: string;

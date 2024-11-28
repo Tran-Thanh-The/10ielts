@@ -13,38 +13,47 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import SchoolIcon from '@mui/icons-material/School';
 import PaymentIcon from '@mui/icons-material/Payment';
 import GroupsIcon from '@mui/icons-material/Groups';
+import { ROLE } from '@/utils/constants/constants';
+import { useAuth } from '@/context/AuthContext';
+import { checkRole } from '@/utils/checkRole';
 
 const DASHBOARD_SIDEBAR = [
   {
     title: 'Nhắn tin',
     icon: <AllInboxIcon />,
     href: '/dashboard/chat',
+    permission: [ROLE.ADMIN, ROLE.STAFF],
   },
   {
     title: 'Khóa học',
     icon: <MenuBookIcon />,
     href: '/dashboard/courses',
+    permission: [ROLE.ADMIN, ROLE.STAFF, ROLE.USER],
   },
   {
     title: 'Luyện tập',
     icon: <SchoolIcon />,
     href: '/dashboard/practices',
+    permission: [ROLE.ADMIN, ROLE.STAFF, ROLE.USER],
   },
   {
     title: 'Hóa đơn',
     icon: <PaymentIcon />,
     href: '/dashboard/payments',
+    permission: [ROLE.ADMIN, ROLE.STAFF],
   },
   {
     title: 'Quản lý nhân viên',
     icon: <GroupsIcon />,
     href: '/dashboard/user-management',
+    permission: [ROLE.ADMIN, ROLE.STAFF],
   },
 ];
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const router = useLocation();
+  const { role } = useAuth();
 
   return (
     <Box
@@ -63,10 +72,12 @@ export default function Sidebar() {
           padding: 0,
           margin: 0,
           gap: '4px',
-          minWidth: "196px",
+          minWidth: '196px',
         }}
       >
-        {DASHBOARD_SIDEBAR.map((item) => (
+        {DASHBOARD_SIDEBAR.filter((item) =>
+          checkRole(role, item.permission),
+        ).map((item) => (
           <ListItem
             sx={{
               '& .MuiButtonBase-root': {

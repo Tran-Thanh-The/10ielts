@@ -15,3 +15,7 @@ export const updateUser = async (id: number, data: any) => {
 export const deleteUser = async (id: number) => {
   return axiosInstance.delete<any>(`users/${id}`);
 }
+
+export const getLessonDetailsById = async (id: string) => {
+  return axiosInstance.get<any>(`lessons/${id}`);
+}

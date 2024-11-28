@@ -7,7 +7,7 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
-  UnprocessableEntityException,
+  UnprocessableEntityException
 } from "@nestjs/common";
 import bcrypt from "bcryptjs";
 import { FilesService } from "../../files/files.service";
@@ -16,7 +16,6 @@ import { User } from "./domain/user";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { FilterUserDto, SortUserDto } from "./dto/query-user.dto";
 import { UserRepository } from "./infrastructure/persistence/user.repository";
-
 
 @Injectable()
 export class UsersService {

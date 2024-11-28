@@ -30,9 +30,7 @@ export class AnswerHistoryMapper {
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;
     }
-    persistenceEntity.practice = PracticeExerciseMapper.toPersistence(
-      domainEntity.practice,
-    );
+    persistenceEntity.practice = domainEntity.practice;
     persistenceEntity.lesson = LessonMapper.toPersistence(domainEntity.lesson);
     persistenceEntity.user = UserMapper.toPersistence(domainEntity.user);
     persistenceEntity.totalScore = domainEntity.totalScore;

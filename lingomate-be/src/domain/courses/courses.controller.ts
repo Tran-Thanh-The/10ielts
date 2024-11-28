@@ -1,4 +1,7 @@
-import { RoleEnum } from "@/domain/roles/roles.enum";
+import { PermissionEnum } from "@/common/enums/permissions.enum";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 import {
   Body,
   ConflictException,
@@ -29,8 +32,6 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { Roles } from "../roles/roles.decorator";
-import { RolesGuard } from "../roles/roles.guard";
 import { CoursesService } from "./courses.service";
 import { Course } from "./domain/course";
 import { CourseQueryDto, parseOrderBy } from "./dto/course-query-dto";
@@ -38,11 +39,10 @@ import { CourseResponseDto } from "./dto/course-response-dto";
 import { CourseListResponseDto } from "./dto/courses-response-dto";
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
-import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 
 @ApiTags("Courses")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@UseGuards(AuthGuard('jwt'), PermissionGuard)
 @Controller({
   path: "courses",
   version: "1",
@@ -50,8 +50,8 @@ import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Post()
+  @Permissions(PermissionEnum.CREATE_COURSE)
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
@@ -94,6 +94,7 @@ export class CoursesController {
   }
 
   @Get("/list")
+  @Permissions(PermissionEnum.READ_COURSE)
   @ApiOperation({ summary: "Get list of courses with filters and pagination" })
   @ApiResponse({
     status: 200,
@@ -117,6 +118,7 @@ export class CoursesController {
   }
 
   @Get(":id")
+  @Permissions(PermissionEnum.READ_COURSE)
   @ApiParam({
     name: "id",
     type: String,
@@ -143,8 +145,9 @@ export class CoursesController {
     return this.coursesService.getCourseDetails(id, userId);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
+
   @Patch(":id")
+  @Permissions(PermissionEnum.UPDATE_COURSE)
   @ApiParam({
     name: "id",
     type: String,
@@ -157,8 +160,9 @@ export class CoursesController {
     return this.coursesService.update(id, updateCourseDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
+
   @Delete(":id")
+  @Permissions(PermissionEnum.DELETE_COURSE)
   @ApiParam({
     name: "id",
     type: String,

@@ -34,7 +34,12 @@ export class PracticeExerciseRelationalRepository
     const entities = await this.practiceExerciseRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
-      relations: ["questions", "questions.answers"],
+      relations: [
+        "questions",
+        "questions.file",
+        "questions.answers",
+        "questions.answers.file",
+      ],
       order: {
         createdAt: "DESC",
       },

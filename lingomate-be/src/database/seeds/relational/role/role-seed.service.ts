@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
 import { RoleEnum } from "@/domain/roles/roles.enum";
+import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @Injectable()
 export class RoleSeedService {
@@ -12,64 +13,75 @@ export class RoleSeedService {
   ) {}
 
   async run() {
-    const countUser = await this.repository.count({
-      where: {
+    const rolesToSeed = [
+      {
         id: RoleEnum.user,
+        name: "User",
+        permissions: [
+          PermissionEnum.READ_USER,
+          PermissionEnum.READ_COURSE,
+          PermissionEnum.READ_LESSON,
+          PermissionEnum.READ_PRACTICE,
+        ],
       },
-    });
-
-    if (!countUser) {
-      await this.repository.save(
-        this.repository.create({
-          id: RoleEnum.user,
-          name: "User",
-        }),
-      );
-    }
-
-    const countAdmin = await this.repository.count({
-      where: {
+      {
         id: RoleEnum.admin,
+        name: "Admin",
+        permissions: [
+         
+        ],
       },
-    });
-
-    if (!countAdmin) {
-      await this.repository.save(
-        this.repository.create({
-          id: RoleEnum.admin,
-          name: "Admin",
-        }),
-      );
-    }
-
-    const countStaff = await this.repository.count({
-      where: {
+      {
         id: RoleEnum.staff,
+        name: "Staff",
+        permissions: [
+          PermissionEnum.CREATE_USER,
+          PermissionEnum.READ_USER,
+          PermissionEnum.UPDATE_USER,
+          PermissionEnum.DELETE_USER,
+          PermissionEnum.READ_COURSE,
+          PermissionEnum.READ_PRACTICE,
+        ],
       },
-    });
-
-    if (!countStaff) {
-      await this.repository.save(
-        this.repository.create({
-          id: RoleEnum.staff,
-          name: "Staff",
-        }),
-      );
-    }
-
-    const countTeacher = await this.repository.count({
-      where: {
+      {
         id: RoleEnum.teacher,
-      },
-    });
+        name: "Teacher",
+        permissions: [
+          PermissionEnum.CREATE_USER,
+          PermissionEnum.READ_USER,
+          PermissionEnum.UPDATE_USER,
+          PermissionEnum.DELETE_USER,
+          PermissionEnum.CREATE_COURSE,
+          PermissionEnum.READ_COURSE,
+          PermissionEnum.UPDATE_COURSE,
+          PermissionEnum.DELETE_COURSE,
+          PermissionEnum.CREATE_PRACTICE,
+          PermissionEnum.READ_PRACTICE,
+          PermissionEnum.UPDATE_PRACTICE,
+          PermissionEnum.DELETE_PRACTICE,
+        ],
+      }
+    ];
 
-    if (!countTeacher) {
-      await this.repository.save(
-        this.repository.create({
-          id: RoleEnum.teacher,
-          name: "Teacher",
-        }),
-      );
+    for (const roleData of rolesToSeed) {
+      // Tìm role theo ID
+      const existingRole = await this.repository.findOne({ 
+        where: { id: roleData.id } 
+      });
+
+      if (existingRole) {
+        // Nếu role đã tồn tại, cập nhật thông tin
+        await this.repository.save({
+          ...existingRole,
+          name: roleData.name,
+          permissions: roleData.permissions
+        });
+      } else {
+        // Nếu role chưa tồn tại, tạo mới
+        await this.repository.save(
+          this.repository.create(roleData)
+        );
+      }
     }
   }
 }

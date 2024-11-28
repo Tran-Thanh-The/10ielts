@@ -46,7 +46,7 @@ export class PracticeExerciseEntity extends EntityRelationalHelper {
     () => AnswerHistoryEntity,
     (answerHistory) => answerHistory.practice,
   )
-  answerHistory: AnswerHistoryEntity[];
+  answerHistories: AnswerHistoryEntity[];
 
   @ApiProperty({ type: String })
   @Column({ type: String, nullable: true })

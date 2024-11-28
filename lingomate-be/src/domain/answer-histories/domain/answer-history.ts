@@ -1,6 +1,7 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { Lesson } from "@/domain/lessons/domain/lesson";
 import { PracticeExercise } from "@/domain/practice-exercises/domain/practice-exercise";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
@@ -17,9 +18,9 @@ export class AnswerHistory {
   user: UserEntity;
 
   @ApiProperty({
-    type: () => PracticeExercise,
+    type: () => PracticeExerciseEntity,
   })
-  practice: PracticeExercise;
+  practice: PracticeExerciseEntity;
 
   @ApiProperty({
     type: () => Lesson,

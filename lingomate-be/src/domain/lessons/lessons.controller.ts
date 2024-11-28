@@ -42,10 +42,13 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 import { NullableType } from "@/utils/types/nullable.type";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
+import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @ApiTags("Lessons")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@UseGuards(AuthGuard('jwt'), PermissionGuard)
 @Controller({
   path: "lessons",
   version: "1",
@@ -53,8 +56,8 @@ import { StatusEnum } from "@/common/enums/status.enum";
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Post(":courseId")
+  @Permissions(PermissionEnum.CREATE_LESSON)
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
@@ -88,6 +91,7 @@ export class LessonsController {
   }
 
   @Get()
+  @Permissions(PermissionEnum.READ_LESSON)
   @ApiOkResponse({
     type: InfinityPaginationResponse(Lesson),
   })
@@ -111,6 +115,7 @@ export class LessonsController {
   }
 
   @Get("course/:courseId")
+  @Permissions(PermissionEnum.READ_LESSON)
   @ApiParam({
     name: "courseId",
     type: String,
@@ -141,6 +146,7 @@ export class LessonsController {
   }
 
   @Get(":id/detail")
+  @Permissions(PermissionEnum.READ_LESSON)
   @ApiQuery({
     name: "order",
     required: false,
@@ -172,6 +178,7 @@ export class LessonsController {
   }
 
   @Get(":id")
+  @Permissions(PermissionEnum.READ_LESSON)
   @ApiParam({
     name: "id",
     type: String,
@@ -184,8 +191,9 @@ export class LessonsController {
     return this.lessonsService.findById(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
+
   @Patch(":id")
+  @Permissions(PermissionEnum.UPDATE_LESSON)
   @ApiParam({
     name: "id",
     type: String,
@@ -210,8 +218,8 @@ export class LessonsController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Delete(":id")
+  @Permissions(PermissionEnum.DELETE_LESSON)
   @ApiParam({
     name: "id",
     type: String,

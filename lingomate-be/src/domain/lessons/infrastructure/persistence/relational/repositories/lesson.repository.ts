@@ -78,38 +78,6 @@ export class LessonRelationalRepository implements LessonRepository {
 
     return entities.map((entity) => LessonMapper.toDomain(entity));
   }
-  // async findAllWithPaginationAndCourseId({
-  //   courseId,
-  //   paginationOptions,
-  // }: {
-  //   courseId: string;
-  //   paginationOptions: IPaginationOptions;
-  // }): Promise<Lesson[]> {
-  //   const { page, limit } = paginationOptions;
-
-  //   const entities = await this.lessonRepository
-  //     .createQueryBuilder("lesson")
-  //     .innerJoinAndSelect(
-  //       "lesson.lessonCourses",
-  //       "lessonCourse",
-  //       "lessonCourse.courseId = :courseId",
-  //       { courseId }
-  //     )
-  //     .leftJoinAndSelect("lesson.file", "file")
-  //     .leftJoinAndSelect("lesson.questions", "question")
-  //     .leftJoinAndSelect("question.file", "questionFile")
-  //     .leftJoinAndSelect("question.answers", "answer")
-  //     .leftJoinAndSelect("question.category", "category")
-  //     .leftJoinAndSelect("answer.file", "answerFile")
-  //     .skip((page - 1) * limit)
-  //     .take(limit)
-  //     .orderBy("lessonCourse.position", "ASC")
-  //     .addOrderBy("question.position", "ASC")
-  //     .addOrderBy("answer.position", "ASC")
-  //     .getMany();
-
-  //   return entities.map((entity) => LessonMapper.toDomain(entity));
-  // }
 
   async getLessonDetail(
     id: Lesson["id"],

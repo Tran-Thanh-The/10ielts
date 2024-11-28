@@ -38,10 +38,13 @@ import { RoleEnum } from "../roles/roles.enum";
 import { Roles } from "../roles/roles.decorator";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
+import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @ApiTags("Answers")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@UseGuards(AuthGuard('jwt'), PermissionGuard)
 @Controller({
   path: "answers",
   version: "1",
@@ -49,8 +52,8 @@ import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 export class AnswersController {
   constructor(private readonly answersService: AnswersService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post(":questionId")
+  @Permissions(PermissionEnum.CREATE_ANSWER)
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
@@ -80,8 +83,9 @@ export class AnswersController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
+
   @Get()
+  @Permissions(PermissionEnum.READ_ANSWER)
   @ApiOkResponse({
     type: InfinityPaginationResponse(Answer),
   })
@@ -105,8 +109,9 @@ export class AnswersController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
+
   @Get(":id")
+  @Permissions(PermissionEnum.READ_ANSWER)
   @ApiParam({
     name: "id",
     type: String,
@@ -119,8 +124,8 @@ export class AnswersController {
     return this.answersService.findOne(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Patch(":id")
+  @Permissions(PermissionEnum.UPDATE_ANSWER)
   @ApiParam({
     name: "id",
     type: String,
@@ -138,8 +143,8 @@ export class AnswersController {
     return this.answersService.update(userId, id, updateAnswerDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Delete(":id")
+  @Permissions(PermissionEnum.DELETE_ANSWER)
   @ApiParam({
     name: "id",
     type: String,

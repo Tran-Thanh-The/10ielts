@@ -1,22 +1,30 @@
+import { PermissionEnum } from "@/common/enums/permissions.enum";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
 import {
-  Controller,
-  Get,
-  Post,
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from "@/utils/dto/infinity-pagination-response.dto";
+import { infinityPagination } from "@/utils/infinity-pagination";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import {
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
-  Query,
-  UseInterceptors,
-  UploadedFile,
-  NotFoundException,
+  Get,
   InternalServerErrorException,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Query,
   Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
-import { QuestionsService } from "./questions.service";
-import { CreateQuestionDto } from "./dto/create-question.dto";
-import { UpdateQuestionDto } from "./dto/update-question.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
   ApiConsumes,
@@ -26,22 +34,14 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { Question } from "./domain/question";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
+import { CreateQuestionDto } from "./dto/create-question.dto";
 import { FindAllQuestionsDto } from "./dto/find-all-questions.dto";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
-import { RolesGuard } from "../roles/roles.guard";
-import { Roles } from "../roles/roles.decorator";
-import { RoleEnum } from "../roles/roles.enum";
+import { UpdateQuestionDto } from "./dto/update-question.dto";
+import { QuestionsService } from "./questions.service";
 
 @ApiTags("Questions")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@UseGuards(AuthGuard('jwt'), PermissionGuard)
 @Controller({
   path: "questions",
   version: "1",
@@ -49,8 +49,8 @@ import { RoleEnum } from "../roles/roles.enum";
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Post()
+  @Permissions(PermissionEnum.CREATE_QUESTION)
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
@@ -79,6 +79,7 @@ export class QuestionsController {
   }
 
   @Get()
+  @Permissions(PermissionEnum.READ_QUESTION)
   @ApiOkResponse({
     type: InfinityPaginationResponse(Question),
   })
@@ -103,6 +104,7 @@ export class QuestionsController {
   }
 
   @Get(":id")
+  @Permissions(PermissionEnum.READ_QUESTION)
   @ApiParam({
     name: "id",
     type: String,
@@ -115,8 +117,8 @@ export class QuestionsController {
     return this.questionsService.findOne(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Patch(":id")
+  @Permissions(PermissionEnum.UPDATE_QUESTION)
   @ApiParam({
     name: "id",
     type: String,
@@ -134,8 +136,8 @@ export class QuestionsController {
     return this.questionsService.update(userId, id, updateQuestionDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Delete(":id")
+  @Permissions(PermissionEnum.DELETE_QUESTION)
   @ApiParam({
     name: "id",
     type: String,

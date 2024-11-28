@@ -3,7 +3,7 @@ import authConfig from "@/domain/auth/config/auth.config";
 import { HomeModule } from "@/domain/home/home.module";
 import { SessionModule } from "@/domain/session/session.module";
 import { UsersModule } from "@/domain/users/users.module";
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { HeaderResolver } from "nestjs-i18n";
@@ -37,15 +37,15 @@ import { LessonsModule } from "@/domain/lessons/lessons.module";
 
 import { PracticeExercisesModule } from "@/domain/practice-exercises/practice-exercises.module";
 
+import { PayOSModule } from "@/common/payos/payos.module";
 import redisConfig from "@/common/redis/config/redis.config";
 import { RedisModule } from "@/common/redis/redis.module";
-import { HttpModule } from "@nestjs/axios";
-import { InvoicesModule } from "./domain/invoices/invoices.module";
 import { CategoriesModule } from "@/domain/categories/categories.module";
-import { ServeStaticModule } from "@nestjs/serve-static";
-import { PayOSModule } from "@/common/payos/payos.module";
 import { PaymentModule } from "@/domain/payment/payment.module";
+import { HttpModule } from "@nestjs/axios";
 import { JwtModule } from "@nestjs/jwt";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { InvoicesModule } from "./domain/invoices/invoices.module";
 
 import { InvoiceProductsModule } from "@/domain/invoice-products/invoice-products.module";
 
@@ -54,7 +54,6 @@ import { AnswerHistoriesModule } from "@/domain/answer-histories/answer-historie
 import { ConversationsModule } from "@/domain/conversations/conversations.module";
 
 import { ChatsModule } from "@/domain/chats/chats.module";
-import { PermissionMiddleware } from "./middlewares/permission.middleware";
 
 import { UserAnswersModule } from "@/domain/user-answers/user-answers.module";
 
@@ -133,9 +132,9 @@ import { UserAnswersModule } from "@/domain/user-answers/user-answers.module";
     }),
   ],
 })
-// export class AppModule {}
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(PermissionMiddleware).forRoutes("*");
-  }
-}
+export class AppModule {}
+// export class AppModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer.apply(PermissionMiddleware).forRoutes("*");
+//   }
+// }

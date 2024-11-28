@@ -6,6 +6,7 @@ import { QuestionMapper } from "@/domain/questions/infrastructure/persistence/re
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { PracticeExercise } from "../../../../domain/practice-exercise";
 import { PracticeExerciseEntity } from "../entities/practice-exercise.entity";
+import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 
 export class PracticeExerciseMapper {
   static toDomain(raw: PracticeExerciseEntity): PracticeExercise {
@@ -28,10 +29,16 @@ export class PracticeExerciseMapper {
     if (raw.questions) {
       domainEntity.questions = raw.questions.map((question) => {
         const questionDomain = QuestionMapper.toDomain(question);
+        if (question.file) {
+          questionDomain.file = FileMapper.toDomain(question.file);
+        }
         questionDomain.answers = question.answers
           ? question.answers.map((answer) => {
               const answerDomain = AnswerMapper.toDomain(answer);
               delete answerDomain.question;
+              if (answer.file) {
+                answerDomain.file = FileMapper.toDomain(answer.file);
+              }
               return answerDomain;
             })
           : [];

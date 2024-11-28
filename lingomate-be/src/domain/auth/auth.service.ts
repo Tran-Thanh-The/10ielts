@@ -29,6 +29,8 @@ import { AuthUpdateDto } from "./dto/auth-update.dto";
 import { LoginResponseDto } from "./dto/login-response.dto";
 import { JwtPayloadType } from "./strategies/types/jwt-payload.type";
 import { JwtRefreshPayloadType } from "./strategies/types/jwt-refresh-payload.type";
+import { log } from "console";
+import { permission } from "process";
 
 @Injectable()
 export class AuthService {
@@ -43,7 +45,7 @@ export class AuthService {
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
     const user = await this.usersService.findByEmail(loginDto.email);
-
+    
     if (!user) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -98,9 +100,13 @@ export class AuthService {
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,
       role: user.role,
+      permissions: user.role?.permissions || [],
       sessionId: session.id,
       hash,
     });
+
+    console.log('Permission: ', user.role?.permissions);
+    
 
     return {
       refreshToken,
@@ -510,6 +516,7 @@ export class AuthService {
     role: User["role"];
     sessionId: Session["id"];
     hash: Session["hash"];
+    permissions?: string[];
   }) {
     const tokenExpiresIn = this.configService.getOrThrow("auth.expires", {
       infer: true,

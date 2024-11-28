@@ -41,6 +41,9 @@ export class RoleSeedService {
           PermissionEnum.DELETE_USER,
           PermissionEnum.READ_COURSE,
           PermissionEnum.READ_PRACTICE,
+          PermissionEnum.READ_LESSON,
+          PermissionEnum.READ_QUESTION,
+          PermissionEnum.READ_ANSWER,
         ],
       },
       {
@@ -63,25 +66,35 @@ export class RoleSeedService {
       }
     ];
 
-    for (const roleData of rolesToSeed) {
-      // Tìm role theo ID
-      const existingRole = await this.repository.findOne({ 
-        where: { id: roleData.id } 
-      });
+    // for (const roleData of rolesToSeed) {
+    //   // Tìm role theo ID
+    //   const existingRole = await this.repository.findOne({ 
+    //     where: { id: roleData.id } 
+    //   });
 
-      if (existingRole) {
-        // Nếu role đã tồn tại, cập nhật thông tin
-        await this.repository.save({
-          ...existingRole,
+    //   if (existingRole) {
+    //     // Nếu role đã tồn tại, cập nhật thông tin
+    //     await this.repository.save({
+    //       ...existingRole,
+    //       name: roleData.name,
+    //       permissions: roleData.permissions
+    //     });
+    //   } else {
+    //     // Nếu role chưa tồn tại, tạo mới
+    //     await this.repository.save(
+    //       this.repository.create(roleData)
+    //     );
+    //   }
+    // }
+    for (const roleData of rolesToSeed) {
+      await this.repository.upsert(
+        {
+          id: roleData.id,
           name: roleData.name,
-          permissions: roleData.permissions
-        });
-      } else {
-        // Nếu role chưa tồn tại, tạo mới
-        await this.repository.save(
-          this.repository.create(roleData)
-        );
-      }
+          permissions: roleData.permissions,
+        },
+        ['id']
+      );
     }
   }
 }

@@ -53,6 +53,12 @@ export class PracticeExerciseRelationalRepository
   ): Promise<NullableType<PracticeExercise>> {
     const entity = await this.practiceExerciseRepository.findOne({
       where: { id },
+      relations: [
+        "questions",
+        "questions.file",
+        "questions.answers",
+        "questions.answers.file",
+      ],
     });
 
     return entity ? PracticeExerciseMapper.toDomain(entity) : null;

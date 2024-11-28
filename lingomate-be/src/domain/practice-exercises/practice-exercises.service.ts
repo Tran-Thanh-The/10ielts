@@ -40,16 +40,6 @@ export class PracticeExercisesService {
     });
   }
 
-  // async getPracticeExerciseDetail(
-  //   id: PracticeExercise["id"],
-  //   paginationOptions: IPaginationOptions & {
-  //     order: "ASC" | "DESC";
-  //     status?: StatusEnum;
-  //   },
-  // ): Promise<NullableType<PracticeExercise>> {
-  //   return this.practiceExerciseRepository.getPracticeExerciseDetail(id, paginationOptions);
-  // }
-
   findOne(id: PracticeExercise["id"]) {
     return this.practiceExerciseRepository.findById(id);
   }

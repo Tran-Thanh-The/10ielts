@@ -33,7 +33,7 @@ import { Roles } from "../roles/roles.decorator";
 
 @ApiTags("Answerhistories")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@UseGuards(AuthGuard("jwt"))
 @Controller({
   path: "answer-histories",
   version: "1",
@@ -43,7 +43,6 @@ export class AnswerHistoriesController {
     private readonly answerHistoriesService: AnswerHistoriesService,
   ) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Post()
   @ApiCreatedResponse({
     type: AnswerHistory,
@@ -52,7 +51,6 @@ export class AnswerHistoriesController {
     return this.answerHistoriesService.create(createAnswerHistoryDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(AnswerHistory),
@@ -77,7 +75,6 @@ export class AnswerHistoriesController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -91,7 +88,6 @@ export class AnswerHistoriesController {
     return this.answerHistoriesService.findOne(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -108,7 +104,6 @@ export class AnswerHistoriesController {
     return this.answerHistoriesService.update(id, updateAnswerHistoryDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Delete(":id")
   @ApiParam({
     name: "id",

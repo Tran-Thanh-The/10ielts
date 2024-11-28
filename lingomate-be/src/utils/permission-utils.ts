@@ -10,25 +10,30 @@ export function hasImplicitPermissions(
   }
 
   const rolePermissions = userRole?.permissions || userPermissions; 
-
+  
   switch (requiredPermission) {
     case PermissionEnum.CREATE_USER:
       return rolePermissions.includes(PermissionEnum.CREATE_USER);
     
     case PermissionEnum.CREATE_LESSON:
-    case PermissionEnum.READ_LESSON:
+      return rolePermissions.includes(PermissionEnum.READ_LESSON) || 
+      rolePermissions.includes(PermissionEnum.CREATE_COURSE);
     case PermissionEnum.UPDATE_LESSON:
     case PermissionEnum.DELETE_LESSON:
       return rolePermissions.includes(PermissionEnum.CREATE_COURSE);
     
     case PermissionEnum.CREATE_QUESTION:
     case PermissionEnum.READ_QUESTION:
+      return rolePermissions.includes(PermissionEnum.READ_QUESTION) || 
+      rolePermissions.includes(PermissionEnum.CREATE_COURSE);
     case PermissionEnum.UPDATE_QUESTION:
     case PermissionEnum.DELETE_QUESTION:
       return rolePermissions.includes(PermissionEnum.CREATE_COURSE);
     
     case PermissionEnum.CREATE_ANSWER:
     case PermissionEnum.READ_ANSWER:
+      return rolePermissions.includes(PermissionEnum.READ_ANSWER) || 
+      rolePermissions.includes(PermissionEnum.CREATE_COURSE);
     case PermissionEnum.UPDATE_ANSWER:
     case PermissionEnum.DELETE_ANSWER:
       return rolePermissions.includes(PermissionEnum.CREATE_COURSE);

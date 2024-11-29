@@ -56,7 +56,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"admin1@gmail.comm\",\r\n  \"password\": \"password\",\r\n  \"confirmPassword\": \"password\",\r\n  \"fullName\": \"Tien\",\r\n  \"dob\": \"2002-02-10\",\r\n  \"role\": {\r\n    \"id\": 1\r\n  }\r\n}",
+							"raw": "{\r\n  \"email\": \"admin2@gmail.comm\",\r\n  \"password\": \"password\",\r\n  \"confirmPassword\": \"password\",\r\n  \"fullName\": \"Tien\",\r\n  \"dob\": \"2002-02-10\",\r\n  \"role\": {\r\n    \"id\": 2\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -127,7 +127,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"tien226anh@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
+							"raw": "{\r\n  \"email\": \"teacher1@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -301,7 +301,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEyMywiaWF0IjoxNzMyNzg0NDM2LCJleHAiOjE3MzI3ODYyMzZ9.nqYBYGX-gxt7VoBxp2CpKh5wXZmXGJHXyMRsCjKsWbc",
 									"type": "string"
 								}
 							]
@@ -318,12 +318,12 @@
 								},
 								{
 									"key": "name",
-									"value": "English 6",
+									"value": "English 1",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "Course 6",
+									"value": "Course 1",
 									"type": "text"
 								},
 								{
@@ -333,7 +333,7 @@
 								},
 								{
 									"key": "price",
-									"value": "200000",
+									"value": "100000",
 									"type": "text"
 								}
 							]
@@ -466,7 +466,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6OTMsImlhdCI6MTczMTEzMTk4NywiZXhwIjoxNzMxMTMzNzg3fQ.f43V0DWxd3gUOi658pvlzQInFy0L3paBP8rTVH9XQkQ",
 									"type": "string"
 								}
 							]
@@ -474,7 +474,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/a2a8bea1-93e8-41bc-b654-9c4653c7f1f0/details",
+							"raw": "{{HOST}}/api/v1/courses/dfdfc103-b252-412f-8c17-d57eaa1e7315/details",
 							"host": [
 								"{{HOST}}"
 							],
@@ -482,7 +482,7 @@
 								"api",
 								"v1",
 								"courses",
-								"a2a8bea1-93e8-41bc-b654-9c4653c7f1f0",
+								"dfdfc103-b252-412f-8c17-d57eaa1e7315",
 								"details"
 							]
 						}
@@ -667,7 +667,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOnJlYWQiLCJwcmFjdGljZTpyZWFkIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEyOCwiaWF0IjoxNzMyODExNDE3LCJleHAiOjE3MzI4MTMyMTd9.0orjxLmpu3pQfLXwrQohkK0RhRZPEZCKaRe1TiTavkY",
 									"type": "string"
 								}
 							]
@@ -680,11 +680,11 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Program Files/Oracle/VirtualBox/doc/UserManual.pdf"
+									"src": "postman-cloud:///1ef91c79-fd30-41a0-9fd4-71091a958ae9"
 								},
 								{
 									"key": "title",
-									"value": "Lesson 4",
+									"value": "Lesson 7",
 									"type": "text"
 								},
 								{
@@ -717,7 +717,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/744c8eec-e38c-4cbf-a043-1a9b779f844c",
+							"raw": "{{HOST}}/api/v1/lessons/1c2aa6d7-7189-483f-9ac9-b0e9391f4c53",
 							"host": [
 								"{{HOST}}"
 							],
@@ -725,7 +725,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+								"1c2aa6d7-7189-483f-9ac9-b0e9391f4c53"
 							]
 						}
 					},
@@ -742,7 +742,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOnJlYWQiLCJwcmFjdGljZTpyZWFkIiwibGVzc29uOnJlYWQiLCJxdWVzdGlvbjpyZWFkIiwiYW5zd2VyOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI5LCJpYXQiOjE3MzI4MTIwMjgsImV4cCI6MTczMjgxMzgyOH0.zC1P2i9eB1aYnawbVGyjOpCATmCkIoga4AHE2Q_q0EE",
 									"type": "string"
 								}
 							]
@@ -845,7 +845,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODksImlhdCI6MTczMTEyODc5MCwiZXhwIjoxNzMxMTMwNTkwfQ.xveHFNivMm0l--qUsFO35HrkSh5Z6grOfRt5-1GGE6k",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6OTUsImlhdCI6MTczMTEzMzkyNywiZXhwIjoxNzMxMTM1NzI3fQ.qCvRS-nltJMmy73PY4oELVScFCv5HP8Qb3CT7mRtT3E",
 									"type": "string"
 								}
 							]
@@ -853,7 +853,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/course/744c8eec-e38c-4cbf-a043-1a9b779f844c?page=1&limit=10",
+							"raw": "{{HOST}}/api/v1/lessons/course/dfdfc103-b252-412f-8c17-d57eaa1e7315?page=1&limit=10",
 							"host": [
 								"{{HOST}}"
 							],
@@ -862,7 +862,7 @@
 								"v1",
 								"lessons",
 								"course",
-								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+								"dfdfc103-b252-412f-8c17-d57eaa1e7315"
 							],
 							"query": [
 								{
@@ -1059,7 +1059,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODUsImlhdCI6MTczMTA5MzAzNCwiZXhwIjoxNzMxMDk0ODM0fQ.XMbu_Fiwh_okar5sYjTISjgT-gWL_EnBwzWlgjAPlqY",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOnJlYWQiLCJwcmFjdGljZTpyZWFkIiwibGVzc29uOnJlYWQiLCJxdWVzdGlvbjpyZWFkIiwiYW5zd2VyOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI5LCJpYXQiOjE3MzI4MTIwMjgsImV4cCI6MTczMjgxMzgyOH0.zC1P2i9eB1aYnawbVGyjOpCATmCkIoga4AHE2Q_q0EE",
 									"type": "string"
 								}
 							]
@@ -1072,11 +1072,11 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "postman-cloud:///1ef91c79-fcfc-4d50-9440-29516ab65eee"
+									"src": "/E:/OneDrive/Desktop/Khóa học Toeic/Practice 1.mp3"
 								},
 								{
 									"key": "title",
-									"value": "Câu hỏi 1",
+									"value": "Câu hỏi 2",
 									"type": "text"
 								},
 								{
@@ -1120,19 +1120,13 @@
 									"disabled": true
 								},
 								{
-									"key": "practiceId",
-									"value": "",
-									"type": "text",
-									"disabled": true
-								},
-								{
 									"key": "lesson_id",
-									"value": "5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
+									"value": "b18639b8-f1d7-42ed-91ed-f399de7c6c31",
 									"type": "text"
 								},
 								{
 									"key": "practice_id",
-									"value": "11ca653b-d7ec-4ecc-a103-c2128e1a41d4",
+									"value": "c493e397-57da-4cd9-9343-e241156b4b28",
 									"type": "text",
 									"disabled": true
 								}
@@ -1163,7 +1157,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOnJlYWQiLCJwcmFjdGljZTpyZWFkIiwibGVzc29uOnJlYWQiLCJxdWVzdGlvbjpyZWFkIiwiYW5zd2VyOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI5LCJpYXQiOjE3MzI4MTIwMjgsImV4cCI6MTczMjgxMzgyOH0.zC1P2i9eB1aYnawbVGyjOpCATmCkIoga4AHE2Q_q0EE",
 									"type": "string"
 								}
 							]
@@ -1206,7 +1200,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6OTUsImlhdCI6MTczMTEzMzkyNywiZXhwIjoxNzMxMTM1NzI3fQ.qCvRS-nltJMmy73PY4oELVScFCv5HP8Qb3CT7mRtT3E",
 									"type": "string"
 								}
 							]
@@ -1214,7 +1208,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/questions/9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b",
+							"raw": "{{HOST}}/api/v1/questions/16a24df1-322a-4b52-8586-d94a3232e701",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1222,7 +1216,7 @@
 								"api",
 								"v1",
 								"questions",
-								"9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b"
+								"16a24df1-322a-4b52-8586-d94a3232e701"
 							]
 						}
 					},
@@ -1310,7 +1304,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
 									"type": "string"
 								}
 							]
@@ -1323,11 +1317,11 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Program Files/Oracle/VirtualBox/doc/UserManual.pdf"
+									"src": "postman-cloud:///1ef91c79-fcfc-4d50-9440-29516ab65eee"
 								},
 								{
 									"key": "content",
-									"value": "Đáp án A",
+									"value": "Đáp án D",
 									"type": "text"
 								},
 								{
@@ -1338,12 +1332,13 @@
 								{
 									"key": "isCorrect",
 									"value": "true",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/answers/9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b",
+							"raw": "{{HOST}}/api/v1/answers/9d82c35a-9d3b-4423-8ab7-449241587c8b",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1351,7 +1346,7 @@
 								"api",
 								"v1",
 								"answers",
-								"9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b"
+								"9d82c35a-9d3b-4423-8ab7-449241587c8b"
 							]
 						}
 					},
@@ -1459,7 +1454,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDAsInJvbGUiOnsiaWQiOjMsIm5hbWUiOiJVc2VyIiwicGVybWlzc2lvbnMiOlsidXNlcjpyZWFkIiwiY291cnNlOnJlYWQiLCJsZXNzb246cmVhZCIsInByYWN0aWNlOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI3LCJpYXQiOjE3MzI4MTA5ODAsImV4cCI6MTczMjgxMjc4MH0.L2u5LdmRljCgxW87gZjIxAB8GYw6NXEHtpNitRvJ__M",
 									"type": "string"
 								}
 							]
@@ -1468,7 +1463,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"test2@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"fullName\": \"Vũ Hoàng Tiến\",\r\n    \"dob\": \"2002/12/21\",\r\n    \"role\": {\r\n    \"id\": 1\r\n  }\r\n}",
+							"raw": "{   \r\n    // \"user_id\": 2,\r\n    \"email\": \"user1@gmail.com\",\r\n    \"password\": \"string\",\r\n    \"fullName\": \"Vũ Hoàng Tiến\",\r\n    \"dob\": \"2002/12/21\",\r\n    \"role\": {\r\n    \"id\": 3\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1497,7 +1492,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTA3LCJpYXQiOjE3MzIwOTQ1MzMsImV4cCI6MTczMjA5NjMzM30.7EctJaxbfZ1KfzMLoSTOPPBLfkXCQkdZ2QyF6x6sKHg",
 									"type": "string"
 								}
 							]
@@ -1506,7 +1501,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": " {\r\n    \"role\": {\r\n        \"id\": 2,\r\n        \"name\": \"staff\"\r\n    }\r\n }",
+							"raw": " {\r\n    \"email\": \"user@gmail.com\",\r\n    \"role\": {\r\n        \"id\": 3\r\n    }\r\n }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1514,7 +1509,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/users/28",
+							"raw": "{{HOST}}/api/v1/users/32",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1522,7 +1517,7 @@
 								"api",
 								"v1",
 								"users",
-								"28"
+								"32"
 							]
 						}
 					},
@@ -1536,7 +1531,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTA4LCJpYXQiOjE3MzIwOTQ4MDQsImV4cCI6MTczMjA5NjYwNH0.RRYmE3k-blv9-CfFe_yqap78jAl9G1SS9f8_k_runQU",
 									"type": "string"
 								}
 							]
@@ -1544,7 +1539,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/users/28",
+							"raw": "{{HOST}}/api/v1/users/31",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1552,7 +1547,7 @@
 								"api",
 								"v1",
 								"users",
-								"28"
+								"31"
 							]
 						}
 					},
@@ -1569,7 +1564,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODAsImlhdCI6MTczMTA4MjI5OSwiZXhwIjoxNzMxMDg0MDk5fQ.UBIk4Q1ztIJ-rC_Rd9qLo_gGaSgVNdfcClaLeywy0-k",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDAsInJvbGUiOnsiaWQiOjMsIm5hbWUiOiJVc2VyIiwicGVybWlzc2lvbnMiOlsidXNlcjpyZWFkIiwiY291cnNlOnJlYWQiLCJsZXNzb246cmVhZCIsInByYWN0aWNlOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI3LCJpYXQiOjE3MzI4MTA5ODAsImV4cCI6MTczMjgxMjc4MH0.L2u5LdmRljCgxW87gZjIxAB8GYw6NXEHtpNitRvJ__M",
 									"type": "string"
 								}
 							]
@@ -1625,7 +1620,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTA4LCJpYXQiOjE3MzIwOTQ4MDQsImV4cCI6MTczMjA5NjYwNH0.RRYmE3k-blv9-CfFe_yqap78jAl9G1SS9f8_k_runQU",
 									"type": "string"
 								}
 							]
@@ -1633,7 +1628,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/users/28",
+							"raw": "{{HOST}}/api/v1/users/32",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1641,7 +1636,7 @@
 								"api",
 								"v1",
 								"users",
-								"28"
+								"32"
 							]
 						}
 					},
@@ -1685,7 +1680,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODgsImlhdCI6MTczMTEyNjUyNiwiZXhwIjoxNzMxMTI4MzI2fQ.uQD_SDGrYXFRPd_yq_nljv9ESRNc36s2eP_au3Ql9w4",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTAzLCJpYXQiOjE3MzIwMzMzNzIsImV4cCI6MTczMjAzNTE3Mn0.aP4uBwnRsYBoBNvOVKu0Kv9SpyFDqrmx8HA-ts6P0co",
 									"type": "string"
 								}
 							]
@@ -1757,7 +1752,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
 									"type": "string"
 								}
 							]
@@ -1765,7 +1760,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises/11ca653b-d7ec-4ecc-a103-c2128e1a41d4",
+							"raw": "{{HOST}}/api/v1/practice-exercises/c493e397-57da-4cd9-9343-e241156b4b28",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1773,7 +1768,7 @@
 								"api",
 								"v1",
 								"practice-exercises",
-								"11ca653b-d7ec-4ecc-a103-c2128e1a41d4"
+								"c493e397-57da-4cd9-9343-e241156b4b28"
 							]
 						}
 					},
@@ -1787,7 +1782,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
 									"type": "string"
 								}
 							]
@@ -1821,10 +1816,20 @@
 				{
 					"name": "get details",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises/",
+							"raw": "{{HOST}}/api/v1/practice-exercises/c493e397-57da-4cd9-9343-e241156b4b28",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1832,7 +1837,88 @@
 								"api",
 								"v1",
 								"practice-exercises",
-								""
+								"c493e397-57da-4cd9-9343-e241156b4b28"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Bai thuc hanh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/practice-exercises/:id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"practice-exercises",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/practice-exercises/:id",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"practice-exercises",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
 							]
 						}
 					},

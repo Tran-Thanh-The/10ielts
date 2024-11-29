@@ -5,24 +5,15 @@ import { Redis } from "ioredis";
 export class RedisService {
   constructor(@Inject("REDIS_CLIENT") private readonly redisClient: Redis) {}
 
+  /**
+   * Redis string
+   */
   async set(key: string, value: string, nx?: "EX", ttl?: number) {
     if (nx && ttl) {
       await this.redisClient.set(key, value, "EX", ttl);
     } else {
       await this.redisClient.set(key, value);
     }
-  }
-
-  async sadd(key: string, value: string) {
-    await this.redisClient.sadd(key, value);
-  }
-
-  async srem(key: string, value: string) {
-    await this.redisClient.srem(key, value);
-  }
-
-  async smembers(key: string) {
-    return this.redisClient.smembers(key);
   }
 
   async get(key: string): Promise<string | null> {
@@ -35,6 +26,59 @@ export class RedisService {
 
   async publish(channel: string, message: string) {
     await this.redisClient.publish(channel, message);
+  }
+
+  /**
+   * Redis set
+   */
+  async sadd(key: string, value: string) {
+    await this.redisClient.sadd(key, value);
+  }
+
+  async srem(key: string, value: string) {
+    await this.redisClient.srem(key, value);
+  }
+
+  async smembers(key: string) {
+    return this.redisClient.smembers(key);
+  }
+
+  /**
+   * Redis hash
+   */
+  async hset(key: string, field: string, value: string, ttl?: number) {
+    await this.redisClient.hset(key, field, value);
+    if (ttl) {
+      await this.redisClient.call(
+        "HEXPIRE",
+        key,
+        ttl,
+        "NX",
+        "FIELDS",
+        1,
+        field,
+      );
+    }
+  }
+
+  async hget(key: string, field: string): Promise<string | null> {
+    return this.redisClient.hget(key, field);
+  }
+
+  async hdel(key: string, field: string) {
+    await this.redisClient.hdel(key, field);
+  }
+
+  async hgetall(key: string): Promise<{ [key: string]: string }> {
+    return this.redisClient.hgetall(key);
+  }
+
+  async hmget(key: string, fields: string[]): Promise<(string | null)[]> {
+    return this.redisClient.hmget(key, ...fields);
+  }
+
+  async hlen(key: string): Promise<number> {
+    return this.redisClient.hlen(key);
   }
 
   async subscribe(channel: string) {

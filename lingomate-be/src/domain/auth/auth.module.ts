@@ -1,4 +1,5 @@
-import { Module } from "@nestjs/common";
+/* eslint-disable prettier/prettier */
+import { Global, Module } from "@nestjs/common";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { PassportModule } from "@nestjs/passport";
@@ -11,13 +12,14 @@ import { SessionModule } from "@/domain/session/session.module";
 import { UsersModule } from "@/domain/users/users.module";
 import { JwtAuthGuard } from "@/domain/auth/guards/jwt.guard";
 
+@Global()
 @Module({
   imports: [
     UsersModule,
     SessionModule,
     PassportModule,
     MailModule,
-    JwtModule.register({}),
+    JwtModule,
   ],
   controllers: [AuthController],
   providers: [

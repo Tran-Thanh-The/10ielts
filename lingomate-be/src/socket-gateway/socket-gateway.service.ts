@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { redisConstants } from "@/common/redis/redis.constants";
 import { RedisService } from "@/common/redis/redis.service";
+import { JwtService } from "@nestjs/jwt";
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -7,12 +9,16 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { socketEmitEventName } from "./socket.constants";
 
-@WebSocketGateway({ cors: true })
+@WebSocketGateway({ cors: true, path: "/ws" })
 export class SocketGatewayService
   implements OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private readonly redisService: RedisService) {}
+  constructor(
+    private readonly redisService: RedisService,
+    private readonly jwtService: JwtService, // Inject JwtService
+  ) {}
 
   @WebSocketServer() server: Server;
 
@@ -21,18 +27,37 @@ export class SocketGatewayService
   public handleConnection(client: Socket) {
     client.on(
       "register",
-      (data: { clientId: string; conversationId: string }) => {
-        const { clientId, conversationId } = data;
-        this.registerClient(clientId, client);
-        this.redisService
-          .sadd(
-            `${redisConstants.CHAT_PREFIX}:${clientId}:${conversationId}`,
-            `${client.id}`,
-          )
-          .catch((error) => {
-            console.error(error);
-          });
-        client.emit("registered", "Registration successful");
+      async (data: {
+        clientId: string;
+        userId: string | number;
+        jwtToken: string;
+      }) => {
+        const { clientId, userId, jwtToken } = data;
+        try {
+          // Verify the JWT token
+          const decoded = this.jwtService.verify(jwtToken);
+          if (decoded.id !== userId) {
+            throw new Error("Invalid token");
+          }
+          this.registerClient(clientId, client);
+          await this.redisService.hset(
+            `${redisConstants.CHAT_PREFIX}:${clientId}`,
+            userId.toString(),
+            client.id,
+            86400,
+          );
+          client.emit(
+            socketEmitEventName.REGISTERED,
+            "Registration successful",
+          );
+          // await this.broadCastOnlineUser(client, clientId);
+        } catch (error) {
+          client.emit(
+            socketEmitEventName.CONNECT_ERROR,
+            `Registration failed: ${error.message}`,
+          );
+          client.disconnect();
+        }
       },
     );
   }
@@ -55,11 +80,14 @@ export class SocketGatewayService
           this.clients.delete(clientId);
         }
       }
-      this.redisService
-        .srem(`${redisConstants.CHAT_PREFIX}:${clientId}`, client.id)
+      this.removeFromRedis(clientId, client.id)
         .catch((error) => {
           console.error(error);
         });
+      // this.broadCastOnlineUser(client, clientId)
+      //   .catch((error) => {
+      //     console.error(error);
+      //   });
     }
   }
 
@@ -91,4 +119,32 @@ export class SocketGatewayService
     }
     this.clients.get(clientId)?.add(client);
   }
+
+  private async removeFromRedis(clientId: string, userId: string) {
+    try {
+      const allField = await this.redisService.hgetall(
+        `${redisConstants.CHAT_PREFIX}:${clientId}`,
+      )
+      const field = Object.entries(allField).find(
+        ([, value]) => value === userId,
+      );
+      if (field) {
+        await this.redisService.hdel(
+          `${redisConstants.CHAT_PREFIX}:${clientId}`,
+          field[0],
+        );
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  // private async broadCastOnlineUser(client: Socket, clientId: string) {
+  //   try {
+  //     const onlineUsers = await this.redisService.hlen(`${redisConstants.CHAT_PREFIX}:${clientId}`);
+  //     client.emit(socketEmitEventName.ONLINE_USERS, onlineUsers);
+  //   } catch (error) {
+  //     throw new Error(error.message);
+  //   }
+  // }
 }

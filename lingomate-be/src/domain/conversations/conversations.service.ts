@@ -38,7 +38,7 @@ export class ConversationsService {
         statusCode: HttpStatus.OK,
         message: "Conversation created successfully",
       };
-    } catch (error) {
+    } catch {
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: "Internal server error",
@@ -88,7 +88,7 @@ export class ConversationsService {
         statusCode: HttpStatus.OK,
         message: "User joined the conversation successfully",
       };
-    } catch (error) {
+    } catch {
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: "Internal server error",
@@ -111,7 +111,7 @@ export class ConversationsService {
           },
         }),
       };
-    } catch (error) {
+    } catch {
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: "Internal server error",

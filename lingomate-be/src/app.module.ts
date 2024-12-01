@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { AuthModule } from "@/domain/auth/auth.module";
 import authConfig from "@/domain/auth/config/auth.config";
 import { HomeModule } from "@/domain/home/home.module";
@@ -55,8 +56,67 @@ import { ConversationsModule } from "@/domain/conversations/conversations.module
 
 import { ChatsModule } from "@/domain/chats/chats.module";
 
+import { UserConversationsModule } from "@/domain/user-conversations/user-conversations.module";
+import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
+
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [
+        databaseConfig,
+        authConfig,
+        appConfig,
+        mailConfig,
+        fileConfig,
+        redisConfig,
+      ],
+      envFilePath: [".env"],
+    }),
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.get<string>("AUTH_JWT_SECRET", {
+          infer: true,
+        });
+        const expires = configService.get<string>("AUTH_JWT_TOKEN_EXPIRES_IN", { infer: true });
+        const refreshSecret = configService.get<string>("AUTH_REFRESH_SECRET", {
+          infer: true,
+        });
+        const refreshExpires = configService.get<string>(
+          "AUTH_REFRESH_TOKEN_EXPIRES_IN",
+          { infer: true },
+        );
+        const forgotSecret = configService.get<string>("AUTH_FORGOT_SECRET", {
+          infer: true,
+        });
+        const forgotExpires = configService.get<string>(
+          "AUTH_FORGOT_TOKEN_EXPIRES_IN",
+          { infer: true },
+        );
+        const confirmEmailSecret = configService.get<string>(
+          "AUTH_CONFIRM_EMAIL_SECRET",
+          { infer: true },
+        );
+        const confirmEmailExpires = configService.get<string>(
+          "AUTH_CONFIRM_EMAIL_TOKEN_EXPIRES_IN",
+          { infer: true },
+        );
+        return {
+          secret,
+          signOptions: { expiresIn: expires },
+          refreshSecret,
+          refreshSignOptions: { expiresIn: refreshExpires },
+          forgotSecret,
+          forgotSignOptions: { expiresIn: forgotExpires },
+          confirmEmailSecret,
+          confirmEmailSignOptions: { expiresIn: confirmEmailExpires },
+        };
+      },
+      inject: [ConfigService],
+      global: true,
+    }),
+    SocketGatewayModule,
+    UserConversationsModule,
     ChatsModule,
     ConversationsModule,
     AnswerHistoriesModule,
@@ -79,23 +139,8 @@ import { ChatsModule } from "@/domain/chats/chats.module";
     RedisModule,
     PayOSModule,
     PaymentModule,
-    JwtModule.register({
-      global: true,
-    }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "client"),
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [
-        databaseConfig,
-        authConfig,
-        appConfig,
-        mailConfig,
-        fileConfig,
-        redisConfig,
-      ],
-      envFilePath: [".env"],
     }),
     infrastructureDatabaseModule,
     I18nModule.forRootAsync({

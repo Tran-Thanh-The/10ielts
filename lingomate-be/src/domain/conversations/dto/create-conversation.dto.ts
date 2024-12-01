@@ -1,3 +1,1 @@
-export class CreateConversationDto {
-  // Don't forget to use the class-validator decorators in the DTO properties.
-}
+export class CreateConversationDto {}

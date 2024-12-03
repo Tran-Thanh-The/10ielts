@@ -16,6 +16,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import { ROLE } from '@/utils/constants/constants';
 import { useAuth } from '@/context/AuthContext';
 import { checkRole } from '@/utils/checkRole';
+import InsightsIcon from '@mui/icons-material/Insights';
 
 const DASHBOARD_SIDEBAR = [
   {
@@ -40,6 +41,12 @@ const DASHBOARD_SIDEBAR = [
     title: 'Hóa đơn',
     icon: <PaymentIcon />,
     href: '/dashboard/payments',
+    permission: [ROLE.ADMIN, ROLE.STAFF],
+  },
+  {
+    title: 'Thông kê',
+    icon: <InsightsIcon />,
+    href: '/dashboard/insights',
     permission: [ROLE.ADMIN, ROLE.STAFF],
   },
   {

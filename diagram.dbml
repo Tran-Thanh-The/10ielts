@@ -71,14 +71,6 @@ Table category {
   updatedAt timestamp
 }
 
-Table course_invoices {
-  id uuid [pk]
-  course_id uuid
-  user_invoices_id uuid
-  createdAt timestamp
-  updatedAt timestamp
-}
-
 Table course {
   id uuid [pk]
   photo_id uuid
@@ -97,11 +89,22 @@ Table invoice {
   name string
   description string
   money decimal
+  user_id int [ref: > user.id]
+  orderCode int
+  paymentStatus bool
   status StatusEnum
-  course_id uuid
   createdAt timestamp
   updatedAt timestamp
   deletedAt timestamp
+}
+
+table invoce_product {
+  id uuid [pk]
+  createdAt string
+  updatedAt string
+  invoiceId uuid [null, ref: > invoice.id]
+  courseId uuid [null, ref: > course.id]
+  practiceId uuid [null, ref: > practice_exercise.id]
 }
 
 Table lesson_course {
@@ -209,15 +212,6 @@ Table user_course {
   updatedAt timestamp
 }
 
-Table user_invoices {
-  id uuid [pk]
-  user_id int
-  invoice_id uuid
-  createdAt timestamp
-  updatedAt timestamp
-  deletedAt timestamp
-}
-
 Table user_lesson {
   id uuid [pk]
   status StatusEnum
@@ -227,8 +221,6 @@ Table user_lesson {
   createdAt timestamp
   updatedAt timestamp
 }
-
-
 
 Table file {
   id uuid [pk]
@@ -281,8 +273,6 @@ Ref: user_conversation.conversationId > conversation.id
 Ref: chat.conversationId > conversation.id
 Ref: chat.userId > user.id
 Ref: answer.question_id > question.id
-Ref: course_invoices.course_id > course.id
-Ref: course_invoices.user_invoices_id > user_invoices.id
 Ref: course.photo_id > file.id
 Ref: course.category_id > category.id
 Ref: lesson_course.lesson_id > lesson.id
@@ -291,8 +281,6 @@ Ref: question.category_id > category.id
 Ref: session.user_id > user.id
 Ref: user_course.user_id > user.id
 Ref: user_course.course_id > course.id
-Ref: user_invoices.user_id > user.id
-Ref: user_invoices.invoice_id > invoice.id
 Ref: user_lesson.user_id > user.id
 Ref: user_lesson.lesson_id > lesson.id
 Ref: user_question.user_id > user.id

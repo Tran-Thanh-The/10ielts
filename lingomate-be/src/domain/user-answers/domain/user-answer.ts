@@ -26,7 +26,7 @@ export class UserAnswer {
     enum: StatusEnum,
   })
   status: StatusEnum;
-  
+
   @ApiProperty()
   createdAt: Date;
 

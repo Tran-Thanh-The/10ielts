@@ -58,10 +58,11 @@ export class UserMapper {
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
     persistenceEntity.deletedAt = domainEntity.deletedAt;
-    
+
     persistenceEntity.createdBy = domainEntity.createdBy;
     persistenceEntity.updatedBy = domainEntity.updatedBy;
     persistenceEntity.deletedBy = domainEntity.deletedBy;
     return persistenceEntity;
   }
+
 }

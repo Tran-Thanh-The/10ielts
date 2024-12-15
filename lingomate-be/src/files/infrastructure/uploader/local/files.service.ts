@@ -35,4 +35,28 @@ export class FilesLocalService {
       }),
     };
   }
+
+  async delete(file: FileType): Promise<void> {
+    if (!file) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          file: "fileNotProvided",
+        },
+      });
+    }
+  
+    try {
+      // Xóa file từ FileRepository
+      await this.fileRepository.delete(file.id);
+    } catch (error) {
+      // Xử lý lỗi nếu không thể xóa file
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          file: "deleteFileFailed",
+        },
+      });
+    }
+  }
 }

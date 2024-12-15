@@ -45,7 +45,7 @@ export class AuthService {
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
     const user = await this.usersService.findByEmail(loginDto.email);
-    
+
     if (!user) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -105,8 +105,7 @@ export class AuthService {
       hash,
     });
 
-    console.log('Permission: ', user.role?.permissions);
-    
+    console.log("Permission: ", user.role?.permissions);
 
     return {
       refreshToken,
@@ -129,7 +128,7 @@ export class AuthService {
         });
       }
 
-      const user = await this.usersService.create(null,{
+      const user = await this.usersService.create(null, {
         ...restDto,
         email: dto.email,
         status: StatusEnum.IN_ACTIVE,

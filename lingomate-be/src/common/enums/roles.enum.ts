@@ -3,4 +3,5 @@ export enum RoleEnum {
   "staff" = 2,
   "user" = 3,
   "teacher" = 4,
+  "customerCare" = 5,
 }

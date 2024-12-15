@@ -34,10 +34,10 @@ export enum PermissionEnum {
   UPDATE_PRACTICE = "practice:update",
   DELETE_PRACTICE = "practice:delete",
 
-  // CREATE_ANSWER_HISTORY = "answer-history:create",
-  // READ_ANSWER_HISTORY = "answer-history:read",
-  // UPDATE_ANSWER_HISTORY = "answer-history:update",
-  // DELETE_ANSWER_HISTORY = "answer-history:delete",
+  CREATE_ROLE = "role:create",
+  READ_ROLE = "role:read",
+  UPDATE_ROLE = "role:update",
+  DELETE_ROLE = "role:delete",
 
-  ACCESS_CHAT = "chat:access"
+  ACCESS_CHAT = "chat:access",
 }

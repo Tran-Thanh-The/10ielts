@@ -35,7 +35,7 @@ export class UserAnswerMapper {
     return persistenceEntity;
   }
 
-  static toModel(dto: CreateUserAnswerDto): UserAnswer{
+  static toModel(dto: CreateUserAnswerDto): UserAnswer {
     const model = new UserAnswer();
     if (dto.answerHistoryId) {
       model.answerHistory = new AnswerHistoryEntity();
@@ -46,11 +46,11 @@ export class UserAnswerMapper {
       model.question.id = dto.question_id;
     }
     model.answerPick = dto.answerPick;
-  
+
     return model;
   }
 
-  static toDto(model: UserAnswer): UserAnswerResponseDto{
+  static toDto(model: UserAnswer): UserAnswerResponseDto {
     const dto = new UserAnswerResponseDto();
     dto.id = model.id;
     if (model.answerHistory) {
@@ -61,7 +61,7 @@ export class UserAnswerMapper {
     dto.status = model.status;
     dto.createdAt = model.createdAt;
     dto.updatedAt = model.updatedAt;
-  
+
     return dto;
   }
 }

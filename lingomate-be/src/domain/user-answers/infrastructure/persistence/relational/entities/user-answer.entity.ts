@@ -22,7 +22,7 @@ export class UserAnswerEntity extends EntityRelationalHelper {
   @ApiProperty({
     type: () => AnswerHistoryEntity,
   })
-  @ManyToOne(() =>  AnswerHistoryEntity, {
+  @ManyToOne(() => AnswerHistoryEntity, {
     eager: true,
   })
   answerHistory: AnswerHistoryEntity;

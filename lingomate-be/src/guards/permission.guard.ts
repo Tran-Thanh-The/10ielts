@@ -5,14 +5,12 @@ import { Reflector } from "@nestjs/core";
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
-
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredPermissions = this.reflector.getAllAndOverride<PermissionEnum[]>(
-      'permissions',
-      [context.getHandler(), context.getClass()]
-    );
+    const requiredPermissions = this.reflector.getAllAndOverride<
+      PermissionEnum[]
+    >("permissions", [context.getHandler(), context.getClass()]);
 
     if (!requiredPermissions) {
       console.log("No permissions required, access granted");
@@ -29,12 +27,20 @@ export class PermissionGuard implements CanActivate {
 
     let hasPermission = true;
     for (const permission of requiredPermissions) {
-      const permissionGranted = hasImplicitPermissions(user.permissions, permission, user.role);
+      const permissionGranted = hasImplicitPermissions(
+        user.permissions,
+        permission,
+        user.role,
+      );
 
       if (!permissionGranted) {
-        console.log(`Permission '${permission}' denied for user role '${JSON.stringify(user.role)}'`);
+        console.log(
+          `Permission '${permission}' denied for user role '${JSON.stringify(user.role)}'`,
+        );
       } else {
-        console.log(`Permission '${permission}' granted for user role '${JSON.stringify(user.role)}'`);
+        console.log(
+          `Permission '${permission}' granted for user role '${JSON.stringify(user.role)}'`,
+        );
       }
 
       hasPermission = hasPermission && permissionGranted;

@@ -29,9 +29,9 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger";
-import { Roles } from "../roles/roles.decorator";
-import { RoleEnum } from "../roles/roles.enum";
-import { RolesGuard } from "../roles/roles.guard";
+import { Roles } from "../../utils/decorators/roles.decorator";
+import { RoleEnum } from "../../common/enums/roles.enum";
+import { RolesGuard } from "../auth/guards/roles.guard";
 import { PracticeExercise } from "./domain/practice-exercise";
 import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
 import { FindAllPracticeExercisesDto } from "./dto/find-all-practice-exercises.dto";
@@ -129,7 +129,11 @@ export class PracticeExercisesController {
     @Body() updatePracticeExerciseDto: UpdatePracticeExerciseDto,
   ) {
     const userId = req.user.id;
-    return this.practiceExercisesService.update(userId, id, updatePracticeExerciseDto);
+    return this.practiceExercisesService.update(
+      userId,
+      id,
+      updatePracticeExerciseDto,
+    );
   }
 
   @Roles(RoleEnum.admin, RoleEnum.teacher)

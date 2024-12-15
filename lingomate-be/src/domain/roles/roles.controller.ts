@@ -9,9 +9,6 @@ import {
   UseGuards,
   Query,
 } from "@nestjs/common";
-import { CategoriesService } from "./categories.service";
-import { CreateCategoryDto } from "./dto/create-category.dto";
-import { UpdateCategoryDto } from "./dto/update-category.dto";
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -19,45 +16,48 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger";
-import { Category } from "./domain/category";
 import { AuthGuard } from "@nestjs/passport";
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
-import { FindAllCategoriesDto } from "./dto/find-all-categories.dto";
 import { PermissionGuard } from "@/guards/permission.guard";
 import { Permissions } from "@/utils/decorators/permission.decorator";
 import { PermissionEnum } from "@/common/enums/permissions.enum";
+import { RolesService } from "./roles.service";
+import { Role } from "./domain/role";
+import { CreateRoleDto } from "./dto/create-role.dto";
+import { FindAllRolesDto } from "./dto/find-all-roles.dto";
+import { UpdateRoleDto } from "./dto/update-role.dto";
 
-@ApiTags("Categories")
+@ApiTags("Roles")
 @ApiBearerAuth()
 @UseGuards(AuthGuard("jwt"), PermissionGuard)
 @Controller({
-  path: "categories",
+  path: "roles",
   version: "1",
 })
-export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+export class RolesController {
+  constructor(private readonly rolesService: RolesService) {}
 
   @Post()
-  @Permissions(PermissionEnum.CREATE_CATEGORY)
+  @Permissions(PermissionEnum.CREATE_ROLE)
   @ApiCreatedResponse({
-    type: Category,
+    type: Role,
   })
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+  create(@Body() createRoleDto: CreateRoleDto) {
+    return this.rolesService.create(createRoleDto);
   }
 
   @Get()
-  @Permissions(PermissionEnum.READ_CATEGORY)
+  @Permissions(PermissionEnum.READ_ROLE)
   @ApiOkResponse({
-    type: InfinityPaginationResponse(Category),
+    type: InfinityPaginationResponse(Role),
   })
   async findAll(
-    @Query() query: FindAllCategoriesDto,
-  ): Promise<InfinityPaginationResponseDto<Category>> {
+    @Query() query: FindAllRolesDto,
+  ): Promise<InfinityPaginationResponseDto<Role>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -65,7 +65,7 @@ export class CategoriesController {
     }
 
     return infinityPagination(
-      await this.categoriesService.findAllWithPagination({
+      await this.rolesService.findAllWithPagination({
         paginationOptions: {
           page,
           limit,
@@ -76,44 +76,44 @@ export class CategoriesController {
   }
 
   @Get(":id")
-  @Permissions(PermissionEnum.READ_CATEGORY)
+  @Permissions(PermissionEnum.READ_ROLE)
   @ApiParam({
     name: "id",
     type: String,
     required: true,
   })
   @ApiOkResponse({
-    type: Category,
+    type: Role,
   })
   findOne(@Param("id") id: string) {
-    return this.categoriesService.findOne(id);
+    return this.rolesService.findOne(Number(id));
   }
 
   @Patch(":id")
-  @Permissions(PermissionEnum.UPDATE_CATEGORY)
+  @Permissions(PermissionEnum.UPDATE_ROLE)
   @ApiParam({
     name: "id",
     type: String,
     required: true,
   })
   @ApiOkResponse({
-    type: Category,
+    type: Role,
   })
   update(
     @Param("id") id: string,
-    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Body() updateRoleDto: UpdateRoleDto,
   ) {
-    return this.categoriesService.update(id, updateCategoryDto);
+    return this.rolesService.update(Number(id), updateRoleDto);
   }
 
   @Delete(":id")
-  @Permissions(PermissionEnum.DELETE_CATEGORY)
+  @Permissions(PermissionEnum.DELETE_ROLE)
   @ApiParam({
     name: "id",
     type: String,
     required: true,
   })
   remove(@Param("id") id: string) {
-    return this.categoriesService.remove(id);
+    return this.rolesService.remove(Number(id));
   }
 }

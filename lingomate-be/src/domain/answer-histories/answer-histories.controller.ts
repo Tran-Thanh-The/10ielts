@@ -27,9 +27,9 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllAnswerHistoriesDto } from "./dto/find-all-answer-histories.dto";
-import { RolesGuard } from "../roles/roles.guard";
-import { RoleEnum } from "../roles/roles.enum";
-import { Roles } from "../roles/roles.decorator";
+import { RolesGuard } from "../auth/guards/roles.guard";
+import { RoleEnum } from "../../common/enums/roles.enum";
+import { Roles } from "../../utils/decorators/roles.decorator";
 
 @ApiTags("Answerhistories")
 @ApiBearerAuth()

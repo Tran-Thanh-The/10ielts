@@ -56,6 +56,7 @@ import { ConversationsModule } from "@/domain/conversations/conversations.module
 import { ChatsModule } from "@/domain/chats/chats.module";
 
 import { UserAnswersModule } from "@/domain/user-answers/user-answers.module";
+import { RolesModule } from "./domain/roles/roles.module";
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { UserAnswersModule } from "@/domain/user-answers/user-answers.module";
     RedisModule,
     PayOSModule,
     PaymentModule,
+    RolesModule,
     JwtModule.register({
       global: true,
     }),
@@ -133,8 +135,3 @@ import { UserAnswersModule } from "@/domain/user-answers/user-answers.module";
   ],
 })
 export class AppModule {}
-// export class AppModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer.apply(PermissionMiddleware).forRoutes("*");
-//   }
-// }

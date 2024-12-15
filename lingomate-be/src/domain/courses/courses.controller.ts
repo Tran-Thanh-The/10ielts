@@ -42,7 +42,7 @@ import { UpdateCourseDto } from "./dto/update-course.dto";
 
 @ApiTags("Courses")
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), PermissionGuard)
+@UseGuards(AuthGuard("jwt"), PermissionGuard)
 @Controller({
   path: "courses",
   version: "1",
@@ -145,21 +145,47 @@ export class CoursesController {
     return this.coursesService.getCourseDetails(id, userId);
   }
 
-
+  // @Patch(":id")
+  // @Permissions(PermissionEnum.UPDATE_COURSE)
+  // @ApiParam({
+  //   name: "id",
+  //   type: String,
+  //   required: true,
+  // })
+  // @ApiOkResponse({
+  //   type: Course,
+  // })
+  // update(@Param("id") id: string, @Body() updateCourseDto: UpdateCourseDto) {
+  //   return this.coursesService.update(id, updateCourseDto);
+  // }
   @Patch(":id")
   @Permissions(PermissionEnum.UPDATE_COURSE)
+  @UseInterceptors(FileInterceptor("file", multerConfig))
+  @ApiConsumes("multipart/form-data")
   @ApiParam({
-    name: "id",
-    type: String,
-    required: true,
+  name: "id",
+  type: String,
+  required: true,
   })
   @ApiOkResponse({
-    type: Course,
+  type: Course,
   })
-  update(@Param("id") id: string, @Body() updateCourseDto: UpdateCourseDto) {
-    return this.coursesService.update(id, updateCourseDto);
+  update(
+  @Param("id") id: string, 
+  @Body() updateCourseDto: UpdateCourseDto,
+  @UploadedFile() file?: Express.Multer.File
+  ) {
+  try {
+    return this.coursesService.update(id, updateCourseDto, file);
+  } catch (error) {
+    if (error instanceof NotFoundException) {
+      throw error;
+    }
+    throw new InternalServerErrorException(
+      "An error occurred while updating the course. Please try again later.",
+    );
   }
-
+  }
 
   @Delete(":id")
   @Permissions(PermissionEnum.DELETE_COURSE)

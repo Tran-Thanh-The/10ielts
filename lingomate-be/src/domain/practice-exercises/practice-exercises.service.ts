@@ -56,11 +56,8 @@ export class PracticeExercisesService {
     const updatedData = {
       ...updatePracticeExerciseDto,
       updatedBy: Number(userId),
-    }
-    return this.practiceExerciseRepository.update(
-      id,
-      updatedData,
-    );
+    };
+    return this.practiceExerciseRepository.update(id, updatedData);
   }
 
   remove(id: PracticeExercise["id"]) {

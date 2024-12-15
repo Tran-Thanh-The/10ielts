@@ -97,11 +97,9 @@ export class QuestionEntity extends EntityRelationalHelper {
   @ApiProperty({
     type: () => UserAnswerEntity,
   })
-  @OneToMany(
-    () => UserAnswerEntity,
-    (userAnswer) => userAnswer.question,
-    { cascade: true },
-  )
+  @OneToMany(() => UserAnswerEntity, (userAnswer) => userAnswer.question, {
+    cascade: true,
+  })
   userAnswers: UserAnswerEntity[];
 
   @ApiProperty({

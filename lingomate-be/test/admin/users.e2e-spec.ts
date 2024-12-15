@@ -1,6 +1,6 @@
 import { APP_URL, ADMIN_EMAIL, ADMIN_PASSWORD } from "../utils/constants";
 import request from "supertest";
-import { RoleEnum } from "@/domain/roles/roles.enum";
+import { RoleEnum } from "@/common/enums/roles.enum";
 import { StatusEnum } from "@/domain/statuses/statuses.enum";
 
 describe("Users Module", () => {

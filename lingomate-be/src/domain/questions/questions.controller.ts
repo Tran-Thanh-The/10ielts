@@ -41,7 +41,7 @@ import { QuestionsService } from "./questions.service";
 
 @ApiTags("Questions")
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), PermissionGuard)
+@UseGuards(AuthGuard("jwt"), PermissionGuard)
 @Controller({
   path: "questions",
   version: "1",

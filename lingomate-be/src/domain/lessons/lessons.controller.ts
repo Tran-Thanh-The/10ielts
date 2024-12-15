@@ -35,9 +35,9 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllLessonsDto } from "./dto/find-all-lessons.dto";
-import { RolesGuard } from "../roles/roles.guard";
-import { RoleEnum } from "../roles/roles.enum";
-import { Roles } from "../roles/roles.decorator";
+import { RolesGuard } from "../auth/guards/roles.guard";
+import { RoleEnum } from "../../common/enums/roles.enum";
+import { Roles } from "../../utils/decorators/roles.decorator";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 import { NullableType } from "@/utils/types/nullable.type";
@@ -48,7 +48,7 @@ import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @ApiTags("Lessons")
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), PermissionGuard)
+@UseGuards(AuthGuard("jwt"), PermissionGuard)
 @Controller({
   path: "lessons",
   version: "1",
@@ -190,7 +190,6 @@ export class LessonsController {
   findOne(@Param("id") id: string) {
     return this.lessonsService.findById(id);
   }
-
 
   @Patch(":id")
   @Permissions(PermissionEnum.UPDATE_LESSON)

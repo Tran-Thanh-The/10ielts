@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
-import { RoleEnum } from "@/domain/roles/roles.enum";
+import { RoleEnum } from "@/common/enums/roles.enum";
 import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @Injectable()
@@ -15,21 +15,9 @@ export class RoleSeedService {
   async run() {
     const rolesToSeed = [
       {
-        id: RoleEnum.user,
-        name: "User",
-        permissions: [
-          PermissionEnum.READ_USER,
-          PermissionEnum.READ_COURSE,
-          PermissionEnum.READ_LESSON,
-          PermissionEnum.READ_PRACTICE,
-        ],
-      },
-      {
         id: RoleEnum.admin,
         name: "Admin",
-        permissions: [
-         
-        ],
+        permissions: [],
       },
       {
         id: RoleEnum.staff,
@@ -44,6 +32,16 @@ export class RoleSeedService {
           PermissionEnum.READ_LESSON,
           PermissionEnum.READ_QUESTION,
           PermissionEnum.READ_ANSWER,
+        ],
+      },
+      {
+        id: RoleEnum.user,
+        name: "User",
+        permissions: [
+          PermissionEnum.READ_USER,
+          PermissionEnum.READ_COURSE,
+          PermissionEnum.READ_LESSON,
+          PermissionEnum.READ_PRACTICE,
         ],
       },
       {
@@ -63,29 +61,9 @@ export class RoleSeedService {
           PermissionEnum.UPDATE_PRACTICE,
           PermissionEnum.DELETE_PRACTICE,
         ],
-      }
+      },
     ];
 
-    // for (const roleData of rolesToSeed) {
-    //   // Tìm role theo ID
-    //   const existingRole = await this.repository.findOne({ 
-    //     where: { id: roleData.id } 
-    //   });
-
-    //   if (existingRole) {
-    //     // Nếu role đã tồn tại, cập nhật thông tin
-    //     await this.repository.save({
-    //       ...existingRole,
-    //       name: roleData.name,
-    //       permissions: roleData.permissions
-    //     });
-    //   } else {
-    //     // Nếu role chưa tồn tại, tạo mới
-    //     await this.repository.save(
-    //       this.repository.create(roleData)
-    //     );
-    //   }
-    // }
     for (const roleData of rolesToSeed) {
       await this.repository.upsert(
         {
@@ -93,7 +71,7 @@ export class RoleSeedService {
           name: roleData.name,
           permissions: roleData.permissions,
         },
-        ['id']
+        ["id"],
       );
     }
   }

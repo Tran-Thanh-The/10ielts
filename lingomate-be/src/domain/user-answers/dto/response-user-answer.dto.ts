@@ -10,19 +10,19 @@ export class UserAnswerResponseDto {
   @ApiProperty({ type: String })
   answerHistoryId: string;
 
-  @ApiProperty({ type: () => Question})
+  @ApiProperty({ type: () => Question })
   question: Question;
 
   @ApiPropertyOptional({ type: String })
   @IsOptional()
   answerPick?: string | null;
-  
+
   @ApiProperty({
     enum: StatusEnum,
   })
   @IsEnum(StatusEnum)
   status: StatusEnum;
-  
+
   @ApiProperty({ type: Date })
   createdAt?: Date;
 

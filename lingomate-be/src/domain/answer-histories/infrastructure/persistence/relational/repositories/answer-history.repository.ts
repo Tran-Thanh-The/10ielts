@@ -53,7 +53,7 @@ export class AnswerHistoryRelationalRepository
         "lesson.questions",
         "lesson.questions.file",
         "lesson.questions.answers",
-        "lesson.questions.answers.file", 
+        "lesson.questions.answers.file",
       ],
     });
 

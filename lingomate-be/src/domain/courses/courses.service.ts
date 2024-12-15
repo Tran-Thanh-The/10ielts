@@ -134,11 +134,33 @@ export class CoursesService {
     return course;
   }
 
-  async update(id: Course["id"], updateCourseDto: UpdateCourseDto) {
+  // async update(id: Course["id"], updateCourseDto: UpdateCourseDto) {
+  //   const existingCourse = await this.courseRepository.findById(id);
+  //   if (!existingCourse) {
+  //     throw new NotFoundException(`Course with id "${id}" not found.`);
+  //   }
+  //   return this.courseRepository.update(id, updateCourseDto);
+  // }
+
+  async update(
+    id: Course["id"], 
+    updateCourseDto: UpdateCourseDto,
+    photoFile?: Express.Multer.File
+  ) {
     const existingCourse = await this.courseRepository.findById(id);
     if (!existingCourse) {
       throw new NotFoundException(`Course with id "${id}" not found.`);
     }
+  
+    if (photoFile) {
+      if (existingCourse.photo) {
+        await this.filesLocalService.delete(existingCourse.photo);
+      }
+  
+      const uploadedFile = await this.filesLocalService.create(photoFile);
+      updateCourseDto.photo = uploadedFile.file;
+    }
+  
     return this.courseRepository.update(id, updateCourseDto);
   }
 

@@ -30,7 +30,7 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { NullableType } from "@/utils/types/nullable.type";
-import { RolesGuard } from "../roles/roles.guard";
+import { RolesGuard } from "../auth/guards/roles.guard";
 import { User } from "./domain/user";
 import { QueryUserDto } from "./dto/query-user.dto";
 import { RolesRestrictionGuard } from "./guards/roles.restriction.guard";
@@ -40,28 +40,28 @@ import { Permissions } from "@/utils/decorators/permission.decorator";
 import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), PermissionGuard)
+@UseGuards(AuthGuard("jwt"), PermissionGuard)
 @ApiTags("Users")
 @Controller({
   path: "users",
   version: "1",
 })
-  export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
-    @Post()
-    @UseGuards(RolesRestrictionGuard)
-    @Permissions(PermissionEnum.CREATE_USER)
-    @ApiCreatedResponse({
-      type: User,
-    })
-    @SerializeOptions({
-      groups: ["admin"],
-    })
-    @HttpCode(HttpStatus.CREATED)
-    create(@Req() req, @Body() createProfileDto: CreateUserDto): Promise<User> {
-      const userId = req.user.id;
-      return this.usersService.create(userId, createProfileDto);
-    }
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+  @Post()
+  @UseGuards(RolesRestrictionGuard)
+  @Permissions(PermissionEnum.CREATE_USER)
+  @ApiCreatedResponse({
+    type: User,
+  })
+  @SerializeOptions({
+    groups: ["admin"],
+  })
+  @HttpCode(HttpStatus.CREATED)
+  create(@Req() req, @Body() createProfileDto: CreateUserDto): Promise<User> {
+    const userId = req.user.id;
+    return this.usersService.create(userId, createProfileDto);
+  }
 
   @ApiOkResponse({
     type: InfinityPaginationResponse(User),

@@ -1,9 +1,9 @@
-import { RoleEnum } from "@/domain/roles/roles.enum";
+import { RoleEnum } from "@/common/enums/roles.enum";
 import {
-    CanActivate,
-    ExecutionContext,
-    ForbiddenException,
-    Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
 } from "@nestjs/common";
 import { UsersService } from "../users.service";
 
@@ -38,7 +38,8 @@ export class DeleteUserGuard implements CanActivate {
 
     // Teacher và Staff chỉ được xóa user mà họ tạo ra
     if (
-      (currentUserRole === RoleEnum.teacher || currentUserRole === RoleEnum.staff) &&
+      (currentUserRole === RoleEnum.teacher ||
+        currentUserRole === RoleEnum.staff) &&
       userToDelete.createdBy === currentUser.id
     ) {
       return true;

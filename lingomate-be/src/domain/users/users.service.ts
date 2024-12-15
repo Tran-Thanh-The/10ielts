@@ -7,11 +7,11 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
-  UnprocessableEntityException
+  UnprocessableEntityException,
 } from "@nestjs/common";
 import bcrypt from "bcryptjs";
 import { FilesService } from "../../files/files.service";
-import { RoleEnum } from "../roles/roles.enum";
+import { RoleEnum } from "../../common/enums/roles.enum";
 import { User } from "./domain/user";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { FilterUserDto, SortUserDto } from "./dto/query-user.dto";
@@ -24,7 +24,10 @@ export class UsersService {
     private readonly filesService: FilesService,
   ) {}
 
-  async create( userId: string | null, createProfileDto: CreateUserDto): Promise<User> {
+  async create(
+    userId: string | null,
+    createProfileDto: CreateUserDto,
+  ): Promise<User> {
     const clonedPayload = {
       provider: AuthProvidersEnum.email,
       ...createProfileDto,
@@ -80,7 +83,7 @@ export class UsersService {
       clonedPayload.role = { id: RoleEnum.user };
     }
     clonedPayload.status = StatusEnum.ACTIVE;
-    
+
     return this.usersRepository.create(clonedPayload);
   }
 
@@ -205,7 +208,7 @@ export class UsersService {
       if (!user) {
         throw new NotFoundException(`User with ID ${id} not found.`);
       }
-        // Cập nhật deletedBy
+      // Cập nhật deletedBy
       user.deletedBy = Number(userId);
       await this.usersRepository.save(user);
     }

@@ -1,7 +1,11 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { PermissionEnum } from "@/common/enums/permissions.enum";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 import { ApiProperty } from "@nestjs/swagger";
-import { PermissionEnum } from "@/common/enums/permissions.enum";
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn
+} from "typeorm";
 
 @Entity({
   name: "role",
@@ -10,7 +14,7 @@ export class RoleEntity extends EntityRelationalHelper {
   @ApiProperty({
     type: Number,
   })
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty({
@@ -20,11 +24,11 @@ export class RoleEntity extends EntityRelationalHelper {
   @Column()
   name?: string;
 
-  @Column('simple-array', { nullable: true })
+  @Column("simple-array", { nullable: true })
   @ApiProperty({
     type: [String],
     description: "List of permissions associated with the role.",
   })
   permissions?: PermissionEnum[];
-  
+
 }

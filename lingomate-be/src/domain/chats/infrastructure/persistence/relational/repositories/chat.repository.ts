@@ -15,6 +15,30 @@ export class ChatRelationalRepository implements ChatRepository {
     private readonly chatRepository: Repository<ChatEntity>,
   ) {}
 
+  async getMessagesByConversationId({
+    conversationId,
+    paginationOptions,
+  }: {
+    conversationId: string;
+    paginationOptions: IPaginationOptions;
+  }): Promise<{
+    chat: Chat[];
+    count: number;
+  }> {
+    const [result, count] = await this.chatRepository.findAndCount({
+      where: { conversationId },
+      skip: (paginationOptions.page - 1) * paginationOptions.limit,
+      take: paginationOptions.limit,
+      order: {
+        createdAt: "DESC",
+      },
+    });
+    return {
+      chat: result.map((entity) => ChatMapper.toDomain(entity)),
+      count,
+    };
+  }
+
   async create(data: Chat): Promise<Chat> {
     const persistenceModel = ChatMapper.toPersistence(data);
     const newEntity = await this.chatRepository.save(

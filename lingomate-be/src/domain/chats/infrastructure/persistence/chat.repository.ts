@@ -4,6 +4,17 @@ import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { Chat } from "../../domain/chat";
 
 export abstract class ChatRepository {
+  abstract getMessagesByConversationId({
+    conversationId,
+    paginationOptions,
+  }: {
+    conversationId: string;
+    paginationOptions: IPaginationOptions;
+  }): Promise<{
+    chat: Chat[];
+    count: number;
+  }>;
+
   abstract create(
     data: Omit<Chat, "id" | "createdAt" | "updatedAt">,
   ): Promise<Chat>;

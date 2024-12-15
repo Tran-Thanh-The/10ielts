@@ -16,9 +16,6 @@ import {
 import { AuthProvidersEnum } from "@/domain/auth/auth-providers.enum";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 
-// We use class-transformer in ORM entity and domain entity.
-// We duplicate these rules because you can choose not to use adapters
-// in your project and return an ORM entity directly in response.
 import { StatusEnum } from "@/common/enums/status.enum";
 import { ChatEntity } from "@/domain/chats/infrastructure/persistence/relational/entities/chat.entity";
 import { InvoiceEntity } from "@/domain/invoices/infrastructure/persistence/relational/entities/invoice.entity";
@@ -27,10 +24,10 @@ import { UserCourseEntity } from "@/domain/user-courses/infrastructure/persisten
 import { UserInvoicesEntity } from "@/domain/user-invoices/infrastructure/persistence/relational/entities/user-invoices.entity";
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Exclude, Expose } from "class-transformer";
-import { AnswerHistoryEntity } from "@/domain/answer-histories/infrastructure/persistence/relational/entities/answer-history.entity";
-import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
+import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
+import { ChatEntity } from "@/domain/chats/infrastructure/persistence/relational/entities/chat.entity";
+import { UserConversationEntity } from "@/domain/user-conversations/infrastructure/persistence/relational/entities/user-conversation.entity";
+
 @Entity({
   name: "user",
 })
@@ -165,4 +162,13 @@ export class UserEntity extends EntityRelationalHelper {
     cascade: true,
   })
   chats: ChatEntity[];
+
+  @OneToMany(
+    () => UserConversationEntity,
+    (userConversation) => userConversation.user,
+    {
+      cascade: true,
+    },
+  )
+  userConversations: UserConversationEntity[];
 }

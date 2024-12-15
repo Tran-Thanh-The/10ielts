@@ -45,6 +45,7 @@ export class PaymentController {
     );
   }
 
+  @Public()
   @Get("/webhook-handler")
   async webhookHandler(@Req() req: Request, @Body() body: any): Promise<any> {
     return await "Webhook handler";

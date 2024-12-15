@@ -134,14 +134,6 @@ export class CoursesService {
     return course;
   }
 
-  // async update(id: Course["id"], updateCourseDto: UpdateCourseDto) {
-  //   const existingCourse = await this.courseRepository.findById(id);
-  //   if (!existingCourse) {
-  //     throw new NotFoundException(`Course with id "${id}" not found.`);
-  //   }
-  //   return this.courseRepository.update(id, updateCourseDto);
-  // }
-
   async update(
     id: Course["id"], 
     updateCourseDto: UpdateCourseDto,
@@ -154,6 +146,8 @@ export class CoursesService {
   
     if (photoFile) {
       if (existingCourse.photo) {
+        // Tách rời file khỏi course trước khi xóa
+        await this.courseRepository.update(id, { photo: null });
         await this.filesLocalService.delete(existingCourse.photo);
       }
   

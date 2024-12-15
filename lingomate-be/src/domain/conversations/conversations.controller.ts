@@ -13,12 +13,12 @@ import { ConversationsService } from "./conversations.service";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllConversationsDto } from "./dto/find-all-conversations.dto";
-import { Roles } from "@/domain/roles/roles.decorator";
-import { RoleEnum } from "@/domain/roles/roles.enum";
 import { JwtAuthGuard } from "@/domain/auth/guards/jwt.guard";
 import { Public } from "@/utils/decorators/public.decorator";
 import { Request, Response } from "express";
 import { FindAllMessageOfConversationRequestDto } from "./dto/find-messages-of-conversation.dto";
+import { Roles } from "@/utils/decorators/roles.decorator";
+import { RoleEnum } from "@/common/enums/roles.enum";
 
 @ApiTags("Conversations")
 @ApiBearerAuth()

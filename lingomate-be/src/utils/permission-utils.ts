@@ -20,6 +20,7 @@ export function hasImplicitPermissions(
       return rolePermissions.includes(PermissionEnum.CREATE_USER);
 
     case PermissionEnum.CREATE_LESSON:
+    case PermissionEnum.READ_LESSON:
       return (
         rolePermissions.includes(PermissionEnum.READ_LESSON) ||
         rolePermissions.includes(PermissionEnum.CREATE_COURSE)

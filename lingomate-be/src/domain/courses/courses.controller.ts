@@ -145,19 +145,6 @@ export class CoursesController {
     return this.coursesService.getCourseDetails(id, userId);
   }
 
-  // @Patch(":id")
-  // @Permissions(PermissionEnum.UPDATE_COURSE)
-  // @ApiParam({
-  //   name: "id",
-  //   type: String,
-  //   required: true,
-  // })
-  // @ApiOkResponse({
-  //   type: Course,
-  // })
-  // update(@Param("id") id: string, @Body() updateCourseDto: UpdateCourseDto) {
-  //   return this.coursesService.update(id, updateCourseDto);
-  // }
   @Patch(":id")
   @Permissions(PermissionEnum.UPDATE_COURSE)
   @UseInterceptors(FileInterceptor("file", multerConfig))

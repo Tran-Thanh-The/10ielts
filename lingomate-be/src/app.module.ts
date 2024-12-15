@@ -58,6 +58,8 @@ import { ChatsModule } from "@/domain/chats/chats.module";
 
 import { UserConversationsModule } from "@/domain/user-conversations/user-conversations.module";
 import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
+import { UserAnswersModule } from "./domain/user-answers/user-answers.module";
+import { RolesModule } from "./domain/roles/roles.module";
 
 @Module({
   imports: [
@@ -115,6 +117,7 @@ import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
       inject: [ConfigService],
       global: true,
     }),
+    RolesModule,
     SocketGatewayModule,
     UserConversationsModule,
     UserAnswersModule,

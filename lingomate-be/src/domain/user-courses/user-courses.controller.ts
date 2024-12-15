@@ -49,14 +49,14 @@ export class UserCoursesController {
     return this.userCoursesService.create(createUserCourseDto, userId);
   }
 
-  @Patch(":id/current-lesson")
+  @Patch(":userId/current-lesson") 
   async updateCurrentLesson(
-    @Param("id") userCourseId: string,
+    @Param("userId") userId: string,
     @Body() updateCurrentLessonDto: UpdateCurrentLessonDto,
   ) {
     return this.userCoursesService.updateCurrentLesson(
       updateCurrentLessonDto,
-      userCourseId,
+      userId,
     );
   }
 

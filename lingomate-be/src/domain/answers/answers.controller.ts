@@ -1,22 +1,30 @@
+import { PermissionEnum } from "@/common/enums/permissions.enum";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
 import {
-  Controller,
-  Get,
-  Post,
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from "@/utils/dto/infinity-pagination-response.dto";
+import { infinityPagination } from "@/utils/infinity-pagination";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import {
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
-  Query,
-  UseInterceptors,
-  UploadedFile,
+  Get,
   InternalServerErrorException,
   NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Query,
   Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
-import { AnswersService } from "./answers.service";
-import { CreateAnswerDto } from "./dto/create-answer.dto";
-import { UpdateAnswerDto } from "./dto/update-answer.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
   ApiConsumes,
@@ -25,22 +33,11 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger";
+import { AnswersService } from "./answers.service";
 import { Answer } from "./domain/answer";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
+import { CreateAnswerDto } from "./dto/create-answer.dto";
 import { FindAllAnswersDto } from "./dto/find-all-answers.dto";
-import { RolesGuard } from "../auth/guards/roles.guard";
-import { RoleEnum } from "../../common/enums/roles.enum";
-import { Roles } from "../../utils/decorators/roles.decorator";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
-import { PermissionGuard } from "@/guards/permission.guard";
-import { Permissions } from "@/utils/decorators/permission.decorator";
-import { PermissionEnum } from "@/common/enums/permissions.enum";
+import { UpdateAnswerDto } from "./dto/update-answer.dto";
 
 @ApiTags("Answers")
 @ApiBearerAuth()
@@ -124,6 +121,7 @@ export class AnswersController {
 
   @Patch(":id")
   @Permissions(PermissionEnum.UPDATE_ANSWER)
+  @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiParam({
     name: "id",
     type: String,
@@ -136,9 +134,10 @@ export class AnswersController {
     @Req() req,
     @Param("id") id: string,
     @Body() updateAnswerDto: UpdateAnswerDto,
+    @UploadedFile() file?: Express.Multer.File
   ) {
     const userId = req.user.id;
-    return this.answersService.update(userId, id, updateAnswerDto);
+    return this.answersService.update(userId, id, updateAnswerDto, file);
   }
 
   @Delete(":id")

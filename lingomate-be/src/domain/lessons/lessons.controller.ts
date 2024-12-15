@@ -193,6 +193,7 @@ export class LessonsController {
 
   @Patch(":id")
   @Permissions(PermissionEnum.UPDATE_LESSON)
+  @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiParam({
     name: "id",
     type: String,
@@ -204,9 +205,10 @@ export class LessonsController {
   async update(
     @Param("id") id: string,
     @Body() updateLessonDto: UpdateLessonDto,
+    @UploadedFile() file?: Express.Multer.File
   ) {
     try {
-      return await this.lessonsService.update(id, updateLessonDto);
+      return await this.lessonsService.update(id, updateLessonDto, file);
     } catch (error) {
       if (error instanceof ConflictException) {
         throw new ConflictException(error.message);

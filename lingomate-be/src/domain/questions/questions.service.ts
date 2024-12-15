@@ -120,10 +120,21 @@ export class QuestionsService {
     userId: string,
     id: Question["id"],
     updateQuestionDto: UpdateQuestionDto,
+    fileQuestion?: Express.Multer.File
   ) {
     const existingQuestion = await this.questionRepository.findById(id);
     if (!existingQuestion) {
       throw new NotFoundException(`Question with id "${id}" not found.`);
+    }
+    if (fileQuestion) {
+      if (existingQuestion.file) {
+        // Tách rời file khỏi Question trước khi xóa
+        await this.questionRepository.update(id, { file: null });
+        await this.filesLocalService.delete(existingQuestion.file);
+      }
+  
+      const uploadedFile = await this.filesLocalService.create(fileQuestion);
+      updateQuestionDto.file = uploadedFile.file;
     }
     const updatedData = {
       ...updateQuestionDto,

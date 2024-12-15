@@ -63,12 +63,23 @@ export class AnswersService {
     userId: string,
     id: Answer["id"],
     updateAnswerDto: UpdateAnswerDto,
+    fileAnswer?: Express.Multer.File
   ) {
     const existingAnswer = await this.answerRepository.findById(id);
     if (!existingAnswer) {
       throw new NotFoundException(`Answer with id "${id}" not found.`);
     }
 
+    if (fileAnswer) {
+      if (existingAnswer.file) {
+        // Tách rời file khỏi Answer trước khi xóa
+        await this.answerRepository.update(id, { file: null });
+        await this.filesLocalService.delete(existingAnswer.file);
+      }
+  
+      const uploadedFile = await this.filesLocalService.create(fileAnswer);
+      updateAnswerDto.file = uploadedFile.file;
+    }
     const updatedData = {
       ...updateAnswerDto,
       updatedBy: Number(userId),

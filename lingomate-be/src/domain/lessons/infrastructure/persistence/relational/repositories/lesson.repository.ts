@@ -30,6 +30,23 @@ export class LessonRelationalRepository implements LessonRepository {
     return entities.map((entity) => LessonMapper.toDomain(entity));
   }
 
+  // async findAllWithPagination({
+  //   paginationOptions,
+  // }: {
+  //   paginationOptions: IPaginationOptions;
+  // }): Promise<Lesson[]> {
+  //   const { page, limit } = paginationOptions;
+  //   const entities = await this.lessonRepository.find({
+  //     skip: (page - 1) * limit,
+  //     take: limit,
+  //     relations: ["questions", "questions.answers", "file"],
+  //     order: {
+  //       createdAt: "DESC",
+  //     },
+  //   });
+
+  //   return entities.map((entity) => LessonMapper.toDomain(entity));
+  // }
   async findAllWithPagination({
     paginationOptions,
   }: {
@@ -39,7 +56,13 @@ export class LessonRelationalRepository implements LessonRepository {
     const entities = await this.lessonRepository.find({
       skip: (page - 1) * limit,
       take: limit,
-      relations: ["questions", "questions.answers", "file"],
+      relations: [
+        "questions", 
+        "questions.file",
+        "questions.answers", 
+        "questions.answers.file",
+        "file"
+      ],
       order: {
         createdAt: "DESC",
       },
@@ -92,7 +115,9 @@ export class LessonRelationalRepository implements LessonRepository {
       .createQueryBuilder("lesson")
       .leftJoinAndSelect("lesson.file", "file")
       .leftJoinAndSelect("lesson.questions", "question")
+      .leftJoinAndSelect("question.file", "questionFile")
       .leftJoinAndSelect("question.answers", "answer")
+      .leftJoinAndSelect("answer.file", "answerFile")
       .where("lesson.id = :id", { id })
       .orderBy("question.position", order)
       .skip((page - 1) * limit)

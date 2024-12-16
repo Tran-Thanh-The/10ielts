@@ -1,6 +1,6 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { Lesson } from "@/domain/lessons/domain/lesson";
-import { PracticeExercise } from "@/domain/practice-exercises/domain/practice-exercise";
+import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
 import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
@@ -12,20 +12,23 @@ export class AnswerHistory {
   })
   id: string;
 
+  @ApiProperty()
+  answers?: Record<string, any>;
+
   @ApiProperty({
     type: () => UserEntity,
   })
-  user: UserEntity;
+  user?: UserEntity;
 
   @ApiProperty({
     type: () => PracticeExerciseEntity,
   })
-  practice: PracticeExerciseEntity;
+  practice?: PracticeExerciseEntity;
 
   @ApiProperty({
-    type: () => Lesson,
+    type: () => LessonEntity,
   })
-  lesson: Lesson;
+  lesson?: LessonEntity;
 
   @ApiProperty({ type: () => Number })
   totalScore?: number | null;

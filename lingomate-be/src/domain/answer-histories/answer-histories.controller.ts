@@ -1,17 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from "@/utils/dto/infinity-pagination-response.dto";
+import { infinityPagination } from "@/utils/infinity-pagination";
+import {
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
+  Req,
+  UseGuards,
 } from "@nestjs/common";
-import { AnswerHistoriesService } from "./answer-histories.service";
-import { CreateAnswerHistoryDto } from "./dto/create-answer-history.dto";
-import { UpdateAnswerHistoryDto } from "./dto/update-answer-history.dto";
+import { AuthGuard } from "@nestjs/passport";
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -19,17 +23,11 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger";
+import { AnswerHistoriesService } from "./answer-histories.service";
 import { AnswerHistory } from "./domain/answer-history";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
+import { CreateAnswerHistoryDto } from "./dto/create-answer-history.dto";
 import { FindAllAnswerHistoriesDto } from "./dto/find-all-answer-histories.dto";
-import { RolesGuard } from "../auth/guards/roles.guard";
-import { RoleEnum } from "../../common/enums/roles.enum";
-import { Roles } from "../../utils/decorators/roles.decorator";
+import { UpdateAnswerHistoryDto } from "./dto/update-answer-history.dto";
 
 @ApiTags("Answerhistories")
 @ApiBearerAuth()
@@ -47,8 +45,9 @@ export class AnswerHistoriesController {
   @ApiCreatedResponse({
     type: AnswerHistory,
   })
-  create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto) {
-    return this.answerHistoriesService.create(createAnswerHistoryDto);
+  create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto,  @Req() req,) {
+    const userId = req.user.id;
+    return this.answerHistoriesService.create(userId,createAnswerHistoryDto);
   }
 
   @Get()

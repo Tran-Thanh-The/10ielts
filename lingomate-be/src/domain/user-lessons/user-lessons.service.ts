@@ -28,6 +28,11 @@ export class UserLessonsService {
     });
   }
 
+  findAllByUserId(userId: string){
+    return this.userLessonRepository.findAllByUserId(userId);
+  }
+  
+
   findOne(id: UserLesson["id"]) {
     return this.userLessonRepository.findById(id);
   }

@@ -62,17 +62,35 @@ export class RoleSeedService {
           PermissionEnum.DELETE_PRACTICE,
         ],
       },
+      {
+        id: RoleEnum.customerCare,
+        name: "CustomerCare",
+        permissions: [
+          PermissionEnum.READ_USER,
+          PermissionEnum.READ_COURSE,
+          PermissionEnum.READ_LESSON,
+          PermissionEnum.READ_PRACTICE,
+          PermissionEnum.ACCESS_CHAT
+        ],
+      }
     ];
 
     for (const roleData of rolesToSeed) {
-      await this.repository.upsert(
-        {
+      const existingRole = await this.repository.findOne({ where: { name: roleData.name } });
+
+      if (existingRole) {
+        // Cập nhật role nếu đã tồn tại
+        existingRole.name = roleData.name;
+        existingRole.permissions = roleData.permissions;
+        await this.repository.save(existingRole);
+      } else {
+        // Tạo mới role nếu chưa tồn tại
+        await this.repository.save({
           id: roleData.id,
           name: roleData.name,
           permissions: roleData.permissions,
-        },
-        ["id"],
-      );
+        });
+      }
     }
   }
 }

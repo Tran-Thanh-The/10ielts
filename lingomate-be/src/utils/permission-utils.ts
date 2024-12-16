@@ -9,12 +9,11 @@ export function hasImplicitPermissions(
     userRole?.name?.toLowerCase() === "admin" || 
     userRole?.id === 1;
 
-  if (isAdmin) {
+  if (isAdmin || !requiredPermission) {
     return true;
   }
 
   const rolePermissions = userRole?.permissions || userPermissions;
-
   switch (requiredPermission) {
     case PermissionEnum.CREATE_USER:
       return rolePermissions.includes(PermissionEnum.CREATE_USER);

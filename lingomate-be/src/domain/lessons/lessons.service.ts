@@ -1,29 +1,26 @@
+import { StatusEnum } from "@/common/enums/status.enum";
+import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
+import { NullableType } from "@/utils/types/nullable.type";
+import { IPaginationOptions } from "@/utils/types/pagination-options";
 import {
   ConflictException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { CourseRepository } from "../courses/infrastructure/persistence/course.repository";
+import { LessonCourseRepository } from "../lesson-courses/infrastructure/persistence/lesson-course.repository";
+import { LessonCourseMapper } from "../lesson-courses/infrastructure/persistence/relational/mappers/lesson-course.mapper";
+import { Lesson } from "./domain/lesson";
 import { CreateLessonDto } from "./dto/create-lesson.dto";
 import { UpdateLessonDto } from "./dto/update-lesson.dto";
 import { LessonRepository } from "./infrastructure/persistence/lesson.repository";
-import { IPaginationOptions } from "@/utils/types/pagination-options";
-import { Lesson } from "./domain/lesson";
-import { LessonCourseRepository } from "../lesson-courses/infrastructure/persistence/lesson-course.repository";
-import { LessonCourseMapper } from "../lesson-courses/infrastructure/persistence/relational/mappers/lesson-course.mapper";
 import { LessonMapper } from "./infrastructure/persistence/relational/mappers/lesson.mapper";
-import { StatusEnum } from "@/common/enums/status.enum";
-import { CourseRepository } from "../courses/infrastructure/persistence/course.repository";
-import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
-import { UserLessonMapper } from "../user-lessons/infrastructure/persistence/relational/mappers/user-lesson.mapper";
-import { UserLessonRepository } from "../user-lessons/infrastructure/persistence/user-lesson.repository";
-import { NullableType } from "@/utils/types/nullable.type";
 
 @Injectable()
 export class LessonsService {
   constructor(
     private readonly lessonRepository: LessonRepository,
     private readonly lessonCourseRepository: LessonCourseRepository,
-    private readonly userLessonRepository: UserLessonRepository,
     private readonly courseRepository: CourseRepository,
     private readonly filesLocalService: FilesLocalService,
   ) {}
@@ -68,14 +65,6 @@ export class LessonsService {
         status: StatusEnum.ACTIVE,
       });
       await this.lessonCourseRepository.create(lessonCourse);
-
-      //Thêm vào bảng user_lesson: xác định ai là người thêm lesson
-      const userLesson = UserLessonMapper.toModel({
-        user_id: Number(userId),
-        lesson_id: savedLesson.id,
-        status: StatusEnum.ACTIVE,
-      });
-      await this.userLessonRepository.create(userLesson);
     }
 
     return savedLesson;

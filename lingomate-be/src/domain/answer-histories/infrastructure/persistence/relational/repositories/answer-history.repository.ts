@@ -22,6 +22,7 @@ export class AnswerHistoryRelationalRepository
     const newEntity = await this.answerHistoryRepository.save(
       this.answerHistoryRepository.create(persistenceModel),
     );
+    
     return AnswerHistoryMapper.toDomain(newEntity);
   }
 
@@ -33,6 +34,10 @@ export class AnswerHistoryRelationalRepository
     const entities = await this.answerHistoryRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      relations: ["practice", "lesson"],
+      order: {
+        createdAt: "DESC",
+      },
     });
 
     return entities.map((entity) => AnswerHistoryMapper.toDomain(entity));

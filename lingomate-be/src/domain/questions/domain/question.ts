@@ -41,10 +41,10 @@ export class Question {
   })
   questionType: QuestionTypesEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     enum: QuestionFileTypesEnum,
   })
-  fileType: QuestionFileTypesEnum;
+  fileType?: QuestionFileTypesEnum | null;
 
   @ApiPropertyOptional({
     type: () => LessonEntity,

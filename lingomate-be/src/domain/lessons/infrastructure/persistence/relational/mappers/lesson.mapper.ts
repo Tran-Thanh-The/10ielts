@@ -40,9 +40,10 @@ export class LessonMapper {
     }
 
     if (raw.questions) {
+      console.log("Co  question", raw.questions);
       domainEntity.questions = raw.questions.map((question) => {
         const questionDomain = QuestionMapper.toDomain(question);
-
+        console.log("Mapped question:", questionDomain);
         // Map file của question nếu có
         if (question.file) {
           questionDomain.file = FileMapper.toDomain(question.file);

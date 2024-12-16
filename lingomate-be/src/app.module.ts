@@ -57,9 +57,8 @@ import { ConversationsModule } from "@/domain/conversations/conversations.module
 import { ChatsModule } from "@/domain/chats/chats.module";
 
 import { UserConversationsModule } from "@/domain/user-conversations/user-conversations.module";
-import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
-import { UserAnswersModule } from "./domain/user-answers/user-answers.module";
 import { RolesModule } from "./domain/roles/roles.module";
+import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
 
 @Module({
   imports: [
@@ -120,7 +119,6 @@ import { RolesModule } from "./domain/roles/roles.module";
     RolesModule,
     SocketGatewayModule,
     UserConversationsModule,
-    UserAnswersModule,
     ChatsModule,
     ConversationsModule,
     AnswerHistoriesModule,

@@ -30,12 +30,12 @@ export class CreateQuestionDto {
   @IsEnum(QuestionTypesEnum)
   questionType: QuestionTypesEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     enum: QuestionFileTypesEnum,
   })
-  @IsNotEmpty()
   @IsEnum(QuestionFileTypesEnum)
-  fileType: QuestionFileTypesEnum;
+  @IsOptional()
+  fileType?: QuestionFileTypesEnum | null;
 
   @ApiPropertyOptional({ type: Number })
   @IsOptional()

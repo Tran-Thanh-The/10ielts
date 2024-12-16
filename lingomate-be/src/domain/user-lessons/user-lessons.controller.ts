@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  Req,
 } from "@nestjs/common";
 import { UserLessonsService } from "./user-lessons.service";
 import { CreateUserLessonDto } from "./dto/create-user-lesson.dto";
@@ -27,6 +28,7 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllUserLessonsDto } from "./dto/find-all-user-lessons.dto";
+import { NullableType } from "@/utils/types/nullable.type";
 
 @ApiTags("Userlessons")
 @ApiBearerAuth()
@@ -68,6 +70,18 @@ export class UserLessonsController {
       }),
       { page, limit },
     );
+  }
+
+  @Get(":userId")
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(UserLesson),
+  })
+  async findAllByUserId(
+    @Query() query: FindAllUserLessonsDto,
+    @Req() req,
+  ): Promise<NullableType<UserLesson[]>> {
+      const userId = req.user.id;
+      return this.userLessonsService.findAllByUserId(userId);
   }
 
   @Get(":id")

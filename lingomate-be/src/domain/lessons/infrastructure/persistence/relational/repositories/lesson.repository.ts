@@ -30,23 +30,6 @@ export class LessonRelationalRepository implements LessonRepository {
     return entities.map((entity) => LessonMapper.toDomain(entity));
   }
 
-  // async findAllWithPagination({
-  //   paginationOptions,
-  // }: {
-  //   paginationOptions: IPaginationOptions;
-  // }): Promise<Lesson[]> {
-  //   const { page, limit } = paginationOptions;
-  //   const entities = await this.lessonRepository.find({
-  //     skip: (page - 1) * limit,
-  //     take: limit,
-  //     relations: ["questions", "questions.answers", "file"],
-  //     order: {
-  //       createdAt: "DESC",
-  //     },
-  //   });
-
-  //   return entities.map((entity) => LessonMapper.toDomain(entity));
-  // }
   async findAllWithPagination({
     paginationOptions,
   }: {
@@ -134,12 +117,18 @@ export class LessonRelationalRepository implements LessonRepository {
   async findById(id: Lesson["id"]): Promise<NullableType<Lesson>> {
     const entity = await this.lessonRepository.findOne({
       where: { id },
-      relations: ["questions", "questions.answers"],
+      relations: [
+        "questions", 
+        "questions.file",
+        "questions.answers", 
+        "questions.answers.file",
+        "file"
+      ],
     });
-
+  
     return entity ? LessonMapper.toDomain(entity) : null;
   }
-
+  
   async findByQuestionId(questionId: string): Promise<NullableType<Lesson>> {
     return await this.lessonRepository
       .createQueryBuilder("lesson")

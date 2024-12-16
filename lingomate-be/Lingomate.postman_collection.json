@@ -4,7 +4,7 @@
 		"name": "Lingomate",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27048953",
-		"_collection_link": "https://restless-star-284637.postman.co/workspace/Team-Workspace~f7b00c24-6202-49bd-8c42-3526b8e9896d/collection/27048953-31a1f4f4-4e5f-4741-ba7f-b8a3419dd035?action=share&source=collection_link&creator=27048953"
+		"_collection_link": "https://restless-star-284637.postman.co/workspace/f7b00c24-6202-49bd-8c42-3526b8e9896d/collection/27048953-31a1f4f4-4e5f-4741-ba7f-b8a3419dd035?action=share&source=collection_link&creator=27048953"
 	},
 	"item": [
 		{
@@ -14,7 +14,7 @@
 					"name": "token",
 					"item": [
 						{
-							"name": "New Request",
+							"name": "Refresh token",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -122,6 +122,28 @@
 				},
 				{
 					"name": "Login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -301,7 +323,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEyMywiaWF0IjoxNzMyNzg0NDM2LCJleHAiOjE3MzI3ODYyMzZ9.nqYBYGX-gxt7VoBxp2CpKh5wXZmXGJHXyMRsCjKsWbc",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -318,17 +340,17 @@
 								},
 								{
 									"key": "name",
-									"value": "English 1",
+									"value": "English 3",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "Course 1",
+									"value": "Course 3",
 									"type": "text"
 								},
 								{
 									"key": "category_id",
-									"value": "2d2e6a02-0acd-4c1d-add4-187e2c279ab8",
+									"value": "bbbc16a2-c45e-414e-8f79-54ef24e27882",
 									"type": "text"
 								},
 								{
@@ -355,21 +377,33 @@
 				},
 				{
 					"name": "getAllcourse",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODcsImlhdCI6MTczMTEyNTEyOCwiZXhwIjoxNzMxMTI2OTI4fQ.faAhCTA74Mgg_HOV2WWH-vSTCYy0z1pRWpgP4vxAk7I",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/list?status=ACTIVE&userId=3",
+							"raw": "{{HOST}}/api/v1/courses/list?userId=4",
 							"host": [
 								"{{HOST}}"
 							],
@@ -380,10 +414,6 @@
 								"list"
 							],
 							"query": [
-								{
-									"key": "status",
-									"value": "ACTIVE"
-								},
 								{
 									"key": "invoiceId",
 									"value": "",
@@ -416,12 +446,17 @@
 								},
 								{
 									"key": "isMyCourse",
-									"value": "false",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "ACTIVE",
 									"disabled": true
 								},
 								{
 									"key": "userId",
-									"value": "3"
+									"value": "4"
 								}
 							]
 						}
@@ -436,7 +471,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MzMsImlhdCI6MTcyOTYxMTU2NSwiZXhwIjoxNzI5NjEzMzY1fQ.7lExQse9gFUh4NP4yVc7uTZBaAu7w7e1f9qp-9lWXeA",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -444,7 +479,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/4cbaef6c-3508-4fa4-aabd-e4ca86bf248d",
+							"raw": "{{HOST}}/api/v1/courses/87c8c076-edd8-45fd-b91b-94a73e100cc8",
 							"host": [
 								"{{HOST}}"
 							],
@@ -452,7 +487,7 @@
 								"api",
 								"v1",
 								"courses",
-								"4cbaef6c-3508-4fa4-aabd-e4ca86bf248d"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							]
 						}
 					},
@@ -466,7 +501,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6OTMsImlhdCI6MTczMTEzMTk4NywiZXhwIjoxNzMxMTMzNzg3fQ.f43V0DWxd3gUOi658pvlzQInFy0L3paBP8rTVH9XQkQ",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -474,7 +509,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/dfdfc103-b252-412f-8c17-d57eaa1e7315/details",
+							"raw": "{{HOST}}/api/v1/courses/87c8c076-edd8-45fd-b91b-94a73e100cc8",
 							"host": [
 								"{{HOST}}"
 							],
@@ -482,8 +517,7 @@
 								"api",
 								"v1",
 								"courses",
-								"dfdfc103-b252-412f-8c17-d57eaa1e7315",
-								"details"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							]
 						}
 					},
@@ -497,7 +531,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NTUsImlhdCI6MTcyOTk2MjkzNCwiZXhwIjoxNzI5OTY0NzM0fQ.FmzTrSbZPxmRiU11d3suElCiIUMqoN-RhhwmHI-hS84",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -505,16 +539,22 @@
 						"method": "PATCH",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/OneDrive/Pictures/ảnh bìa sách/bg.jpg"
+								},
+								{
+									"key": "status",
+									"value": "IN_ACTIVE",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/744c8eec-e38c-4cbf-a043-1a9b779f844c",
+							"raw": "{{HOST}}/api/v1/courses/87c8c076-edd8-45fd-b91b-94a73e100cc8",
 							"host": [
 								"{{HOST}}"
 							],
@@ -522,7 +562,7 @@
 								"api",
 								"v1",
 								"courses",
-								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							]
 						}
 					},
@@ -536,7 +576,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTEsImlhdCI6MTcyOTI0NTQzNSwiZXhwIjoxNzI5MjQ3MjM1fQ.zH_a45UILktmlZQqNGXVYnuTy-3G6quHSW9DvnxTA18",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -569,7 +609,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTMsImlhdCI6MTcyOTI2MzIyMywiZXhwIjoxNzI5MjY1MDIzfQ.rnRfKDqyT36yFS9QyuWzHBiYEZj9fDnVVqqd0euW1o0",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -586,7 +626,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/list?userId=2&invoiceId=5",
+							"raw": "{{HOST}}/api/v1/courses/list?userId=1&invoiceId=5",
 							"host": [
 								"{{HOST}}"
 							],
@@ -599,7 +639,7 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "2"
+									"value": "1"
 								},
 								{
 									"key": "invoiceId",
@@ -623,7 +663,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NywiaWF0IjoxNzI5NzUyMDExLCJleHAiOjE3Mjk3NTM4MTF9.gc77fOxIS79gBA29RZglRwG-k83Ycwd6kXhTLB5u3Fg",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -667,7 +707,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOnJlYWQiLCJwcmFjdGljZTpyZWFkIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEyOCwiaWF0IjoxNzMyODExNDE3LCJleHAiOjE3MzI4MTMyMTd9.0orjxLmpu3pQfLXwrQohkK0RhRZPEZCKaRe1TiTavkY",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -684,7 +724,7 @@
 								},
 								{
 									"key": "title",
-									"value": "Lesson 7",
+									"value": "Lesson 1",
 									"type": "text"
 								},
 								{
@@ -717,7 +757,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/1c2aa6d7-7189-483f-9ac9-b0e9391f4c53",
+							"raw": "{{HOST}}/api/v1/lessons/87c8c076-edd8-45fd-b91b-94a73e100cc8",
 							"host": [
 								"{{HOST}}"
 							],
@@ -725,7 +765,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"1c2aa6d7-7189-483f-9ac9-b0e9391f4c53"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							]
 						}
 					},
@@ -742,7 +782,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOnJlYWQiLCJwcmFjdGljZTpyZWFkIiwibGVzc29uOnJlYWQiLCJxdWVzdGlvbjpyZWFkIiwiYW5zd2VyOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI5LCJpYXQiOjE3MzI4MTIwMjgsImV4cCI6MTczMjgxMzgyOH0.zC1P2i9eB1aYnawbVGyjOpCATmCkIoga4AHE2Q_q0EE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -785,7 +825,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MzMsImlhdCI6MTcyOTYxMTU2NSwiZXhwIjoxNzI5NjEzMzY1fQ.7lExQse9gFUh4NP4yVc7uTZBaAu7w7e1f9qp-9lWXeA",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -815,7 +855,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -823,7 +863,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/9c8c2ba9-d39a-4c8d-be55-9dae3b706ecc",
+							"raw": "{{HOST}}/api/v1/lessons/598f1386-9cf8-4d45-8910-d5e763db611d",
 							"host": [
 								"{{HOST}}"
 							],
@@ -831,7 +871,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"9c8c2ba9-d39a-4c8d-be55-9dae3b706ecc"
+								"598f1386-9cf8-4d45-8910-d5e763db611d"
 							]
 						}
 					},
@@ -845,7 +885,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6OTUsImlhdCI6MTczMTEzMzkyNywiZXhwIjoxNzMxMTM1NzI3fQ.qCvRS-nltJMmy73PY4oELVScFCv5HP8Qb3CT7mRtT3E",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -853,7 +893,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/course/dfdfc103-b252-412f-8c17-d57eaa1e7315?page=1&limit=10",
+							"raw": "{{HOST}}/api/v1/lessons/course/87c8c076-edd8-45fd-b91b-94a73e100cc8?page=1&limit=10",
 							"host": [
 								"{{HOST}}"
 							],
@@ -862,7 +902,7 @@
 								"v1",
 								"lessons",
 								"course",
-								"dfdfc103-b252-412f-8c17-d57eaa1e7315"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							],
 							"query": [
 								{
@@ -879,14 +919,14 @@
 					"response": []
 				},
 				{
-					"name": "getDetails",
+					"name": "getDetails + kèm phân trang + sắp xếp",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -894,7 +934,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/5fbe6012-aac9-45b4-89eb-f7a75b1e9d24/detail?page=1&limit=10&order=DESC&status=ACTIVE",
+							"raw": "{{HOST}}/api/v1/lessons/598f1386-9cf8-4d45-8910-d5e763db611d/detail?page=1&limit=10&order=DESC",
 							"host": [
 								"{{HOST}}"
 							],
@@ -902,7 +942,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
+								"598f1386-9cf8-4d45-8910-d5e763db611d",
 								"detail"
 							],
 							"query": [
@@ -920,8 +960,49 @@
 								},
 								{
 									"key": "status",
-									"value": "ACTIVE"
+									"value": "ACTIVE",
+									"disabled": true
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update lesson",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/OneDrive/Pictures/ảnh bìa sách/cart.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons/598f1386-9cf8-4d45-8910-d5e763db611d",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons",
+								"598f1386-9cf8-4d45-8910-d5e763db611d"
 							]
 						}
 					},
@@ -933,14 +1014,14 @@
 			"name": "file",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "upload file",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MjksImlhdCI6MTcyOTc4MTk2MCwiZXhwIjoxNzI5NzgzNzYwfQ.IfR-yHFJsWLNcVaDbjNPxsogrqYO591BMS1ZnPZqQsk",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -978,14 +1059,14 @@
 			"name": "user-course",
 			"item": [
 				{
-					"name": "create user-course",
+					"name": "create user-course// Không gọi // gọi tự động rồi",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MSwiaWF0IjoxNzMwMDMyNzc1LCJleHAiOjE3MzAwMzQ1NzV9.mI_kVruOvDDK-6XEwjPney0KU5YsLVThpF1mvqU4Dvo",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1016,22 +1097,31 @@
 					"response": []
 				},
 				{
-					"name": "update current-lesson",
+					"name": "update current-lesson: id kia la userId",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MSwiaWF0IjoxNzMwMDMyNzc1LCJleHAiOjE3MzAwMzQ1NzV9.mI_kVruOvDDK-6XEwjPney0KU5YsLVThpF1mvqU4Dvo",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
 						},
-						"method": "GET",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentLesson\": \"598f1386-9cf8-4d45-8910-d5e763db611d\",\r\n    \"lastPosition\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/user-courses/a8232e26-97fb-4fb3-8d55-e3f534bb7411/current-lesson",
+							"raw": "{{HOST}}/api/v1/user-courses/4/current-lesson",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1039,7 +1129,7 @@
 								"api",
 								"v1",
 								"user-courses",
-								"a8232e26-97fb-4fb3-8d55-e3f534bb7411",
+								"4",
 								"current-lesson"
 							]
 						}
@@ -1059,7 +1149,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOnJlYWQiLCJwcmFjdGljZTpyZWFkIiwibGVzc29uOnJlYWQiLCJxdWVzdGlvbjpyZWFkIiwiYW5zd2VyOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI5LCJpYXQiOjE3MzI4MTIwMjgsImV4cCI6MTczMjgxMzgyOH0.zC1P2i9eB1aYnawbVGyjOpCATmCkIoga4AHE2Q_q0EE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1072,7 +1162,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/E:/OneDrive/Desktop/Khóa học Toeic/Practice 1.mp3"
+									"src": "postman-cloud:///1ef91c79-fcfc-4d50-9440-29516ab65eee"
 								},
 								{
 									"key": "title",
@@ -1104,7 +1194,7 @@
 								},
 								{
 									"key": "fileType",
-									"value": "AUDIO",
+									"value": "IMAGE",
 									"type": "text"
 								},
 								{
@@ -1121,14 +1211,14 @@
 								},
 								{
 									"key": "lesson_id",
-									"value": "b18639b8-f1d7-42ed-91ed-f399de7c6c31",
-									"type": "text"
+									"value": "598f1386-9cf8-4d45-8910-d5e763db611d",
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "practice_id",
-									"value": "c493e397-57da-4cd9-9343-e241156b4b28",
-									"type": "text",
-									"disabled": true
+									"value": "710898f2-011b-4080-9abf-78b8e06807df",
+									"type": "text"
 								}
 							]
 						},
@@ -1157,7 +1247,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOnJlYWQiLCJwcmFjdGljZTpyZWFkIiwibGVzc29uOnJlYWQiLCJxdWVzdGlvbjpyZWFkIiwiYW5zd2VyOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI5LCJpYXQiOjE3MzI4MTIwMjgsImV4cCI6MTczMjgxMzgyOH0.zC1P2i9eB1aYnawbVGyjOpCATmCkIoga4AHE2Q_q0EE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1200,7 +1290,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6OTUsImlhdCI6MTczMTEzMzkyNywiZXhwIjoxNzMxMTM1NzI3fQ.qCvRS-nltJMmy73PY4oELVScFCv5HP8Qb3CT7mRtT3E",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1230,7 +1320,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODMsImlhdCI6MTczMTA4ODY0NywiZXhwIjoxNzMxMDkwNDQ3fQ.RBbS7gRjbAiI-GjsZKrtXkpQDl-OJXO6MGxvBxQGUb4",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1260,7 +1350,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1268,13 +1358,20 @@
 						"method": "PATCH",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Câu hỏi 1\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": "Cau hoi 1",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{HOST}}/api/v1/questions/9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b",
@@ -1286,6 +1383,18 @@
 								"v1",
 								"questions",
 								"9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b"
+							],
+							"query": [
+								{
+									"key": "file",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": null,
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -1304,7 +1413,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1321,7 +1430,7 @@
 								},
 								{
 									"key": "content",
-									"value": "Đáp án D",
+									"value": "Đáp án A",
 									"type": "text"
 								},
 								{
@@ -1338,7 +1447,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/answers/9d82c35a-9d3b-4423-8ab7-449241587c8b",
+							"raw": "{{HOST}}/api/v1/answers/c5283aa4-3642-4183-b5c2-c032b18abd65",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1346,7 +1455,7 @@
 								"api",
 								"v1",
 								"answers",
-								"9d82c35a-9d3b-4423-8ab7-449241587c8b"
+								"c5283aa4-3642-4183-b5c2-c032b18abd65"
 							]
 						}
 					},
@@ -1360,7 +1469,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1390,7 +1499,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1419,7 +1528,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1454,7 +1563,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDAsInJvbGUiOnsiaWQiOjMsIm5hbWUiOiJVc2VyIiwicGVybWlzc2lvbnMiOlsidXNlcjpyZWFkIiwiY291cnNlOnJlYWQiLCJsZXNzb246cmVhZCIsInByYWN0aWNlOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI3LCJpYXQiOjE3MzI4MTA5ODAsImV4cCI6MTczMjgxMjc4MH0.L2u5LdmRljCgxW87gZjIxAB8GYw6NXEHtpNitRvJ__M",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1463,7 +1572,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{   \r\n    // \"user_id\": 2,\r\n    \"email\": \"user1@gmail.com\",\r\n    \"password\": \"string\",\r\n    \"fullName\": \"Vũ Hoàng Tiến\",\r\n    \"dob\": \"2002/12/21\",\r\n    \"role\": {\r\n    \"id\": 3\r\n  }\r\n}",
+							"raw": "{   \r\n    \"email\": \"teacher2@gmail.com\",\r\n    \"password\": \"string\",\r\n    \"fullName\": \"Vũ Hoàng Tiến\",\r\n    \"dob\": \"2002/12/21\",\r\n    \"role\": {\r\n    \"id\": 4\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1492,7 +1601,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTA3LCJpYXQiOjE3MzIwOTQ1MzMsImV4cCI6MTczMjA5NjMzM30.7EctJaxbfZ1KfzMLoSTOPPBLfkXCQkdZ2QyF6x6sKHg",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1531,7 +1640,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTA4LCJpYXQiOjE3MzIwOTQ4MDQsImV4cCI6MTczMjA5NjYwNH0.RRYmE3k-blv9-CfFe_yqap78jAl9G1SS9f8_k_runQU",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1564,7 +1673,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDAsInJvbGUiOnsiaWQiOjMsIm5hbWUiOiJVc2VyIiwicGVybWlzc2lvbnMiOlsidXNlcjpyZWFkIiwiY291cnNlOnJlYWQiLCJsZXNzb246cmVhZCIsInByYWN0aWNlOnJlYWQiXSwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTI3LCJpYXQiOjE3MzI4MTA5ODAsImV4cCI6MTczMjgxMjc4MH0.L2u5LdmRljCgxW87gZjIxAB8GYw6NXEHtpNitRvJ__M",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1620,7 +1729,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTA4LCJpYXQiOjE3MzIwOTQ4MDQsImV4cCI6MTczMjA5NjYwNH0.RRYmE3k-blv9-CfFe_yqap78jAl9G1SS9f8_k_runQU",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1680,7 +1789,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6eyJpZCI6MiwibmFtZSI6IlN0YWZmIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTAzLCJpYXQiOjE3MzIwMzMzNzIsImV4cCI6MTczMjAzNTE3Mn0.aP4uBwnRsYBoBNvOVKu0Kv9SpyFDqrmx8HA-ts6P0co",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1692,7 +1801,7 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "Bài thực hành 4",
+									"value": "Bài thực hành 1",
 									"type": "text"
 								},
 								{
@@ -1752,7 +1861,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1760,7 +1869,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises/c493e397-57da-4cd9-9343-e241156b4b28",
+							"raw": "{{HOST}}/api/v1/practice-exercises/710898f2-011b-4080-9abf-78b8e06807df",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1768,7 +1877,7 @@
 								"api",
 								"v1",
 								"practice-exercises",
-								"c493e397-57da-4cd9-9343-e241156b4b28"
+								"710898f2-011b-4080-9abf-78b8e06807df"
 							]
 						}
 					},
@@ -1782,7 +1891,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1790,7 +1899,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises?page=1&limit=1",
+							"raw": "{{HOST}}/api/v1/practice-exercises?page=1&limit=10",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1806,7 +1915,7 @@
 								},
 								{
 									"key": "limit",
-									"value": "1"
+									"value": "10"
 								}
 							]
 						}
@@ -1821,7 +1930,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1829,7 +1938,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises/c493e397-57da-4cd9-9343-e241156b4b28",
+							"raw": "{{HOST}}/api/v1/practice-exercises/710898f2-011b-4080-9abf-78b8e06807df",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1837,7 +1946,7 @@
 								"api",
 								"v1",
 								"practice-exercises",
-								"c493e397-57da-4cd9-9343-e241156b4b28"
+								"710898f2-011b-4080-9abf-78b8e06807df"
 							]
 						}
 					},
@@ -1851,7 +1960,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1859,16 +1968,17 @@
 						"method": "PATCH",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Bai thuc hanh\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Bai thuc hanh",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises/:id",
+							"raw": "{{HOST}}/api/v1/practice-exercises/710898f2-011b-4080-9abf-78b8e06807df",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1876,13 +1986,7 @@
 								"api",
 								"v1",
 								"practice-exercises",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
+								"710898f2-011b-4080-9abf-78b8e06807df"
 							]
 						}
 					},
@@ -1896,7 +2000,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOnsiaWQiOjQsIm5hbWUiOiJUZWFjaGVyIiwicGVybWlzc2lvbnMiOlsidXNlcjpjcmVhdGUiLCJ1c2VyOnJlYWQiLCJ1c2VyOnVwZGF0ZSIsInVzZXI6ZGVsZXRlIiwiY291cnNlOmNyZWF0ZSIsImNvdXJzZTpyZWFkIiwiY291cnNlOnVwZGF0ZSIsImNvdXJzZTpkZWxldGUiLCJwcmFjdGljZTpjcmVhdGUiLCJwcmFjdGljZTpyZWFkIiwicHJhY3RpY2U6dXBkYXRlIiwicHJhY3RpY2U6ZGVsZXRlIl0sIl9fZW50aXR5IjoiUm9sZUVudGl0eSJ9LCJzZXNzaW9uSWQiOjEzMCwiaWF0IjoxNzMyODEyOTA1LCJleHAiOjE3MzI4MTQ3MDV9.RMz_4LcD45Fg5y8WkBnjb0RztwZ5_TTbUGWxqRwexSM",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1904,7 +2008,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises/:id",
+							"raw": "{{HOST}}/api/v1/practice-exercises/:710898f2-011b-4080-9abf-78b8e06807df",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1912,17 +2016,455 @@
 								"api",
 								"v1",
 								"practice-exercises",
-								":id"
+								":710898f2-011b-4080-9abf-78b8e06807df"
 							],
 							"variable": [
 								{
-									"key": "id",
+									"key": "710898f2-011b-4080-9abf-78b8e06807df",
 									"value": ""
 								}
 							]
 						}
 					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "role",
+			"item": [
+				{
+					"name": "Create roie",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Customer care\",\r\n    \"permissions\": [\r\n        \"role:create\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/roles",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"CustomerCare\",\r\n    \"permissions\": [\r\n        \"user:create\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/roles/5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/roles",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get role detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/roles/5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ACTION BY USER",
+			"item": [
+				{
+					"name": "update user lesson : isCompleted",
+					"item": [
+						{
+							"name": "user-lesson",
+							"item": [
+								{
+									"name": "find all",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{HOST}}/api/v1/user-lessons",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"user-lessons"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "find al by user id",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{HOST}}/api/v1/user-lessons/4",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"user-lessons",
+												"4"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Xác nhận hoàn thành bài học",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "//Xác nhận hoàn thành bài học\r\n{\r\n    \"user_id\": 5,\r\n    \"lesson_id\": \"598f1386-9cf8-4d45-8910-d5e763db611d\",\r\n    \"isComleted\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/user-lessons",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user-lessons"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "answer-history",
+					"item": [
+						{
+							"name": "Nộp bài: post answer_history",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"practice_id\": \"710898f2-011b-4080-9abf-78b8e06807df\",\r\n//   \"lesson_id\": \"67890\",\r\n  \"totalScore\": 92.5,\r\n  \"startedAt\": \"2024-12-16T08:00:00Z\",\r\n//   \"status\": \"ACTIVE\",\r\n  \"answers\": [\r\n    {\r\n      \"questionId\": \"q1\",\r\n      \"answerId\": \"a1\",\r\n      \"answerPick\": \"A\"\r\n    },\r\n    {\r\n      \"questionId\": \"q2\",\r\n      \"answerId\": \"a2\",\r\n      \"answerPick\": \"A\"\r\n    },\r\n    {\r\n      \"questionId\": \"q3\",\r\n      \"answerPick\": \"C\"\r\n    }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories?pages=1&&limit=10",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories"
+									],
+									"query": [
+										{
+											"key": "pages",
+											"value": "1"
+										},
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find one",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories/4d391410-9448-4437-8eea-01eed0df5342",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories",
+										"4d391410-9448-4437-8eea-01eed0df5342"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"totalScore\":9.5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories/4d391410-9448-4437-8eea-01eed0df5342",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories",
+										"4d391410-9448-4437-8eea-01eed0df5342"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories/4d391410-9448-4437-8eea-01eed0df5342",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories",
+										"4d391410-9448-4437-8eea-01eed0df5342"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}

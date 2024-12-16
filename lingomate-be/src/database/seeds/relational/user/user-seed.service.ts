@@ -123,5 +123,32 @@ export class UserSeedService {
         }),
       );
     }
+
+    const countCustomerCare = await this.repository.count({
+      where: {
+        role: {
+          id: RoleEnum.customerCare,
+        },
+      },
+    });
+
+    if (!countCustomerCare) {
+      const salt = await bcrypt.genSalt();
+      const password = await bcrypt.hash("string", salt);
+
+      await this.repository.save(
+        this.repository.create({
+          fullName: "Customer Care Test",
+          email: "customerCare1@gmail.com",
+          password,
+          role: {
+            id: RoleEnum.customerCare,
+            name: "CustomerCare",
+          },
+          status: StatusEnum.ACTIVE,
+          dob: this.dateCreatedSeed,
+        }),
+      );
+    }
   }
 }

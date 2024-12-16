@@ -1,19 +1,17 @@
+import { StatusEnum } from "@/common/enums/status.enum";
+import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
+import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
+import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
+import { ApiProperty } from "@nestjs/swagger";
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from "typeorm";
-import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
-import { ApiProperty } from "@nestjs/swagger";
-import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
-import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
-import { StatusEnum } from "@/common/enums/status.enum";
-import { UserAnswerEntity } from "@/domain/user-answers/infrastructure/persistence/relational/entities/user-answer.entity";
-import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 
 @Entity({
   name: "answer_history",
@@ -23,13 +21,12 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @ApiProperty({
-    type: () => UserAnswerEntity,
+  @ApiProperty()
+  @Column({
+    type: "jsonb",
+    nullable: true,
   })
-  @OneToMany(() => UserAnswerEntity, (userAnswer) => userAnswer.answerHistory, {
-    cascade: true,
-  })
-  userAnswers: UserAnswerEntity[];
+  answers?: Record<string, any>;
 
   @ApiProperty({
     type: () => UserEntity,
@@ -37,7 +34,7 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
   @ManyToOne(() => UserEntity, {
     eager: true,
   })
-  user: UserEntity;
+  user?: UserEntity;
 
   @ApiProperty({
     type: () => PracticeExerciseEntity,
@@ -45,7 +42,7 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
   @ManyToOne(() => PracticeExerciseEntity, {
     eager: true,
   })
-  practice: PracticeExerciseEntity;
+  practice?: PracticeExerciseEntity;
 
   @ApiProperty({
     type: () => LessonEntity,
@@ -53,7 +50,7 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
   @ManyToOne(() => LessonEntity, {
     eager: true,
   })
-  lesson: LessonEntity;
+  lesson?: LessonEntity;
 
   @ApiProperty({ type: () => Number })
   @Column({

@@ -1,4 +1,4 @@
-import { getLessonDetailsById } from '@/api/api';
+import { getLessonDetailsById, getLessonDetailsByIdV2 } from '@/api/api';
 import courseApi from '@/api/courseApi';
 import Breadcrumb from '@/features/dashboard/components/breadcrumb/Breadcrumb';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
@@ -12,6 +12,11 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useDispatch } from 'react-redux';
 import { setAppLoading } from '@/stores/slices/appSlice';
 import QuestionList from '@/features/dashboard/components/quesion/question-list/QuestionList';
+import RoleBasedComponent from '@/components/RoleBasedComponent';
+import { ROLE, ROLES } from '@/utils/constants/constants';
+import DoLesson from '@/features/dashboard/features/courses/features/lesson-detail/components/lesson-view/components/DoLesson/DoLesson';
+import CreateUpdateLesson from '@/features/dashboard/features/courses/components/create-update-lesson/CreateUpdateLesson';
+import CreateUpdateLessonForm from '@/features/dashboard/features/courses/components/create-update-lesson/components/CreateUpdateLessonForm/CreateUpdateLessonForm';
 
 export default function LessonView() {
   const { idCourse, selectedLessonId } = useParams();
@@ -19,42 +24,19 @@ export default function LessonView() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState<any>(null);
   const [lesson, setLesson] = useState<any>(null);
+  const [viewMode, setViewMode] = useState<'VIEW' | 'EDIT'>('VIEW');
 
   useEffect(() => {
     handleFetchData();
-  }, [selectedLessonId]);
+  }, [selectedLessonId, viewMode]);
 
   const handleFetchData = async () => {
     dispatch(setAppLoading(true));
     const res1 = await courseApi.getCourseDetailsById(idCourse as string);
     setCourse(res1.data);
-    const res2 = await getLessonDetailsById(selectedLessonId as string);
+    const res2 = await getLessonDetailsByIdV2(selectedLessonId as string);
     setLesson(res2.data);
     dispatch(setAppLoading(false));
-  };
-
-  const handleNextLesson = () => {
-    const index = course?.lessons.findIndex(
-      (item: any) => item.id === selectedLessonId,
-    );
-    if (index !== -1) {
-      const nextLesson = course?.lessons[index + 1];
-      if (nextLesson) {
-        navigate(`/dashboard/courses/${idCourse}/lesson/${nextLesson.id}`);
-      }
-    }
-  };
-
-  const handleBackLesson = () => {
-    const index = course?.lessons.findIndex(
-      (item: any) => item.id === selectedLessonId,
-    );
-    if (index !== -1) {
-      const backLesson = course?.lessons[index - 1];
-      if (backLesson) {
-        navigate(`/dashboard/courses/${idCourse}/lesson/${backLesson.id}`);
-      }
-    }
   };
 
   return (
@@ -75,67 +57,49 @@ export default function LessonView() {
         <Breadcrumb label={'Bài học'} component="a" href="#" />
       </Breadcrumbs>
 
-      <FeatureHeader title={lesson?.title} />
-
-      <Box>
-        {lesson?.lessonType === 'VIDEO' ? (
-          <video
-            width="100%"
-            height="auto"
-            src={
-              lesson?.file?.path ??
-              'https://videos.pexels.com/video-files/3195394/3195394-uhd_2560_1440_25fps.mp4'
-            }
-            controls
-          />
-        ) : lesson?.lessonType === 'DOCS' ? (
-          <iframe
-            src={lesson?.file?.path ?? 'https://pdfobject.com/pdf/sample.pdf'}
-            width="100%"
-            height="600px"
-          />
-        ) : (
-          // <Box dangerouslySetInnerHTML={{ __html: lesson?.content }} />
-          <QuestionList></QuestionList>
-        )}
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginTop: '24px',
-          alignItems: 'center',
-          width: '100%',
-        }}
+      <FeatureHeader
+        title={`${viewMode === 'EDIT' ? 'Chỉnh sửa ' : ''}${lesson?.title}`}
       >
-        <Button
-          variant="outlined"
-          size="small"
-          startIcon={<ArrowBackIcon />}
-          onClick={handleBackLesson}
-        >
-          Bài học trước
-        </Button>
+        <>
+          <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {viewMode === 'VIEW' ? (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => setViewMode('EDIT')}
+                >
+                  Chỉnh sửa
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => setViewMode('VIEW')}
+                >
+                  Quay về
+                </Button>
+              )}
+              <Button variant="outlined" size="small" color="error">
+                Xóa
+              </Button>
+            </Box>
+          </RoleBasedComponent>
+        </>
+      </FeatureHeader>
 
-        <Button
-          variant="contained"
-          size="small"
-          endIcon={<ArrowForwardIcon />}
-          onClick={handleNextLesson}
-        >
-          Bài học tiếp theo
-        </Button>
-      </Box>
-
-      <Box sx={{ padding: "12px 0" }}>
-        <Typography variant='h6'>Mô tả bài học</Typography>
-        <Typography>{lesson?.content}</Typography>
-      </Box>
-
-      <Box sx={{ padding: "12px 0" }}>
-        <Typography variant='h6'>Đánh giá</Typography>
-        <Typography>comming soom</Typography>
-      </Box>
+      {viewMode === 'VIEW' ? (
+        <DoLesson lesson={lesson} course={course}></DoLesson>
+      ) : (
+        <CreateUpdateLessonForm />
+      )}
     </FeatureLayout>
   );
 }

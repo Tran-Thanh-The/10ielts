@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 export default function CreateCourseModal({
@@ -22,6 +23,7 @@ export default function CreateCourseModal({
   data = null,
 }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -138,8 +140,11 @@ export default function CreateCourseModal({
         await courseApi.updateCourse(data.id, form); // Pass FormData
         toast.success('Course updated successfully!');
       } else {
-        await courseApi.createCourse(form); // Pass FormData
+        const course = await courseApi.createCourse(form); // Pass FormData
         toast.success('Course created successfully!');
+        if (course) {
+          navigate(`/dashboard/courses/${course.data.id}`);
+        }
       }
       onOk();
       onClose(false);
@@ -183,33 +188,60 @@ export default function CreateCourseModal({
           }}
         >
           <form onSubmit={handleSubmit}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {formData.image && (
-                <Box mt={2}>
-                  <img
-                    src={
-                      data?.id
-                        ? formData.image
-                        : formData.image ?? URL.createObjectURL(formData.image)
-                    }
-                    alt="Course Preview"
-                    style={{
-                      width: '100%',
-                      maxHeight: 200,
-                      objectFit: 'cover',
-                      borderRadius: '12px',
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+              }}
+            >
+              <Box sx={{ position: 'relative', width: '100%', height: 200 }}>
+                {formData.image ? (
+                  <Box>
+                    <img
+                      src={
+                        data?.id && typeof formData.image === 'string'
+                          ? formData.image
+                          : URL.createObjectURL(formData.image)
+                      }
+                      alt="Course Preview"
+                      style={{
+                        width: '100%',
+                        maxHeight: 200,
+                        objectFit: 'cover',
+                        borderRadius: '12px',
+                      }}
+                    />
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: 200,
+                      bgcolor: 'grey.100',
+                      borderRadius: 4,
                     }}
-                  />
-                </Box>
-              )}
-              {!formData.image && (
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      No image selected
+                    </Typography>
+                  </Box>
+                )}
                 <Button
                   variant="contained"
                   component="label"
                   startIcon={<AddIcon />}
-                  fullWidth
+                  sx={{
+                    width: '120px',
+                    position: 'absolute',
+                    right: 10,
+                    bottom: 10
+                  }}
+                  size="small"
                 >
-                  Tải ảnh bìa
+                  Tải ảnh
                   <input
                     type="file"
                     accept="image/*"
@@ -217,7 +249,7 @@ export default function CreateCourseModal({
                     onChange={handleImageChange}
                   />
                 </Button>
-              )}
+              </Box>
 
               <TextField
                 label="Tên khóa học"

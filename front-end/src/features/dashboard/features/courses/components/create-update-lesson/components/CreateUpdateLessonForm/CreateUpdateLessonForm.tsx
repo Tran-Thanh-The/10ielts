@@ -24,7 +24,11 @@ import { LessonRequest } from '@/types/interface/Lesson';
 import Breadcrumb from '@/features/dashboard/components/breadcrumb/Breadcrumb';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import courseApi from '@/api/courseApi';
-import { getLessonDetailsByIdV2 } from '@/api/api';
+import { deleteQuestion, getLessonDetailsByIdV2 } from '@/api/api';
+import QuestionForm from '@/features/dashboard/components/quesion/question-form/QuestionForm';
+import QuestionFormModal from '@/features/dashboard/components/quesion/question-form/QuestionForm';
+import QuestionDetail from '@/features/dashboard/components/quesion/question-detail/QuestionDetail';
+import Swal from 'sweetalert2';
 
 interface LessonApiRequest extends LessonRequest {
   append(name: string, value: string | Blob, fileName?: string): void;
@@ -67,7 +71,7 @@ const lessonTypes = [
   { label: 'Bài tập', value: LessonTypes.Exercise },
 ];
 
-const CreateUpdateLesson = () => {
+const CreateUpdateLessonForm = () => {
   const { idCourse, selectedLessonId } = useParams();
   const navigate = useNavigate();
   const [isEditMode, setIsEditMode] = useState(Boolean(selectedLessonId));
@@ -76,6 +80,9 @@ const CreateUpdateLesson = () => {
   const [lessonType, setLessonType] = useState<LessonTypes | ''>('');
   const [selectedFileName, setSelectedFileName] = useState<string>('');
   const [course, setCourse] = useState<any>(null);
+  const [openQuestionForm, setOpenQuestionForm] = useState(false);
+  const [lesson, setLesson] = useState<any>(null);
+  const [refresh, setRefresh] = useState(false);
 
   const {
     control,
@@ -112,8 +119,9 @@ const CreateUpdateLesson = () => {
           ? (lesson.lessonType as LessonTypes)
           : LessonTypes.Video,
       );
+      setLesson(lesson);
     });
-  }, [selectedLessonId]);
+  }, [selectedLessonId, refresh]);
 
   const selectedLessonType = watch('lessonType');
 
@@ -137,8 +145,13 @@ const CreateUpdateLesson = () => {
         await lessonApi.updateLesson(selectedLessonId, formData);
         navigate(`/dashboard/courses/${idCourse}/lesson/${selectedLessonId}`);
       } else {
-        const newLesson = await lessonApi.createLesson(formData, idCourse as string);
-        navigate(`/dashboard/courses/${idCourse}/lesson/${newLesson.data?.id}`);
+        const newLesson = await lessonApi.createLesson(
+          formData,
+          idCourse as string,
+        );
+        navigate(
+          `/dashboard/courses/${idCourse}/lessons/${newLesson.data?.id}`,
+        );
       }
     } catch (err) {
       setError(
@@ -157,48 +170,29 @@ const CreateUpdateLesson = () => {
     setSelectedFileName('');
   };
 
+  const handleDeleteQuestion = (questionId: string) => {
+    if (questionId) {
+      Swal.fire({
+        title: 'Bạn có chắc chắn muốn xóa câu hỏi này?',
+        showDenyButton: true,
+        confirmButtonText: `Xóa`,
+        denyButtonText: `Hủy`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await deleteQuestion(questionId);
+          setRefresh((prev) => !prev);
+        }
+      });
+    }
+  };
+
   return (
-    <FeatureLayout>
-      <Breadcrumbs aria-label="breadcrumb" sx={{ paddingBottom: '24px' }}>
-        <Breadcrumb
-          component="a"
-          href="#"
-          label="Khóa học"
-          icon={<LibraryBooksIcon fontSize="small" />}
-          onClick={() => navigate('/dashboard/courses')}
-        />
-        <Breadcrumb
-          label={course?.title}
-          component="a"
-          onClick={() => navigate(`/dashboard/courses/${idCourse}`)}
-        />
-        <Breadcrumb label={'Tạo mới bài học'} component="a" href="#" />
-      </Breadcrumbs>
-
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '32px',
-        }}
-      >
-        <FeatureHeader title={isEditMode ? 'Cập nhật bài học' : 'Tạo bài học'}>
-          <Box>
-            <Button sx={{ textDecoration: "underline" }}>Xem bài học</Button>
-          </Box>
-        </FeatureHeader>
-      </Box>
-
+    <>
       <Box
         component="form"
         onSubmit={handleSubmit(onSubmit)}
         sx={{ padding: '24px 0' }}
       >
-        {/* <Typography variant="h5" gutterBottom sx={{ color: '#2E3091', mb: 2 }}>
-          {isEditMode ? 'Cập nhật bài học' : 'Thêm bài học mới'}
-        </Typography> */}
-
         <Controller
           name="title"
           control={control}
@@ -321,12 +315,59 @@ const CreateUpdateLesson = () => {
           />
         )}
 
-        <Button type="submit" variant="contained" disabled={isLoading}>
-          {isEditMode ? 'Cập nhật bài học' : 'Thêm bài học'}
-        </Button>
+        {selectedLessonType === LessonTypes.Exercise && (
+          <>
+            <FeatureHeader title={`Danh sách câu hỏi`}>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setOpenQuestionForm(true)}
+              >
+                Thêm câu hỏi
+              </Button>
+            </FeatureHeader>
+
+            <Box>
+              {lesson?.questions?.map((question: any, index: number) => (
+                <QuestionDetail
+                  key={question.id}
+                  question={question}
+                  index={index}
+                  readOnly={true}
+                  onDelete={() => handleDeleteQuestion(question.id)}
+                  onEdit={() => {}}
+                ></QuestionDetail>
+              ))}
+            </Box>
+            {openQuestionForm && (
+              <QuestionFormModal
+                open={openQuestionForm}
+                onClose={setOpenQuestionForm}
+                onOk={() => {
+                  setRefresh((prev) => !prev);
+                  setOpenQuestionForm(false);
+                }}
+              ></QuestionFormModal>
+            )}
+          </>
+        )}
+
+        <Box
+          sx={{
+            display: 'flex',
+            gap: '12px',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            marginTop: '24px',
+          }}
+        >
+          <Button type="submit" variant="contained" disabled={isLoading}>
+            {isEditMode ? 'Cập nhật bài học' : 'Thêm bài học'}
+          </Button>
+        </Box>
       </Box>
-    </FeatureLayout>
+    </>
   );
 };
 
-export default CreateUpdateLesson;
+export default CreateUpdateLessonForm;

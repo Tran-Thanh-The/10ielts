@@ -19,7 +19,6 @@ export class RoleSeedService {
         permissions: [],
       },
       {
-        id: RoleEnum.staff,
         name: "Staff",
         permissions: [
           PermissionEnum.CREATE_USER,

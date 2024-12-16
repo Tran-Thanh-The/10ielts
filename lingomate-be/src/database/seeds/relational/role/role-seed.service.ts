@@ -19,7 +19,6 @@ export class RoleSeedService {
         permissions: [],
       },
       {
-        id: RoleEnum.staff,
         name: "Staff",
         permissions: [
           PermissionEnum.CREATE_USER,
@@ -31,6 +30,7 @@ export class RoleSeedService {
           PermissionEnum.READ_LESSON,
           PermissionEnum.READ_QUESTION,
           PermissionEnum.READ_ANSWER,
+          PermissionEnum.CREATE_CATEGORY,
         ],
       },
       {
@@ -40,6 +40,7 @@ export class RoleSeedService {
           PermissionEnum.READ_COURSE,
           PermissionEnum.READ_LESSON,
           PermissionEnum.READ_PRACTICE,
+          PermissionEnum.READ_CATEGORY,
         ],
       },
       {
@@ -57,6 +58,7 @@ export class RoleSeedService {
           PermissionEnum.READ_PRACTICE,
           PermissionEnum.UPDATE_PRACTICE,
           PermissionEnum.DELETE_PRACTICE,
+          PermissionEnum.CREATE_CATEGORY,
         ],
       },
       {
@@ -66,6 +68,7 @@ export class RoleSeedService {
           PermissionEnum.READ_COURSE,
           PermissionEnum.READ_LESSON,
           PermissionEnum.READ_PRACTICE,
+          PermissionEnum.READ_CATEGORY,
           PermissionEnum.ACCESS_CHAT
         ],
       }

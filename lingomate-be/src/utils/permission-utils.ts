@@ -58,7 +58,18 @@ export function hasImplicitPermissions(
     case PermissionEnum.READ_ROLE:
     case PermissionEnum.UPDATE_ROLE:
     case PermissionEnum.DELETE_ROLE:
-      return rolePermissions.includes(PermissionEnum.CREATE_ROLE);  
+      return rolePermissions.includes(PermissionEnum.CREATE_ROLE);
+      
+      case PermissionEnum.CREATE_CATEGORY:
+      case PermissionEnum.READ_CATEGORY:
+        return (
+          rolePermissions.includes(PermissionEnum.READ_CATEGORY) ||
+          rolePermissions.includes(PermissionEnum.CREATE_CATEGORY)
+        );
+      case PermissionEnum.UPDATE_CATEGORY:
+      case PermissionEnum.DELETE_CATEGORY:
+        return rolePermissions.includes(PermissionEnum.CREATE_CATEGORY);
+        
     default:
       return rolePermissions.includes(requiredPermission);
   }

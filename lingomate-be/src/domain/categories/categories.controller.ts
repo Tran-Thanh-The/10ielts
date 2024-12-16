@@ -51,7 +51,7 @@ export class CategoriesController {
   }
 
   @Get()
-  @Permissions(PermissionEnum.READ_CATEGORY)
+  // @Permissions(PermissionEnum.READ_CATEGORY)
   @ApiOkResponse({
     type: InfinityPaginationResponse(Category),
   })

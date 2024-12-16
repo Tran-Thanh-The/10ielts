@@ -15,7 +15,6 @@ export class RoleSeedService {
   async run() {
     const rolesToSeed = [
       {
-        id: RoleEnum.admin,
         name: "Admin",
         permissions: [],
       },
@@ -35,7 +34,6 @@ export class RoleSeedService {
         ],
       },
       {
-        id: RoleEnum.user,
         name: "User",
         permissions: [
           PermissionEnum.READ_USER,
@@ -45,7 +43,6 @@ export class RoleSeedService {
         ],
       },
       {
-        id: RoleEnum.teacher,
         name: "Teacher",
         permissions: [
           PermissionEnum.CREATE_USER,
@@ -63,7 +60,6 @@ export class RoleSeedService {
         ],
       },
       {
-        id: RoleEnum.customerCare,
         name: "CustomerCare",
         permissions: [
           PermissionEnum.READ_USER,
@@ -84,12 +80,11 @@ export class RoleSeedService {
         existingRole.permissions = roleData.permissions;
         await this.repository.save(existingRole);
       } else {
-        // Tạo mới role nếu chưa tồn tại
-        await this.repository.save({
-          id: roleData.id,
+        const newRole = this.repository.create({
           name: roleData.name,
           permissions: roleData.permissions,
         });
+        await this.repository.save(newRole);
       }
     }
   }

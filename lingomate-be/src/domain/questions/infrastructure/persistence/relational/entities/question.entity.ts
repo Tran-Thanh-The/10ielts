@@ -7,10 +7,9 @@ import { AnswerEntity } from "@/domain/answers/infrastructure/persistence/relati
 import { CategoryEntity } from "@/domain/categories/infrastructure/persistence/relational/entities/category.entity";
 import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
 import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
-import { UserQuestionEntity } from "@/domain/user-questions/infrastructure/persistence/relational/entities/user-question.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   Column,
   CreateDateColumn,
@@ -69,14 +68,15 @@ export class QuestionEntity extends EntityRelationalHelper {
   })
   questionType: QuestionTypesEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     enum: QuestionFileTypesEnum,
   })
   @Column({
     type: "enum",
     enum: QuestionFileTypesEnum,
+    nullable: true
   })
-  fileType: QuestionFileTypesEnum;
+  fileType?: QuestionFileTypesEnum | null;
 
   @ApiProperty({
     enum: StatusEnum,
@@ -93,16 +93,6 @@ export class QuestionEntity extends EntityRelationalHelper {
   })
   @ManyToOne(() => LessonEntity, (lesson) => lesson.questions)
   lesson?: LessonEntity | null;
-
-  @ApiProperty({
-    type: () => UserQuestionEntity,
-  })
-  @OneToMany(
-    () => UserQuestionEntity,
-    (userQuestion) => userQuestion.question,
-    { cascade: true },
-  )
-  userQuestion: UserQuestionEntity[];
 
   @ApiProperty({
     type: () => AnswerEntity,
@@ -131,4 +121,12 @@ export class QuestionEntity extends EntityRelationalHelper {
   @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: Number, nullable: true })
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  @Column({ type: Number, nullable: true })
+  updatedBy?: number | null;
 }

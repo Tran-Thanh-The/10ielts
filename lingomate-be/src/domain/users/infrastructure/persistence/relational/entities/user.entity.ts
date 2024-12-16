@@ -16,21 +16,19 @@ import {
 import { AuthProvidersEnum } from "@/domain/auth/auth-providers.enum";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 
-// We use class-transformer in ORM entity and domain entity.
-// We duplicate these rules because you can choose not to use adapters
-// in your project and return an ORM entity directly in response.
 import { StatusEnum } from "@/common/enums/status.enum";
+import { ChatEntity } from "@/domain/chats/infrastructure/persistence/relational/entities/chat.entity";
+import { InvoiceEntity } from "@/domain/invoices/infrastructure/persistence/relational/entities/invoice.entity";
+import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
 import { UserCourseEntity } from "@/domain/user-courses/infrastructure/persistence/relational/entities/user-course.entity";
 import { UserInvoicesEntity } from "@/domain/user-invoices/infrastructure/persistence/relational/entities/user-invoices.entity";
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
-import { UserQuestionEntity } from "@/domain/user-questions/infrastructure/persistence/relational/entities/user-question.entity";
-import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose } from "class-transformer";
-import { InvoiceEntity } from "@/domain/invoices/infrastructure/persistence/relational/entities/invoice.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
-import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
-import { ChatEntity } from "@/domain/chats/infrastructure/persistence/relational/entities/chat.entity";
 import { UserConversationEntity } from "@/domain/user-conversations/infrastructure/persistence/relational/entities/user-conversation.entity";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Exclude, Expose } from "class-transformer";
+import { AnswerHistoryEntity } from "@/domain/answer-histories/infrastructure/persistence/relational/entities/answer-history.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 
 @Entity({
   name: "user",
@@ -135,11 +133,26 @@ export class UserEntity extends EntityRelationalHelper {
   @DeleteDateColumn()
   deletedAt: Date;
 
+  @ApiProperty({ type: Number })
+  @Column({ type: Number, nullable: true })
+  createdBy?: number | null;
+
+  @ApiPropertyOptional({ type: Number })
+  @Column({ type: Number, nullable: true })
+  updatedBy?: number | null;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: Number, nullable: true })
+  deletedBy?: number | null;
+
+  @OneToMany(() => AnswerHistoryEntity, (answerHistory) => answerHistory.user)
+  answerHistories: AnswerHistoryEntity[];
+
+  @OneToMany(() => PracticeExerciseEntity, (practice) => practice.user)
+  practices: PracticeExerciseEntity[];
+
   @OneToMany(() => UserInvoicesEntity, (userInvoice) => userInvoice.user)
   invoices: InvoiceEntity[];
-
-  @OneToMany(() => UserQuestionEntity, (userQuestion) => userQuestion.user)
-  userQuestion: UserQuestionEntity[];
 
   @OneToMany(() => UserLessonEntity, (userLesson) => userLesson.user)
   userLesson: UserLessonEntity[];

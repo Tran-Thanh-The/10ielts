@@ -8,13 +8,17 @@ const lessonApi = {
   // API: Tạo bài học mới
   createLesson: (lesson: Lesson, idCourse: string) => {
     const url = `${API_LESSON.CREATE}/${idCourse}`;
-    return axiosInstance.post<Lesson>(url, lesson);
+    return axiosInstance.post<Lesson>(url, lesson, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 
   // API: Cập nhật bài học
   updateLesson: (lessonId: string, lesson: Lesson) => {
-    const url = `${API_LESSON.UPDATE}/${lessonId}`;
-    return axiosInstance.patch<Lesson>(url, lesson);
+    // const url = `${API_LESSON.UPDATE}/${lessonId}`;
+    return axiosInstance.patch<Lesson>(`lessons/${lessonId}`, lesson);
   },
 
   // API: Lấy thông tin bài học

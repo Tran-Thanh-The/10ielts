@@ -10,6 +10,7 @@ export interface LessonResponse {
   content?: string;
 }
 export interface LessonRequest {
+  id?: string;
   title?: string;
   content?: string;
   videoUrl?: File | null;

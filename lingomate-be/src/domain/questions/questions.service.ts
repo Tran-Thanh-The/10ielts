@@ -7,14 +7,13 @@ import { LessonRepository } from "../lessons/infrastructure/persistence/lesson.r
 import { LessonMapper } from "../lessons/infrastructure/persistence/relational/mappers/lesson.mapper";
 import { PracticeExerciseRepository } from "../practice-exercises/infrastructure/persistence/practice-exercise.repository";
 import { PracticeExerciseMapper } from "../practice-exercises/infrastructure/persistence/relational/mappers/practice-exercise.mapper";
-import { UserQuestionMapper } from "../user-questions/infrastructure/persistence/relational/mappers/user-question.mapper";
-import { UserQuestionRepository } from "../user-questions/infrastructure/persistence/user-question.repository";
 import { CategoryMapper } from "./../categories/infrastructure/persistence/relational/mappers/category.mapper";
 import { Question } from "./domain/question";
 import { CreateQuestionDto } from "./dto/create-question.dto";
 import { UpdateQuestionDto } from "./dto/update-question.dto";
 import { QuestionRepository } from "./infrastructure/persistence/question.repository";
 import { QuestionMapper } from "./infrastructure/persistence/relational/mappers/question.mapper";
+import { AnswerRepository } from "../answers/infrastructure/persistence/answer.repository";
 
 @Injectable()
 export class QuestionsService {
@@ -23,8 +22,8 @@ export class QuestionsService {
     private readonly lessonRepository: LessonRepository,
     private readonly filesLocalService: FilesLocalService,
     private readonly categoryRepository: CategoryRepository,
+    private readonly answerRepository: AnswerRepository,
     private readonly practiceExerciseRepository: PracticeExerciseRepository,
-    private readonly userQuestionRepository: UserQuestionRepository,
   ) {}
 
   async create(
@@ -33,6 +32,7 @@ export class QuestionsService {
     fileQuestion: Express.Multer.File,
   ) {
     const model = QuestionMapper.toModel(createQuestionDto);
+    model.createdBy = Number(userId);
     console.log("Created question model:", model);
 
     if (createQuestionDto.category_id) {
@@ -98,14 +98,6 @@ export class QuestionsService {
     }
 
     const savedQuestion = await this.questionRepository.create(model);
-
-    //Thêm vào bảng user_question: xác định ai là người thêm question
-    const userQuestion = UserQuestionMapper.toModel({
-      user_id: Number(userId),
-      question_id: savedQuestion.id,
-      status: StatusEnum.ACTIVE,
-    });
-    await this.userQuestionRepository.create(userQuestion);
     return savedQuestion;
   }
 
@@ -126,13 +118,32 @@ export class QuestionsService {
     return this.questionRepository.findById(id);
   }
 
-  async update(id: Question["id"], updateQuestionDto: UpdateQuestionDto) {
+  async update(
+    userId: string,
+    id: Question["id"],
+    updateQuestionDto: UpdateQuestionDto,
+    fileQuestion?: Express.Multer.File
+  ) {
     const existingQuestion = await this.questionRepository.findById(id);
     if (!existingQuestion) {
       throw new NotFoundException(`Question with id "${id}" not found.`);
     }
+    if (fileQuestion) {
+      if (existingQuestion.file) {
+        // Tách rời file khỏi Question trước khi xóa
+        await this.questionRepository.update(id, { file: null });
+        await this.filesLocalService.delete(existingQuestion.file);
+      }
+  
+      const uploadedFile = await this.filesLocalService.create(fileQuestion);
+      updateQuestionDto.file = uploadedFile.file;
+    }
+    const updatedData = {
+      ...updateQuestionDto,
+      updatedBy: Number(userId),
+    };
 
-    return this.questionRepository.update(id, updateQuestionDto);
+    return this.questionRepository.update(id, updatedData);
   }
 
   async remove(id: Question["id"]) {
@@ -142,7 +153,12 @@ export class QuestionsService {
         `No question found for question with id "${id}".`,
       );
     }
-
+    const answers = await this.answerRepository.findByQuestionId(id);
+    if (answers && answers.length > 0) {
+      for (const answer of answers) {
+        await this.answerRepository.remove(answer.id); 
+      }
+    }
     if (question.lesson) {
       await this.updatePositionAfterDeletion(question.lesson.id, "lesson");
     } else if (question.practice) {
@@ -151,6 +167,7 @@ export class QuestionsService {
 
     question.status = StatusEnum.IN_ACTIVE;
     await this.questionRepository.save(question);
+    return await this.questionRepository.remove(id);
   }
 
   private async updatePositionAfterDeletion(
@@ -169,4 +186,5 @@ export class QuestionsService {
       await this.questionRepository.save(questions[index]);
     }
   }
+
 }

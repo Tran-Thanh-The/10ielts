@@ -64,7 +64,7 @@ const LoginFormWithUsername = ({
         const role = auth.user?.role?.name;
 
         if (role == ROLE.USER) {
-          navigate('/');
+          navigate('/dashboard');
         } else {
           navigate('/dashboard');
         }

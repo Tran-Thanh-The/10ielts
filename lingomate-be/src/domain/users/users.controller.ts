@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   SerializeOptions,
   UseGuards,
 } from "@nestjs/common";
@@ -20,8 +21,6 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger";
-import { Roles } from "../roles/roles.decorator";
-import { RoleEnum } from "../roles/roles.enum";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 
@@ -31,14 +30,17 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { NullableType } from "@/utils/types/nullable.type";
-import { RolesGuard } from "../roles/roles.guard";
+import { RolesGuard } from "../auth/guards/roles.guard";
 import { User } from "./domain/user";
 import { QueryUserDto } from "./dto/query-user.dto";
+import { RolesRestrictionGuard } from "./guards/roles.restriction.guard";
 import { UsersService } from "./users.service";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
+import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @ApiBearerAuth()
-@Roles(RoleEnum.admin)
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@UseGuards(AuthGuard("jwt"), PermissionGuard)
 @ApiTags("Users")
 @Controller({
   path: "users",
@@ -47,6 +49,8 @@ import { UsersService } from "./users.service";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @Post()
+  @UseGuards(RolesRestrictionGuard)
+  @Permissions(PermissionEnum.CREATE_USER)
   @ApiCreatedResponse({
     type: User,
   })
@@ -54,8 +58,9 @@ export class UsersController {
     groups: ["admin"],
   })
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProfileDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createProfileDto);
+  create(@Req() req, @Body() createProfileDto: CreateUserDto): Promise<User> {
+    const userId = req.user.id;
+    return this.usersService.create(userId, createProfileDto);
   }
 
   @ApiOkResponse({
@@ -65,6 +70,7 @@ export class UsersController {
     groups: ["admin"],
   })
   @Get()
+  @Permissions(PermissionEnum.READ_USER)
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query() query: QueryUserDto,
@@ -95,6 +101,7 @@ export class UsersController {
     groups: ["admin"],
   })
   @Get(":id")
+  @Permissions(PermissionEnum.READ_USER)
   @HttpCode(HttpStatus.OK)
   @ApiParam({
     name: "id",
@@ -112,6 +119,8 @@ export class UsersController {
     groups: ["admin"],
   })
   @Patch(":id")
+  @UseGuards(RolesRestrictionGuard)
+  @Permissions(PermissionEnum.UPDATE_USER)
   @HttpCode(HttpStatus.OK)
   @ApiParam({
     name: "id",
@@ -119,20 +128,25 @@ export class UsersController {
     required: true,
   })
   update(
+    @Req() req,
     @Param("id") id: User["id"],
     @Body() updateProfileDto: UpdateUserDto,
   ): Promise<User | null> {
-    return this.usersService.update(id, updateProfileDto);
+    const userId = req.user.id;
+    return this.usersService.update(userId, id, updateProfileDto);
   }
 
   @Delete(":id")
+  @UseGuards(RolesRestrictionGuard)
+  @Permissions(PermissionEnum.DELETE_USER)
   @ApiParam({
     name: "id",
     type: String,
     required: true,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param("id") id: User["id"]): Promise<void> {
-    return this.usersService.remove(id);
+  remove(@Req() req, @Param("id") id: User["id"]): Promise<void> {
+    const userId = req.user.id;
+    return this.usersService.remove(userId, id);
   }
 }

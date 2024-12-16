@@ -38,15 +38,15 @@ import { LessonsModule } from "@/domain/lessons/lessons.module";
 
 import { PracticeExercisesModule } from "@/domain/practice-exercises/practice-exercises.module";
 
+import { PayOSModule } from "@/common/payos/payos.module";
 import redisConfig from "@/common/redis/config/redis.config";
 import { RedisModule } from "@/common/redis/redis.module";
-import { HttpModule } from "@nestjs/axios";
-import { InvoicesModule } from "./domain/invoices/invoices.module";
 import { CategoriesModule } from "@/domain/categories/categories.module";
-import { ServeStaticModule } from "@nestjs/serve-static";
-import { PayOSModule } from "@/common/payos/payos.module";
 import { PaymentModule } from "@/domain/payment/payment.module";
+import { HttpModule } from "@nestjs/axios";
 import { JwtModule } from "@nestjs/jwt";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { InvoicesModule } from "./domain/invoices/invoices.module";
 
 import { InvoiceProductsModule } from "@/domain/invoice-products/invoice-products.module";
 
@@ -57,6 +57,7 @@ import { ConversationsModule } from "@/domain/conversations/conversations.module
 import { ChatsModule } from "@/domain/chats/chats.module";
 
 import { UserConversationsModule } from "@/domain/user-conversations/user-conversations.module";
+import { RolesModule } from "./domain/roles/roles.module";
 import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
 
 @Module({
@@ -115,6 +116,7 @@ import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
       inject: [ConfigService],
       global: true,
     }),
+    RolesModule,
     SocketGatewayModule,
     UserConversationsModule,
     ChatsModule,

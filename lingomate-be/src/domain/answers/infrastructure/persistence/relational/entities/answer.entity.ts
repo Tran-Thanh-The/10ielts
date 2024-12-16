@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
 import { AnswerTypesEnum } from "@/common/enums/answer.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
@@ -74,4 +74,12 @@ export class AnswerEntity extends EntityRelationalHelper {
   @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: Number, nullable: true })
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  @Column({ type: Number, nullable: true })
+  updatedBy?: number | null;
 }

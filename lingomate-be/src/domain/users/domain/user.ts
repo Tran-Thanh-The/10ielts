@@ -71,4 +71,13 @@ export class User {
 
   @ApiProperty()
   deletedAt: Date;
+
+  @ApiPropertyOptional({ type: Number })
+  createdBy?: number | null;
+
+  @ApiPropertyOptional({ type: Number })
+  updatedBy?: number | null;
+
+  @ApiPropertyOptional({ type: Number })
+  deletedBy?: number | null;
 }

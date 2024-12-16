@@ -4,8 +4,12 @@ const courseApi = {
   getCategories: () => {
     return axiosInstance.get<any>('/categories');
   },
-  getCourses: () => {
-    return axiosInstance.get<any>('/courses/list?status=ACTIVE');
+  getCourses: ({ params }) => {
+    return axiosInstance.get<any>('/courses/list', {
+      params: {
+        ...params,
+      },
+    });
   },
   createCourse: (data: any) => {
     return axiosInstance.post('/courses', data, {
@@ -15,7 +19,11 @@ const courseApi = {
     });
   },
   updateCourse: (id: string, data: any) => {
-    return axiosInstance.patch<any>(`/courses/${id}`, data);
+    return axiosInstance.patch<any>(`/courses/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
   deleteCourse: (id: string) => {
     return axiosInstance.delete<any>(`/courses/${id}`);

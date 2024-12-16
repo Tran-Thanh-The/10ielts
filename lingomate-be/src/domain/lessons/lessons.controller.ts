@@ -35,17 +35,20 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllLessonsDto } from "./dto/find-all-lessons.dto";
-import { RolesGuard } from "../roles/roles.guard";
-import { RoleEnum } from "../roles/roles.enum";
-import { Roles } from "../roles/roles.decorator";
+import { RolesGuard } from "../auth/guards/roles.guard";
+import { RoleEnum } from "../../common/enums/roles.enum";
+import { Roles } from "../../utils/decorators/roles.decorator";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 import { NullableType } from "@/utils/types/nullable.type";
 import { StatusEnum } from "@/common/enums/status.enum";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
+import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @ApiTags("Lessons")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@UseGuards(AuthGuard("jwt"), PermissionGuard)
 @Controller({
   path: "lessons",
   version: "1",
@@ -53,8 +56,8 @@ import { StatusEnum } from "@/common/enums/status.enum";
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post(":courseId")
+  @Permissions(PermissionEnum.CREATE_LESSON)
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
@@ -87,8 +90,8 @@ export class LessonsController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
+  @Permissions(PermissionEnum.READ_LESSON)
   @ApiOkResponse({
     type: InfinityPaginationResponse(Lesson),
   })
@@ -111,8 +114,8 @@ export class LessonsController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get("course/:courseId")
+  @Permissions(PermissionEnum.READ_LESSON)
   @ApiParam({
     name: "courseId",
     type: String,
@@ -142,8 +145,8 @@ export class LessonsController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id/detail")
+  @Permissions(PermissionEnum.READ_LESSON)
   @ApiQuery({
     name: "order",
     required: false,
@@ -174,8 +177,8 @@ export class LessonsController {
     });
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
+  @Permissions(PermissionEnum.READ_LESSON)
   @ApiParam({
     name: "id",
     type: String,
@@ -188,8 +191,9 @@ export class LessonsController {
     return this.lessonsService.findById(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Patch(":id")
+  @Permissions(PermissionEnum.UPDATE_LESSON)
+  @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiParam({
     name: "id",
     type: String,
@@ -201,9 +205,10 @@ export class LessonsController {
   async update(
     @Param("id") id: string,
     @Body() updateLessonDto: UpdateLessonDto,
+    @UploadedFile() file?: Express.Multer.File
   ) {
     try {
-      return await this.lessonsService.update(id, updateLessonDto);
+      return await this.lessonsService.update(id, updateLessonDto, file);
     } catch (error) {
       if (error instanceof ConflictException) {
         throw new ConflictException(error.message);
@@ -214,8 +219,8 @@ export class LessonsController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Delete(":id")
+  @Permissions(PermissionEnum.DELETE_LESSON)
   @ApiParam({
     name: "id",
     type: String,

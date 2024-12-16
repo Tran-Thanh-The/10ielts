@@ -62,6 +62,8 @@ Table answer {
   question_id uuid
   createdAt timestamp
   updatedAt timestamp
+  createdBy uuid
+  updatedBy uuid
 }
 
 Table category {
@@ -156,6 +158,8 @@ Table answer_history {
     completedAt timestamp
     createdAt timestamp
     updatedAt timestamp
+    user_id number
+    answers json
 }
 
 Table question {
@@ -176,20 +180,11 @@ Table question {
     updatedAt timestamp
 }
 
-Table user_question {
-    id uuid [pk]
-    answer_history_id uuid [ref: > answer_history.id] // Thêm trường này
-    question_id uuid
-    user_id int 
-    answerPick string
-    status StatusEnum
-    createdAt timestamp
-    updatedAt timestamp
-}
 
 Table role {
   id int [pk]
   name string
+  permissions string[]
 }
 
 Table session {
@@ -212,15 +207,7 @@ Table user_course {
   updatedAt timestamp
 }
 
-Table user_lesson {
-  id uuid [pk]
-  status StatusEnum
-  user_id int
-  lesson_id uuid (nullable)
-  isCompleted boolean
-  createdAt timestamp
-  updatedAt timestamp
-}
+
 
 Table file {
   id uuid [pk]
@@ -265,6 +252,8 @@ Table user_conversation {
   id uuid [pk]
   conversationId uuid
   userId uuid
+  createdAt timestamp
+  updatedAt timestamp
 }
 
 // Relationships
@@ -278,13 +267,10 @@ Ref: course.category_id > category.id
 Ref: lesson_course.lesson_id > lesson.id
 Ref: lesson_course.course_id > course.id
 Ref: question.category_id > category.id
+Ref: answer_history.user_id > user.id
 Ref: session.user_id > user.id
 Ref: user_course.user_id > user.id
 Ref: user_course.course_id > course.id
-Ref: user_lesson.user_id > user.id
-Ref: user_lesson.lesson_id > lesson.id
-Ref: user_question.user_id > user.id
-Ref: user_question.question_id > question.id
 Ref: user.photo_id > file.id
 Ref: user.role_id > role.id
 Ref: lesson.file_id > file.id

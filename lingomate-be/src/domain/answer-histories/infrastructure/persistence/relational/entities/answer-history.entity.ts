@@ -1,16 +1,17 @@
+import { StatusEnum } from "@/common/enums/status.enum";
+import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
+import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
+import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
+import { ApiProperty } from "@nestjs/swagger";
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from "typeorm";
-import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
-import { ApiProperty } from "@nestjs/swagger";
-import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
-import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
-import { StatusEnum } from "@/common/enums/status.enum";
 
 @Entity({
   name: "answer_history",
@@ -20,13 +21,28 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  @ApiProperty()
+  @Column({
+    type: "jsonb",
+    nullable: true,
+  })
+  answers?: Record<string, any>;
+
+  @ApiProperty({
+    type: () => UserEntity,
+  })
+  @ManyToOne(() => UserEntity, {
+    eager: true,
+  })
+  user?: UserEntity;
+
   @ApiProperty({
     type: () => PracticeExerciseEntity,
   })
   @ManyToOne(() => PracticeExerciseEntity, {
     eager: true,
   })
-  practice: PracticeExerciseEntity;
+  practice?: PracticeExerciseEntity;
 
   @ApiProperty({
     type: () => LessonEntity,
@@ -34,7 +50,7 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
   @ManyToOne(() => LessonEntity, {
     eager: true,
   })
-  lesson: LessonEntity;
+  lesson?: LessonEntity;
 
   @ApiProperty({ type: () => Number })
   @Column({

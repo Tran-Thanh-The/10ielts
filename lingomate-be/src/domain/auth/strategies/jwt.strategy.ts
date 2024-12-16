@@ -37,6 +37,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, "jwt") {
       throw new UnauthorizedException();
     }
 
-    return payload;
+    return {
+      ...payload,
+      permissions: payload.permissions || [],
+    };
   }
 }

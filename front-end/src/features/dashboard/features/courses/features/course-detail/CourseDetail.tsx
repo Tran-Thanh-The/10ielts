@@ -303,7 +303,9 @@ export default function CourseDetail() {
                       <li>
                         <Typography variant="body1">
                           Giá khóa học:{' '}
-                          {course.price === 0 ? 'FREE' : course.price + ' VND'}
+                          {course.price === 0 || String(course.price) == '0.00'
+                            ? 'Miễn phí'
+                            : course.price + ' VND'}
                         </Typography>
                       </li>
                       <li>
@@ -319,22 +321,24 @@ export default function CourseDetail() {
                     </ul>
                   </Box>
 
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      marginTop: '12px',
-                    }}
-                  >
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      onClick={handlePayment}
+                  <RoleBasedComponent allowedRoles={[ROLE.USER]}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '12px',
+                      }}
                     >
-                      Đăng ký khóa học
-                    </Button>
-                  </Box>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        onClick={handlePayment}
+                      >
+                        Đăng ký khóa học
+                      </Button>
+                    </Box>
+                  </RoleBasedComponent>
                 </Box>
               </Box>
               <Typography variant="caption" color="text.secondary">

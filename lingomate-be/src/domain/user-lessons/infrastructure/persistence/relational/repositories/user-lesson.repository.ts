@@ -43,7 +43,16 @@ export class UserLessonRelationalRepository implements UserLessonRepository {
 
     return entity ? UserLessonMapper.toDomain(entity) : null;
   }
-
+  
+  async findAllByUserId(userId: string): Promise<NullableType<UserLesson[]>> {
+    return await this.userLessonRepository
+      .createQueryBuilder("userLesson")
+      .leftJoinAndSelect("userLesson.user", "user")
+      .leftJoinAndSelect("userLesson.lesson", "lesson")
+      .where("user.id = :userId", { userId })
+      .getMany();
+  }
+  
   async update(
     id: UserLesson["id"],
     payload: Partial<UserLesson>,

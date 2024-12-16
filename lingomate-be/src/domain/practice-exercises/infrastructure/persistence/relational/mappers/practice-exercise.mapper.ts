@@ -1,11 +1,12 @@
-import { QuestionMapper } from "@/domain/questions/infrastructure/persistence/relational/mappers/question.mapper";
-import { PracticeExercise } from "../../../../domain/practice-exercise";
-import { PracticeExerciseEntity } from "../entities/practice-exercise.entity";
+import { StatusEnum } from "@/common/enums/status.enum";
 import { AnswerMapper } from "@/domain/answers/infrastructure/persistence/relational/mappers/answer.mapper";
 import { CreatePracticeExerciseDto } from "@/domain/practice-exercises/dto/create-practice-exercise.dto";
-import { StatusEnum } from "@/common/enums/status.enum";
 import { PracticeResponseDto } from "@/domain/practice-exercises/dto/response-practice-exercise.dto";
+import { QuestionMapper } from "@/domain/questions/infrastructure/persistence/relational/mappers/question.mapper";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
+import { PracticeExercise } from "../../../../domain/practice-exercise";
+import { PracticeExerciseEntity } from "../entities/practice-exercise.entity";
+import { FileMapper } from "@/files/infrastructure/persistence/relational/mappers/file.mapper";
 
 export class PracticeExerciseMapper {
   static toDomain(raw: PracticeExerciseEntity): PracticeExercise {
@@ -22,16 +23,22 @@ export class PracticeExerciseMapper {
     domainEntity.status = raw.status;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.createdBy = raw.createdBy;
+    domainEntity.updatedBy = raw.updatedBy;
+    domainEntity.deletedAt = raw.deletedAt;
     if (raw.questions) {
       domainEntity.questions = raw.questions.map((question) => {
         const questionDomain = QuestionMapper.toDomain(question);
-
-        // Map từng answer trong question và loại bỏ reference đến question trong answer
+        if (question.file) {
+          questionDomain.file = FileMapper.toDomain(question.file);
+        }
         questionDomain.answers = question.answers
           ? question.answers.map((answer) => {
               const answerDomain = AnswerMapper.toDomain(answer);
-              // Loại bỏ mối quan hệ ngược để tránh vòng lặp
               delete answerDomain.question;
+              if (answer.file) {
+                answerDomain.file = FileMapper.toDomain(answer.file);
+              }
               return answerDomain;
             })
           : [];
@@ -59,6 +66,9 @@ export class PracticeExerciseMapper {
     persistenceEntity.status = domainEntity.status;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
+    persistenceEntity.createdBy = domainEntity.createdBy;
+    persistenceEntity.updatedBy = domainEntity.updatedBy;
+    persistenceEntity.deletedAt = domainEntity.deletedAt;
     if (domainEntity.questions) {
       persistenceEntity.questions = domainEntity.questions.map((question) =>
         QuestionMapper.toPersistence(question),
@@ -84,7 +94,6 @@ export class PracticeExerciseMapper {
     model.practiceType = dto.practiceType;
     model.difficulty = dto.difficulty;
     model.status = dto.status ?? StatusEnum.IN_ACTIVE;
-
     return model;
   }
 
@@ -100,6 +109,9 @@ export class PracticeExerciseMapper {
     dto.status = model.status;
     dto.createdAt = model.createdAt;
     dto.updatedAt = model.updatedAt;
+    dto.createdBy = model.createdBy;
+    dto.updatedBy = model.updatedBy;
+    dto.deletedAt = model.deletedAt;
     dto.questions = model.questions
       ? model.questions.map((question) => {
           const questionDto = QuestionMapper.toDto(question);

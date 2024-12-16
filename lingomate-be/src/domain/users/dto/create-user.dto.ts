@@ -11,7 +11,7 @@ import {
   MinLength,
 } from "class-validator";
 import { FileDto } from "../../../files/dto/file.dto";
-import { RoleDto } from "../../roles/dto/role.dto";
+import { Role } from "@/domain/roles/domain/role";
 
 export class CreateUserDto {
   @ApiProperty({ example: "test1@example.com", type: String })
@@ -37,11 +37,10 @@ export class CreateUserDto {
   photo?: FileDto | null;
 
   @ApiPropertyOptional({
-    type: () => RoleDto,
+    type: () => Role,
   })
   @IsOptional()
-  @Type(() => RoleDto)
-  role?: RoleDto | null;
+  role?: Role | null;
 
   @ApiPropertyOptional({ type: Date })
   @IsOptional()

@@ -76,4 +76,14 @@ export class PracticeResponseDto {
 
   @ApiProperty({ type: Date })
   updatedAt?: Date;
+
+  @ApiProperty({ type: Date })
+  deletedAt?: Date;
+
+  @ApiProperty({ type: Number })
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  @IsOptional()
+  updatedBy?: number | null;
 }

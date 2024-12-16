@@ -1,7 +1,4 @@
-import {
-  IsOptional,
-  IsString, // decorators here
-} from "class-validator";
+import { IsString } from "class-validator";
 
 import {
   ApiProperty, // decorators here

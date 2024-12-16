@@ -48,7 +48,7 @@ export class UserLessonMapper {
       model.lesson = lesson;
     }
     model.isCompleted = dto.isCompleted ?? false;
-    model.status = dto.status ?? StatusEnum.IN_ACTIVE;
+    model.status = dto.status ?? StatusEnum.ACTIVE;
     return model;
   }
 }

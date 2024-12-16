@@ -51,6 +51,7 @@ export class UserCourseRelationalRepository implements UserCourseRepository {
 
     return entity ? UserCourseMapper.toDomain(entity) : null;
   }
+  
   async findByCourseId(course_id: string): Promise<NullableType<UserCourse[]>> {
     const userCourses = await this.userCourseRepository
       .createQueryBuilder("userCourse")
@@ -62,6 +63,27 @@ export class UserCourseRelationalRepository implements UserCourseRepository {
       ? userCourses.map(UserCourseMapper.toDomain)
       : null;
   }
+
+  async findUserCourseByUserId(userId: string): Promise<NullableType<UserCourse>> {
+    const userCourse = await this.userCourseRepository
+      .createQueryBuilder("userCourse")
+      .leftJoinAndSelect("userCourse.user", "user")
+      .leftJoinAndSelect("userCourse.course", "course")
+      .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
+      .leftJoinAndSelect("lessonCourse.lesson", "lesson")
+      .leftJoinAndSelect("lesson.file", "file")
+      .leftJoinAndSelect("lesson.questions", "question")
+
+      .leftJoinAndSelect("question.file", "questionFile")
+      .leftJoinAndSelect("question.answers", "answer")
+      .leftJoinAndSelect("answer.file", "answerFile")
+
+      .where("user.id = :userId", { userId })
+      .getOne(); 
+  
+    return userCourse ? UserCourseMapper.toDomain(userCourse) : null; 
+  }
+  
 
   async update(
     id: UserCourse["id"],

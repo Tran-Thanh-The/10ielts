@@ -23,6 +23,9 @@ export class UserMapper {
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
     domainEntity.deletedAt = raw.deletedAt;
+    domainEntity.createdBy = raw.createdBy;
+    domainEntity.updatedBy = raw.updatedBy;
+    domainEntity.deletedBy = raw.deletedBy;
     return domainEntity;
   }
 
@@ -55,6 +58,11 @@ export class UserMapper {
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
     persistenceEntity.deletedAt = domainEntity.deletedAt;
+
+    persistenceEntity.createdBy = domainEntity.createdBy;
+    persistenceEntity.updatedBy = domainEntity.updatedBy;
+    persistenceEntity.deletedBy = domainEntity.deletedBy;
     return persistenceEntity;
   }
+
 }

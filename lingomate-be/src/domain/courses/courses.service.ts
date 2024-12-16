@@ -170,9 +170,7 @@ export class CoursesService {
     if (userCourses) {
       await Promise.all(
         userCourses.map((userCourse) =>
-          this.userCourseRepository.update(userCourse.id, {
-            status: StatusEnum.IN_ACTIVE,
-          }),
+          this.userCourseRepository.remove(userCourse.id),
         ),
       );
     }
@@ -181,13 +179,11 @@ export class CoursesService {
     if (lessonCourses) {
       await Promise.all(
         lessonCourses.map((lessonCourse) =>
-          this.lessonCourseRepository.update(lessonCourse.id, {
-            status: StatusEnum.IN_ACTIVE,
-          }),
+          this.lessonCourseRepository.remove(lessonCourse.id),
         ),
       );
     }
-
     await this.courseRepository.save(course);
+    return this.courseRepository.remove(id);
   }
 }

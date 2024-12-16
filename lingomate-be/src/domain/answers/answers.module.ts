@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { QuestionsModule } from "../questions/questions.module";
 import { AnswersController } from "./answers.controller";
 import { AnswersService } from "./answers.service";
@@ -7,7 +7,7 @@ import { FilesLocalModule } from "@/files/infrastructure/uploader/local/files.mo
 
 @Module({
   imports: [
-    QuestionsModule,
+    forwardRef(() => QuestionsModule),
     RelationalAnswerPersistenceModule,
     FilesLocalModule,
   ],

@@ -15,7 +15,7 @@ export abstract class AnswerRepository {
   }): Promise<Answer[]>;
 
   abstract findById(id: Answer["id"]): Promise<NullableType<Answer>>;
-
+  abstract findByQuestionId(questionId: string): Promise<NullableType<Answer[]>>;
   abstract update(
     id: Answer["id"],
     payload: DeepPartial<Answer>,

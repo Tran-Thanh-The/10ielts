@@ -13,6 +13,7 @@ import { CreateQuestionDto } from "./dto/create-question.dto";
 import { UpdateQuestionDto } from "./dto/update-question.dto";
 import { QuestionRepository } from "./infrastructure/persistence/question.repository";
 import { QuestionMapper } from "./infrastructure/persistence/relational/mappers/question.mapper";
+import { AnswerRepository } from "../answers/infrastructure/persistence/answer.repository";
 
 @Injectable()
 export class QuestionsService {
@@ -21,6 +22,7 @@ export class QuestionsService {
     private readonly lessonRepository: LessonRepository,
     private readonly filesLocalService: FilesLocalService,
     private readonly categoryRepository: CategoryRepository,
+    private readonly answerRepository: AnswerRepository,
     private readonly practiceExerciseRepository: PracticeExerciseRepository,
   ) {}
 
@@ -151,7 +153,12 @@ export class QuestionsService {
         `No question found for question with id "${id}".`,
       );
     }
-
+    const answers = await this.answerRepository.findByQuestionId(id);
+    if (answers && answers.length > 0) {
+      for (const answer of answers) {
+        await this.answerRepository.remove(answer.id); 
+      }
+    }
     if (question.lesson) {
       await this.updatePositionAfterDeletion(question.lesson.id, "lesson");
     } else if (question.practice) {
@@ -160,6 +167,7 @@ export class QuestionsService {
 
     question.status = StatusEnum.IN_ACTIVE;
     await this.questionRepository.save(question);
+    return await this.questionRepository.remove(id);
   }
 
   private async updatePositionAfterDeletion(
@@ -178,4 +186,5 @@ export class QuestionsService {
       await this.questionRepository.save(questions[index]);
     }
   }
+
 }

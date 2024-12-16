@@ -146,26 +146,27 @@ export class LessonsService {
         `No lesson course found for lesson with id "${id}".`,
       );
     }
+    await this.lessonCourseRepository.remove(lessonCourse.id);
+    // lessonCourse.status = StatusEnum.IN_ACTIVE;
+    // const lesson = await this.lessonRepository.findById(id);
+    // if (!lesson) {
+    //   throw new NotFoundException(
+    //     `No lesson found for lesson with id "${id}".`,
+    //   );
+    // }
+    // lesson.status = StatusEnum.IN_ACTIVE;
+    // await this.lessonRepository.save(lesson);
+    // await this.lessonCourseRepository.save(lessonCourse);
 
-    lessonCourse.status = StatusEnum.IN_ACTIVE;
-    const lesson = await this.lessonRepository.findById(id);
-    if (!lesson) {
-      throw new NotFoundException(
-        `No lesson found for lesson with id "${id}".`,
-      );
-    }
-    lesson.status = StatusEnum.IN_ACTIVE;
-    await this.lessonRepository.save(lesson);
-    await this.lessonCourseRepository.save(lessonCourse);
+    // const remainingLessons =
+    //   await this.lessonCourseRepository.findActiveLessonsByCourseId(
+    //     lessonCourse.course.id,
+    //   );
 
-    const remainingLessons =
-      await this.lessonCourseRepository.findActiveLessonsByCourseId(
-        lessonCourse.course.id,
-      );
-
-    for (let index = 0; index < remainingLessons.length; index++) {
-      remainingLessons[index].position = index + 1;
-      await this.lessonCourseRepository.save(remainingLessons[index]);
-    }
+    // for (let index = 0; index < remainingLessons.length; index++) {
+    //   remainingLessons[index].position = index + 1;
+    //   await this.lessonCourseRepository.save(remainingLessons[index]);
+    // }
+    return this.lessonRepository.remove(id);
   }
 }

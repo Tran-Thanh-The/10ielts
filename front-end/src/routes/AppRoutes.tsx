@@ -6,13 +6,17 @@ import Register from '@/features/auth/pages/register/Register';
 import Profile from '@/features/dashboard/features/profile/Profile';
 import { ROLE } from '@/utils/constants/constants';
 import Dashboard from '@/features/dashboard/Dashboard';
-import Practices from '@/features/dashboard/features/practices/Practices';
+import Practices from '@/features/dashboard/features/practices/features/Practices';
 import Chat from '@/features/dashboard/features/chat/Chat';
 import Payment from '@/features/public-pages/pages/payment/Payment';
 import UserManagement from '@/features/dashboard/features/user-management/UserManagement';
 import CourseRouter from '@/features/dashboard/features/courses/CourseRouter';
 import AppLoading from '@/components/app-loading/AppLoading';
 import PaymentSuccess from '@/features/public-pages/pages/payment/components/payment-success/PaymentSuccess';
+import PracticeRouter from '@/features/dashboard/features/practices/PracticeRouter';
+import Insights from '@/features/dashboard/features/insights/Insights';
+import InvoiceList from '@/features/dashboard/features/invoices/features/InvoiceList/InvoiceList';
+import InvoiceDetails from '@/features/dashboard/features/invoices/features/InvoiceDetails/InvoiceDetails';
 
 const Home = lazy(() => import('@/features/public-pages/pages/home/Home'));
 const Login = lazy(() => import('@/features/auth/pages/login/Login'));
@@ -78,8 +82,11 @@ function AppRoutes() {
           <Route path="" element={<Navigate to="courses" />} />
           <Route path="chat" element={<Chat />} />
           <Route path="courses/*" element={<CourseRouter />} />
-          <Route path="practices" element={<Practices />} />
+          <Route path="practices/*" element={<PracticeRouter />} />
           <Route path="user-management/*" element={<UserManagement />} />
+          <Route path="insights/*" element={<Insights />} />
+          <Route path="payments" element={<InvoiceList />} />
+          <Route path="payments/:id" element={<InvoiceDetails />} />
           <Route path="*" />
         </Route>
       </Routes>

@@ -15,6 +15,12 @@ export class AnswerRelationalRepository implements AnswerRepository {
     private readonly answerRepository: Repository<AnswerEntity>,
   ) {}
 
+  async findByQuestionId(questionId: string): Promise<NullableType<AnswerEntity[]>> {
+    return this.answerRepository.find({
+      where: { question: { id: questionId } },
+      relations: ['question'],
+    });
+  }
   async create(data: Answer): Promise<Answer> {
     const persistenceModel = AnswerMapper.toPersistence(data);
     const newEntity = await this.answerRepository.save(

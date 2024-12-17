@@ -7,8 +7,10 @@ export interface LessonResponse {
   totalSections?: number;
   stars?: number;
   totalStars?: number;
+  content?: string;
 }
 export interface LessonRequest {
+  id?: string;
   title?: string;
   content?: string;
   videoUrl?: File | null;

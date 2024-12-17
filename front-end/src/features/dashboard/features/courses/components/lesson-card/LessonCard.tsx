@@ -15,12 +15,14 @@ import { LessonResponse as Lesson } from '@/types/interface/Lesson';
 import RoleBasedComponent from '@/components/RoleBasedComponent';
 import { ROLE } from '@/utils/constants/constants';
 interface LessonCardProps {
+  index: number;
   lesson: Lesson;
   onMenuOpen: (event: React.MouseEvent<HTMLElement>, lessonId: string) => void;
   handRouterLessonDetail: (lessonId: string) => void;
 }
 
 const LessonCard: React.FC<LessonCardProps> = ({
+  index,
   lesson,
   onMenuOpen,
   handRouterLessonDetail,
@@ -28,7 +30,7 @@ const LessonCard: React.FC<LessonCardProps> = ({
   return (
     <Paper elevation={1} sx={{ mb: 2, p: 2 }}>
       <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={1.5}>
+        <Grid item xs={1}>
           <Box
             sx={{
               width: '50px',
@@ -43,11 +45,11 @@ const LessonCard: React.FC<LessonCardProps> = ({
               fontSize: '18px',
             }}
           >
-            {lesson.id}
+            {index + 1}
           </Box>
         </Grid>
 
-        <Grid item xs={7}>
+        <Grid item xs={7.5}>
           <Typography
             variant="subtitle1"
             sx={{ fontWeight: 'bold', fontSize: '16px', cursor: 'pointer' }}
@@ -55,8 +57,22 @@ const LessonCard: React.FC<LessonCardProps> = ({
           >
             {lesson.title}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          {/* <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             {lesson.sections}/{lesson.totalSections} Section
+          </Typography> */}
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              mt: 0.5,
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              wordWrap: 'break-word',
+              textWrap: 'nowrap',
+              maxWidth: '600px',
+            }}
+          >
+            {lesson.content}
           </Typography>
         </Grid>
 

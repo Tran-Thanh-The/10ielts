@@ -1,45 +1,42 @@
 import {
-  Controller,
-  Get,
-  Post,
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from "@/utils/dto/infinity-pagination-response.dto";
+import { infinityPagination } from "@/utils/infinity-pagination";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import {
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  InternalServerErrorException,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
   Query,
   Req,
-  NotFoundException,
-  InternalServerErrorException,
+  UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
-import { PracticeExercisesService } from "./practice-exercises.service";
-import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
-import { UpdatePracticeExerciseDto } from "./dto/update-practice-exercise.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
   ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
-  ApiQuery,
   ApiTags,
 } from "@nestjs/swagger";
+import { Roles } from "../../utils/decorators/roles.decorator";
+import { RoleEnum } from "../../common/enums/roles.enum";
+import { RolesGuard } from "../auth/guards/roles.guard";
 import { PracticeExercise } from "./domain/practice-exercise";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
+import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
 import { FindAllPracticeExercisesDto } from "./dto/find-all-practice-exercises.dto";
-import { RolesGuard } from "../roles/roles.guard";
-import { Roles } from "../roles/roles.decorator";
-import { RoleEnum } from "../roles/roles.enum";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
-import { StatusEnum } from "@/common/enums/status.enum";
-import { NullableType } from "@/utils/types/nullable.type";
+import { UpdatePracticeExerciseDto } from "./dto/update-practice-exercise.dto";
+import { PracticeExercisesService } from "./practice-exercises.service";
 
 @ApiTags("Practiceexercises")
 @ApiBearerAuth()
@@ -53,7 +50,6 @@ export class PracticeExercisesController {
     private readonly practiceExercisesService: PracticeExercisesService,
   ) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post()
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
@@ -80,7 +76,6 @@ export class PracticeExercisesController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(PracticeExercise),
@@ -105,7 +100,6 @@ export class PracticeExercisesController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -119,39 +113,7 @@ export class PracticeExercisesController {
     return this.practiceExercisesService.findOne(id);
   }
 
-  // @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
-  // @Get(":id/detail")
-  // @ApiQuery({
-  //   name: "order",
-  //   required: false,
-  //   enum: ["ASC", "DESC"],
-  //   description: "Order of questions by position (ASC or DESC)",
-  // })
-  // @ApiQuery({
-  //   name: "status",
-  //   required: false,
-  //   enum: StatusEnum,
-  //   description: "Status filter for questions",
-  // })
-  // async getDetail(
-  //   @Param("id") id: string,
-  //   @Query("page") page = 1,
-  //   @Query("limit") limit = 10,
-  //   @Query("order") order: "ASC" | "DESC" = "ASC",
-  //   @Query("status") status?: StatusEnum,
-  // ): Promise<NullableType<PracticeExercise>> {
-  //   if (limit > 50) {
-  //     limit = 50;
-  //   }
-  //   return this.practiceExercisesService.getPracticeExerciseDetail(id, {
-  //     page,
-  //     limit,
-  //     order,
-  //     status,
-  //   });
-  // }
-
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -162,13 +124,19 @@ export class PracticeExercisesController {
     type: PracticeExercise,
   })
   update(
+    @Req() req,
     @Param("id") id: string,
     @Body() updatePracticeExerciseDto: UpdatePracticeExerciseDto,
   ) {
-    return this.practiceExercisesService.update(id, updatePracticeExerciseDto);
+    const userId = req.user.id;
+    return this.practiceExercisesService.update(
+      userId,
+      id,
+      updatePracticeExerciseDto,
+    );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Delete(":id")
   @ApiParam({
     name: "id",

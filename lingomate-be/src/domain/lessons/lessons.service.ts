@@ -1,29 +1,26 @@
+import { StatusEnum } from "@/common/enums/status.enum";
+import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
+import { NullableType } from "@/utils/types/nullable.type";
+import { IPaginationOptions } from "@/utils/types/pagination-options";
 import {
   ConflictException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { CourseRepository } from "../courses/infrastructure/persistence/course.repository";
+import { LessonCourseRepository } from "../lesson-courses/infrastructure/persistence/lesson-course.repository";
+import { LessonCourseMapper } from "../lesson-courses/infrastructure/persistence/relational/mappers/lesson-course.mapper";
+import { Lesson } from "./domain/lesson";
 import { CreateLessonDto } from "./dto/create-lesson.dto";
 import { UpdateLessonDto } from "./dto/update-lesson.dto";
 import { LessonRepository } from "./infrastructure/persistence/lesson.repository";
-import { IPaginationOptions } from "@/utils/types/pagination-options";
-import { Lesson } from "./domain/lesson";
-import { LessonCourseRepository } from "../lesson-courses/infrastructure/persistence/lesson-course.repository";
-import { LessonCourseMapper } from "../lesson-courses/infrastructure/persistence/relational/mappers/lesson-course.mapper";
 import { LessonMapper } from "./infrastructure/persistence/relational/mappers/lesson.mapper";
-import { StatusEnum } from "@/common/enums/status.enum";
-import { CourseRepository } from "../courses/infrastructure/persistence/course.repository";
-import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
-import { UserLessonMapper } from "../user-lessons/infrastructure/persistence/relational/mappers/user-lesson.mapper";
-import { UserLessonRepository } from "../user-lessons/infrastructure/persistence/user-lesson.repository";
-import { NullableType } from "@/utils/types/nullable.type";
 
 @Injectable()
 export class LessonsService {
   constructor(
     private readonly lessonRepository: LessonRepository,
     private readonly lessonCourseRepository: LessonCourseRepository,
-    private readonly userLessonRepository: UserLessonRepository,
     private readonly courseRepository: CourseRepository,
     private readonly filesLocalService: FilesLocalService,
   ) {}
@@ -68,14 +65,6 @@ export class LessonsService {
         status: StatusEnum.ACTIVE,
       });
       await this.lessonCourseRepository.create(lessonCourse);
-
-      //Thêm vào bảng user_lesson: xác định ai là người thêm lesson
-      const userLesson = UserLessonMapper.toModel({
-        user_id: Number(userId),
-        lesson_id: savedLesson.id,
-        status: StatusEnum.ACTIVE,
-      });
-      await this.userLessonRepository.create(userLesson);
     }
 
     return savedLesson;
@@ -111,7 +100,7 @@ export class LessonsService {
       paginationOptions,
     });
   }
-  
+
   async getLessonDetail(
     id: Lesson["id"],
     paginationOptions: IPaginationOptions & {
@@ -126,15 +115,30 @@ export class LessonsService {
     return this.lessonRepository.findById(id);
   }
 
-  async update(id: Lesson["id"], updateLessonDto: UpdateLessonDto) {
+  async update(
+    id: Lesson["id"], 
+    updateLessonDto: UpdateLessonDto,
+    fileLesson?: Express.Multer.File
+  ) {
     const existingLesson = await this.lessonRepository.findById(id);
     if (!existingLesson) {
       throw new NotFoundException(`Lesson with id "${id}" not found.`);
     }
-
+  
+    if (fileLesson) {
+      if (existingLesson.file) {
+        // Tách rời file khỏi Lesson trước khi xóa
+        await this.lessonRepository.update(id, { file: null });
+        await this.filesLocalService.delete(existingLesson.file);
+      }
+  
+      const uploadedFile = await this.filesLocalService.create(fileLesson);
+      updateLessonDto.file = uploadedFile.file;
+    }
+  
     return this.lessonRepository.update(id, updateLessonDto);
   }
-
+  
   async remove(id: Lesson["id"]) {
     const lessonCourse = await this.lessonCourseRepository.findByLessonId(id);
     if (!lessonCourse) {
@@ -142,26 +146,27 @@ export class LessonsService {
         `No lesson course found for lesson with id "${id}".`,
       );
     }
+    await this.lessonCourseRepository.remove(lessonCourse.id);
+    // lessonCourse.status = StatusEnum.IN_ACTIVE;
+    // const lesson = await this.lessonRepository.findById(id);
+    // if (!lesson) {
+    //   throw new NotFoundException(
+    //     `No lesson found for lesson with id "${id}".`,
+    //   );
+    // }
+    // lesson.status = StatusEnum.IN_ACTIVE;
+    // await this.lessonRepository.save(lesson);
+    // await this.lessonCourseRepository.save(lessonCourse);
 
-    lessonCourse.status = StatusEnum.IN_ACTIVE;
-    const lesson = await this.lessonRepository.findById(id);
-    if (!lesson) {
-      throw new NotFoundException(
-        `No lesson found for lesson with id "${id}".`,
-      );
-    }
-    lesson.status = StatusEnum.IN_ACTIVE;
-    await this.lessonRepository.save(lesson);
-    await this.lessonCourseRepository.save(lessonCourse);
+    // const remainingLessons =
+    //   await this.lessonCourseRepository.findActiveLessonsByCourseId(
+    //     lessonCourse.course.id,
+    //   );
 
-    const remainingLessons =
-      await this.lessonCourseRepository.findActiveLessonsByCourseId(
-        lessonCourse.course.id,
-      );
-
-    for (let index = 0; index < remainingLessons.length; index++) {
-      remainingLessons[index].position = index + 1;
-      await this.lessonCourseRepository.save(remainingLessons[index]);
-    }
+    // for (let index = 0; index < remainingLessons.length; index++) {
+    //   remainingLessons[index].position = index + 1;
+    //   await this.lessonCourseRepository.save(remainingLessons[index]);
+    // }
+    return this.lessonRepository.remove(id);
   }
 }

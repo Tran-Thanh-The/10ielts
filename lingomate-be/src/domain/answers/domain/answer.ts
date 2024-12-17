@@ -2,7 +2,7 @@ import { AnswerTypesEnum } from "@/common/enums/answer.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
 import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
 import { FileType } from "@/files/domain/file";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class Answer {
   @ApiProperty({
@@ -41,4 +41,10 @@ export class Answer {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty({ type: Number })
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  updatedBy?: number | null;
 }

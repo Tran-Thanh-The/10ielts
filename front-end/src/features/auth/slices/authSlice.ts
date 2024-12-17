@@ -164,6 +164,10 @@ const authSlice = createSlice({
   },
 });
 
+export const selectIsStudentDashboard = (state: any) => {
+  return state.auth.user?.role?.name === 'User';
+};
+
 // Xuất ra các action và reducer
 export const { logout, setAuthData } = authSlice.actions;
 export default authSlice.reducer;

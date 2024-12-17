@@ -41,10 +41,10 @@ export class Question {
   })
   questionType: QuestionTypesEnum;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     enum: QuestionFileTypesEnum,
   })
-  fileType: QuestionFileTypesEnum;
+  fileType?: QuestionFileTypesEnum | null;
 
   @ApiPropertyOptional({
     type: () => LessonEntity,
@@ -71,6 +71,12 @@ export class Question {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty({ type: Number })
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  updatedBy?: number | null;
 
   @ApiProperty({ type: () => Answer })
   answers: Answer[];

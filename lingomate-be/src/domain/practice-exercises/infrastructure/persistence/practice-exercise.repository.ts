@@ -2,6 +2,7 @@ import { DeepPartial } from "@/utils/types/deep-partial.type";
 import { NullableType } from "@/utils/types/nullable.type";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { PracticeExercise } from "../../domain/practice-exercise";
+import { StatusEnum } from "@/common/enums/status.enum";
 
 export abstract class PracticeExerciseRepository {
   abstract create(
@@ -16,6 +17,14 @@ export abstract class PracticeExerciseRepository {
 
   abstract findById(
     id: PracticeExercise["id"],
+  ): Promise<NullableType<PracticeExercise>>;
+
+  abstract getPracticeExerciseDetail(
+    id: PracticeExercise["id"],
+    paginationOptions: IPaginationOptions & {
+      order: "ASC" | "DESC";
+      status?: StatusEnum;
+    },
   ): Promise<NullableType<PracticeExercise>>;
 
   abstract update(

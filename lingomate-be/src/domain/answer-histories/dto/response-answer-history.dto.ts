@@ -6,6 +6,13 @@ export class ResponseAnswerHistoryDto {
   @ApiProperty({ type: String })
   id: string;
 
+  @ApiProperty({ type: Number })
+  user_id: number;
+
+  @ApiPropertyOptional({ type: "jsonb"})
+  @IsOptional()
+  answers?: Record<string, any>;;
+
   @ApiPropertyOptional({ type: String })
   @IsString()
   @IsOptional()
@@ -23,11 +30,11 @@ export class ResponseAnswerHistoryDto {
 
   @ApiPropertyOptional({ type: Date })
   @IsOptional()
-  startedAt?: Date;
+  startedAt?: Date | null;
 
   @ApiPropertyOptional({ type: Date })
   @IsOptional()
-  completedAt?: Date;
+  completedAt?: Date | null;
 
   @ApiPropertyOptional({
     enum: StatusEnum,

@@ -23,6 +23,8 @@ import lessonApi from '@/api/lessonApi';
 import { LessonRequest } from '@/types/interface/Lesson';
 import Breadcrumb from '@/features/dashboard/components/breadcrumb/Breadcrumb';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import courseApi from '@/api/courseApi';
+import { getLessonDetailsByIdV2 } from '@/api/api';
 
 interface LessonApiRequest extends LessonRequest {
   append(name: string, value: string | Blob, fileName?: string): void;
@@ -34,7 +36,7 @@ const validationSchema = Yup.object().shape({
     .min(3, 'Title must be at least 3 characters')
     .required('Title is required'),
   content: Yup.string()
-    .min(10, 'Content must be at least 10 characters')
+    .min(1, 'Content must be at least 10 characters')
     .required('Content is required'),
   videoUrl: Yup.mixed().when('lessonType', {
     is: LessonTypes.Video,
@@ -68,11 +70,12 @@ const lessonTypes = [
 const CreateUpdateLesson = () => {
   const { idCourse, selectedLessonId } = useParams();
   const navigate = useNavigate();
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(Boolean(selectedLessonId));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lessonType, setLessonType] = useState<LessonTypes | ''>('');
   const [selectedFileName, setSelectedFileName] = useState<string>('');
+  const [course, setCourse] = useState<any>(null);
 
   const {
     control,
@@ -90,9 +93,33 @@ const CreateUpdateLesson = () => {
     },
   });
 
+  useEffect(() => {
+    courseApi.getCourseDetailsById(idCourse as string).then((res) => {
+      setCourse(res.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!selectedLessonId) return;
+
+    getLessonDetailsByIdV2(selectedLessonId).then((res) => {
+      const lesson = res.data;
+      setValue('title', lesson.title);
+      setValue('content', lesson.content);
+      setValue('lessonType', lesson.lessonType);
+      setLessonType(
+        lesson.lessonType
+          ? (lesson.lessonType as LessonTypes)
+          : LessonTypes.Video,
+      );
+    });
+  }, [selectedLessonId]);
+
   const selectedLessonType = watch('lessonType');
 
   const onSubmit = async (data: LessonRequest) => {
+    console.log(data);
+    // return;
     try {
       setIsLoading(true);
       setError(null);
@@ -102,17 +129,17 @@ const CreateUpdateLesson = () => {
       formData.append('content', data.content || '');
       formData.append('lessonType', data.lessonType || '');
       if (data.videoUrl) {
-        formData.append('videoUrl', data.videoUrl);
+        console.log('data.videoUrl', data.videoUrl);
+        formData.append('file', data.videoUrl);
       }
-
-      console.log(formData);
 
       if (isEditMode && selectedLessonId) {
         await lessonApi.updateLesson(selectedLessonId, formData);
+        navigate(`/dashboard/courses/${idCourse}/lesson/${selectedLessonId}`);
       } else {
-        await lessonApi.createLesson(formData, idCourse as string);
+        const newLesson = await lessonApi.createLesson(formData, idCourse as string);
+        navigate(`/dashboard/courses/${idCourse}/lesson/${newLesson.data?.id}`);
       }
-      navigate(`/dashboard/courses/${idCourse}`);
     } catch (err) {
       setError(
         isEditMode
@@ -140,11 +167,28 @@ const CreateUpdateLesson = () => {
           icon={<LibraryBooksIcon fontSize="small" />}
           onClick={() => navigate('/dashboard/courses')}
         />
-        <Breadcrumb label={'course?.name'} component="a" href="#" />
+        <Breadcrumb
+          label={course?.title}
+          component="a"
+          onClick={() => navigate(`/dashboard/courses/${idCourse}`)}
+        />
         <Breadcrumb label={'Tạo mới bài học'} component="a" href="#" />
       </Breadcrumbs>
 
-      <FeatureHeader title={isEditMode ? 'Cập nhật bài học' : 'Tạo bài học'} />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: '32px',
+        }}
+      >
+        <FeatureHeader title={isEditMode ? 'Cập nhật bài học' : 'Tạo bài học'}>
+          <Box>
+            <Button sx={{ textDecoration: "underline" }}>Xem bài học</Button>
+          </Box>
+        </FeatureHeader>
+      </Box>
 
       <Box
         component="form"
@@ -216,7 +260,8 @@ const CreateUpdateLesson = () => {
           )}
         />
 
-        {selectedLessonType === LessonTypes.Video && (
+        {(selectedLessonType === LessonTypes.Video ||
+          selectedLessonType === LessonTypes.Docs) && (
           <Controller
             name="videoUrl"
             control={control}
@@ -236,12 +281,15 @@ const CreateUpdateLesson = () => {
                     startIcon={<CloudUpload />}
                     sx={{ flexGrow: 1 }}
                   >
-                    {selectedFileName || 'Upload Video File'}
+                    {selectedFileName || 'Upload  File'}
                     <Input
                       type="file"
                       sx={{ display: 'none' }}
                       inputProps={{
-                        accept: 'video/mp4',
+                        accept:
+                          selectedLessonType === LessonTypes.Video
+                            ? 'video/mp4'
+                            : 'application/pdf',
                         'data-testid': 'video-upload',
                       }}
                       onChange={(e) => {

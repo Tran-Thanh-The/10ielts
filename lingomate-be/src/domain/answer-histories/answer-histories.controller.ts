@@ -1,17 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from "@/utils/dto/infinity-pagination-response.dto";
+import { infinityPagination } from "@/utils/infinity-pagination";
+import {
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
+  Req,
+  UseGuards,
 } from "@nestjs/common";
-import { AnswerHistoriesService } from "./answer-histories.service";
-import { CreateAnswerHistoryDto } from "./dto/create-answer-history.dto";
-import { UpdateAnswerHistoryDto } from "./dto/update-answer-history.dto";
+import { AuthGuard } from "@nestjs/passport";
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -19,21 +23,15 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger";
+import { AnswerHistoriesService } from "./answer-histories.service";
 import { AnswerHistory } from "./domain/answer-history";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
+import { CreateAnswerHistoryDto } from "./dto/create-answer-history.dto";
 import { FindAllAnswerHistoriesDto } from "./dto/find-all-answer-histories.dto";
-import { RolesGuard } from "../roles/roles.guard";
-import { RoleEnum } from "../roles/roles.enum";
-import { Roles } from "../roles/roles.decorator";
+import { UpdateAnswerHistoryDto } from "./dto/update-answer-history.dto";
 
 @ApiTags("Answerhistories")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@UseGuards(AuthGuard("jwt"))
 @Controller({
   path: "answer-histories",
   version: "1",
@@ -43,16 +41,15 @@ export class AnswerHistoriesController {
     private readonly answerHistoriesService: AnswerHistoriesService,
   ) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Post()
   @ApiCreatedResponse({
     type: AnswerHistory,
   })
-  create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto) {
-    return this.answerHistoriesService.create(createAnswerHistoryDto);
+  create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto,  @Req() req,) {
+    const userId = req.user.id;
+    return this.answerHistoriesService.create(userId,createAnswerHistoryDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(AnswerHistory),
@@ -77,7 +74,6 @@ export class AnswerHistoriesController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
   @ApiParam({
     name: "id",
@@ -91,7 +87,6 @@ export class AnswerHistoriesController {
     return this.answerHistoriesService.findOne(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -108,7 +103,6 @@ export class AnswerHistoriesController {
     return this.answerHistoriesService.update(id, updateAnswerHistoryDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Delete(":id")
   @ApiParam({
     name: "id",

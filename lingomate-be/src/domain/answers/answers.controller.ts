@@ -1,21 +1,30 @@
+import { PermissionEnum } from "@/common/enums/permissions.enum";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
 import {
-  Controller,
-  Get,
-  Post,
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from "@/utils/dto/infinity-pagination-response.dto";
+import { infinityPagination } from "@/utils/infinity-pagination";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import {
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
-  Query,
-  UseInterceptors,
-  UploadedFile,
+  Get,
   InternalServerErrorException,
   NotFoundException,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
-import { AnswersService } from "./answers.service";
-import { CreateAnswerDto } from "./dto/create-answer.dto";
-import { UpdateAnswerDto } from "./dto/update-answer.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
   ApiConsumes,
@@ -24,23 +33,15 @@ import {
   ApiParam,
   ApiTags,
 } from "@nestjs/swagger";
+import { AnswersService } from "./answers.service";
 import { Answer } from "./domain/answer";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
+import { CreateAnswerDto } from "./dto/create-answer.dto";
 import { FindAllAnswersDto } from "./dto/find-all-answers.dto";
-import { RolesGuard } from "../roles/roles.guard";
-import { RoleEnum } from "../roles/roles.enum";
-import { Roles } from "../roles/roles.decorator";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import { UpdateAnswerDto } from "./dto/update-answer.dto";
 
 @ApiTags("Answers")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"), RolesGuard)
+@UseGuards(AuthGuard("jwt"), PermissionGuard)
 @Controller({
   path: "answers",
   version: "1",
@@ -48,20 +49,23 @@ import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 export class AnswersController {
   constructor(private readonly answersService: AnswersService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Post(":questionId")
+  @Permissions(PermissionEnum.CREATE_ANSWER)
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: Answer,
   })
   async create(
+    @Req() req,
     @Param("questionId") questionId: string,
     @Body() createAnswerDto: CreateAnswerDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {
+      const userId = req.user.id;
       return await this.answersService.create(
+        userId,
         questionId,
         createAnswerDto,
         file,
@@ -76,8 +80,8 @@ export class AnswersController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get()
+  @Permissions(PermissionEnum.READ_ANSWER)
   @ApiOkResponse({
     type: InfinityPaginationResponse(Answer),
   })
@@ -101,8 +105,8 @@ export class AnswersController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.user)
   @Get(":id")
+  @Permissions(PermissionEnum.READ_ANSWER)
   @ApiParam({
     name: "id",
     type: String,
@@ -115,8 +119,9 @@ export class AnswersController {
     return this.answersService.findOne(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Patch(":id")
+  @Permissions(PermissionEnum.UPDATE_ANSWER)
+  @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiParam({
     name: "id",
     type: String,
@@ -125,12 +130,18 @@ export class AnswersController {
   @ApiOkResponse({
     type: Answer,
   })
-  update(@Param("id") id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
-    return this.answersService.update(id, updateAnswerDto);
+  update(
+    @Req() req,
+    @Param("id") id: string,
+    @Body() updateAnswerDto: UpdateAnswerDto,
+    @UploadedFile() file?: Express.Multer.File
+  ) {
+    const userId = req.user.id;
+    return this.answersService.update(userId, id, updateAnswerDto, file);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
   @Delete(":id")
+  @Permissions(PermissionEnum.DELETE_ANSWER)
   @ApiParam({
     name: "id",
     type: String,

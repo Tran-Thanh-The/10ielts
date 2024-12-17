@@ -19,7 +19,8 @@ export class AnswersService {
   ) {}
 
   async create(
-    questionId,
+    userId: number,
+    questionId: string,
     createAnswerDto: CreateAnswerDto,
     fileAnswer: Express.Multer.File,
   ) {
@@ -30,8 +31,8 @@ export class AnswersService {
         `Question not found for answer with ID ${questionId}`,
       );
     }
-
     const model = AnswerMapper.toModel(createAnswerDto);
+    model.createdBy = Number(userId);
     model.status = StatusEnum.ACTIVE;
     model.question = QuestionMapper.toPersistence(question);
     if (fileAnswer) {
@@ -58,8 +59,32 @@ export class AnswersService {
     return this.answerRepository.findById(id);
   }
 
-  update(id: Answer["id"], updateAnswerDto: UpdateAnswerDto) {
-    return this.answerRepository.update(id, updateAnswerDto);
+  async update(
+    userId: string,
+    id: Answer["id"],
+    updateAnswerDto: UpdateAnswerDto,
+    fileAnswer?: Express.Multer.File
+  ) {
+    const existingAnswer = await this.answerRepository.findById(id);
+    if (!existingAnswer) {
+      throw new NotFoundException(`Answer with id "${id}" not found.`);
+    }
+
+    if (fileAnswer) {
+      if (existingAnswer.file) {
+        // Tách rời file khỏi Answer trước khi xóa
+        await this.answerRepository.update(id, { file: null });
+        await this.filesLocalService.delete(existingAnswer.file);
+      }
+  
+      const uploadedFile = await this.filesLocalService.create(fileAnswer);
+      updateAnswerDto.file = uploadedFile.file;
+    }
+    const updatedData = {
+      ...updateAnswerDto,
+      updatedBy: Number(userId),
+    };
+    return this.answerRepository.update(id, updatedData);
   }
 
   remove(id: Answer["id"]) {

@@ -22,6 +22,7 @@ export class AnswerHistoryRelationalRepository
     const newEntity = await this.answerHistoryRepository.save(
       this.answerHistoryRepository.create(persistenceModel),
     );
+    
     return AnswerHistoryMapper.toDomain(newEntity);
   }
 
@@ -33,6 +34,10 @@ export class AnswerHistoryRelationalRepository
     const entities = await this.answerHistoryRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
+      relations: ["practice", "lesson"],
+      order: {
+        createdAt: "DESC",
+      },
     });
 
     return entities.map((entity) => AnswerHistoryMapper.toDomain(entity));
@@ -43,6 +48,18 @@ export class AnswerHistoryRelationalRepository
   ): Promise<NullableType<AnswerHistory>> {
     const entity = await this.answerHistoryRepository.findOne({
       where: { id },
+      relations: [
+        "practice",
+        "lesson",
+        "practice.questions",
+        "practice.questions.file",
+        "practice.questions.answers",
+        "practice.questions.answers.file",
+        "lesson.questions",
+        "lesson.questions.file",
+        "lesson.questions.answers",
+        "lesson.questions.answers.file",
+      ],
     });
 
     return entity ? AnswerHistoryMapper.toDomain(entity) : null;

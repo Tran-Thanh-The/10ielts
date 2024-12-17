@@ -10,6 +10,7 @@ import { QuestionEntity } from "../entities/question.entity";
 export class QuestionMapper {
   static toDomain(raw: QuestionEntity): Question {
     const domainEntity = new Question();
+    
     domainEntity.id = raw.id;
     domainEntity.title = raw.title;
     domainEntity.content = raw.content;
@@ -25,13 +26,17 @@ export class QuestionMapper {
     }
     domainEntity.time = raw.time;
     domainEntity.questionType = raw.questionType;
-    domainEntity.fileType = raw.fileType;
+    if(raw.fileType) {
+      domainEntity.fileType = raw.fileType;
+    }
     domainEntity.status = raw.status;
     domainEntity.lesson = raw.lesson;
     domainEntity.practice = raw.practice;
     domainEntity.category = raw.category;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
+    domainEntity.createdBy = raw.createdBy;
+    domainEntity.updatedBy = raw.updatedBy;
 
     return domainEntity;
   }
@@ -59,6 +64,8 @@ export class QuestionMapper {
     persistenceEntity.category = domainEntity.category;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
+    persistenceEntity.createdBy = domainEntity.createdBy;
+    persistenceEntity.updatedBy = domainEntity.updatedBy;
 
     return persistenceEntity;
   }
@@ -92,7 +99,9 @@ export class QuestionMapper {
     dto.explain = model.explain;
     dto.position = model.position;
     dto.questionType = model.questionType;
-    dto.fileType = model.fileType;
+    if (model.fileType) {
+      dto.fileType = model.fileType;
+    }
     if (model.file) {
       dto.file = model.file;
     }
@@ -100,7 +109,8 @@ export class QuestionMapper {
     dto.status = model.status;
     dto.createdAt = model.createdAt;
     dto.updatedAt = model.updatedAt;
-
+    dto.createdBy = model.createdBy;
+    dto.updatedBy = model.updatedBy;
     if (model.lesson) {
       dto.lesson_id = model.lesson.id;
     }

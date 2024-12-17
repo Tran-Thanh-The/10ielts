@@ -16,6 +16,8 @@ export abstract class UserLessonRepository {
 
   abstract findById(id: UserLesson["id"]): Promise<NullableType<UserLesson>>;
 
+  abstract findAllByUserId(userId: string): Promise<NullableType<UserLesson[]>> 
+
   abstract update(
     id: UserLesson["id"],
     payload: DeepPartial<UserLesson>,

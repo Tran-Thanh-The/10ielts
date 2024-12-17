@@ -35,4 +35,6 @@ export abstract class UserRepository {
   ): Promise<User | null>;
 
   abstract remove(id: User["id"]): Promise<void>;
+
+  abstract save(user: User): Promise<void>;
 }

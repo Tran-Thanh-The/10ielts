@@ -39,7 +39,13 @@ export class LessonRelationalRepository implements LessonRepository {
     const entities = await this.lessonRepository.find({
       skip: (page - 1) * limit,
       take: limit,
-      relations: ["questions", "questions.answers", "file"],
+      relations: [
+        "questions", 
+        "questions.file",
+        "questions.answers", 
+        "questions.answers.file",
+        "file"
+      ],
       order: {
         createdAt: "DESC",
       },
@@ -56,7 +62,7 @@ export class LessonRelationalRepository implements LessonRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<Lesson[]> {
     const { page, limit } = paginationOptions;
-  
+
     const entities = await this.lessonRepository
       .createQueryBuilder("lesson")
       .innerJoinAndSelect(
@@ -75,43 +81,9 @@ export class LessonRelationalRepository implements LessonRepository {
       .take(limit)
       .orderBy("lessonCourse.position", "ASC")
       .getMany();
-  
+
     return entities.map((entity) => LessonMapper.toDomain(entity));
   }
-  // async findAllWithPaginationAndCourseId({
-  //   courseId,
-  //   paginationOptions,
-  // }: {
-  //   courseId: string;
-  //   paginationOptions: IPaginationOptions;
-  // }): Promise<Lesson[]> {
-  //   const { page, limit } = paginationOptions;
-  
-  //   const entities = await this.lessonRepository
-  //     .createQueryBuilder("lesson")
-  //     .innerJoinAndSelect(
-  //       "lesson.lessonCourses",
-  //       "lessonCourse",
-  //       "lessonCourse.courseId = :courseId", 
-  //       { courseId }
-  //     )
-  //     .leftJoinAndSelect("lesson.file", "file")
-  //     .leftJoinAndSelect("lesson.questions", "question")
-  //     .leftJoinAndSelect("question.file", "questionFile")
-  //     .leftJoinAndSelect("question.answers", "answer")
-  //     .leftJoinAndSelect("question.category", "category")
-  //     .leftJoinAndSelect("answer.file", "answerFile")
-  //     .skip((page - 1) * limit)
-  //     .take(limit)
-  //     .orderBy("lessonCourse.position", "ASC")
-  //     .addOrderBy("question.position", "ASC")
-  //     .addOrderBy("answer.position", "ASC")
-  //     .getMany();
-  
-  //   return entities.map((entity) => LessonMapper.toDomain(entity));
-  // }
-  
-  
 
   async getLessonDetail(
     id: Lesson["id"],
@@ -126,7 +98,9 @@ export class LessonRelationalRepository implements LessonRepository {
       .createQueryBuilder("lesson")
       .leftJoinAndSelect("lesson.file", "file")
       .leftJoinAndSelect("lesson.questions", "question")
+      .leftJoinAndSelect("question.file", "questionFile")
       .leftJoinAndSelect("question.answers", "answer")
+      .leftJoinAndSelect("answer.file", "answerFile")
       .where("lesson.id = :id", { id })
       .orderBy("question.position", order)
       .skip((page - 1) * limit)
@@ -143,12 +117,18 @@ export class LessonRelationalRepository implements LessonRepository {
   async findById(id: Lesson["id"]): Promise<NullableType<Lesson>> {
     const entity = await this.lessonRepository.findOne({
       where: { id },
-      relations: ["questions", "questions.answers"],
+      relations: [
+        "questions", 
+        "questions.file",
+        "questions.answers", 
+        "questions.answers.file",
+        "file"
+      ],
     });
-
+  
     return entity ? LessonMapper.toDomain(entity) : null;
   }
-
+  
   async findByQuestionId(questionId: string): Promise<NullableType<Lesson>> {
     return await this.lessonRepository
       .createQueryBuilder("lesson")

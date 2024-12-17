@@ -27,10 +27,13 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllCategoriesDto } from "./dto/find-all-categories.dto";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
+import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @ApiTags("Categories")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"))
+@UseGuards(AuthGuard("jwt"), PermissionGuard)
 @Controller({
   path: "categories",
   version: "1",
@@ -39,6 +42,7 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @Permissions(PermissionEnum.CREATE_CATEGORY)
   @ApiCreatedResponse({
     type: Category,
   })
@@ -47,6 +51,7 @@ export class CategoriesController {
   }
 
   @Get()
+  // @Permissions(PermissionEnum.READ_CATEGORY)
   @ApiOkResponse({
     type: InfinityPaginationResponse(Category),
   })
@@ -71,6 +76,7 @@ export class CategoriesController {
   }
 
   @Get(":id")
+  @Permissions(PermissionEnum.READ_CATEGORY)
   @ApiParam({
     name: "id",
     type: String,
@@ -84,6 +90,7 @@ export class CategoriesController {
   }
 
   @Patch(":id")
+  @Permissions(PermissionEnum.UPDATE_CATEGORY)
   @ApiParam({
     name: "id",
     type: String,
@@ -100,6 +107,7 @@ export class CategoriesController {
   }
 
   @Delete(":id")
+  @Permissions(PermissionEnum.DELETE_CATEGORY)
   @ApiParam({
     name: "id",
     type: String,

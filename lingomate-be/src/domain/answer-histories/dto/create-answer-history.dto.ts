@@ -7,7 +7,16 @@ export class CreateAnswerHistoryDto {
   @ApiPropertyOptional({ type: String })
   @IsString()
   @IsOptional()
+  user_id?: number | null;
+
+  @ApiPropertyOptional({ type: String })
+  @IsString()
+  @IsOptional()
   practice_id?: string | null;
+  
+  @ApiPropertyOptional({ type: "jsonb"})
+  @IsOptional()
+  answers?: Record<string, any>;
 
   @ApiPropertyOptional({ type: String })
   @IsString()
@@ -21,11 +30,7 @@ export class CreateAnswerHistoryDto {
 
   @ApiPropertyOptional({ type: Date })
   @IsOptional()
-  startedAt?: Date;
-
-  @ApiPropertyOptional({ type: Date })
-  @IsOptional()
-  completedAt?: Date;
+  startedAt?: Date | null;
 
   @ApiPropertyOptional({ enum: StatusEnum })
   @IsOptional()

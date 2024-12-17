@@ -4,7 +4,7 @@
 		"name": "Lingomate",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27048953",
-		"_collection_link": "https://restless-star-284637.postman.co/workspace/Team-Workspace~f7b00c24-6202-49bd-8c42-3526b8e9896d/collection/27048953-31a1f4f4-4e5f-4741-ba7f-b8a3419dd035?action=share&source=collection_link&creator=27048953"
+		"_collection_link": "https://restless-star-284637.postman.co/workspace/f7b00c24-6202-49bd-8c42-3526b8e9896d/collection/27048953-31a1f4f4-4e5f-4741-ba7f-b8a3419dd035?action=share&source=collection_link&creator=27048953"
 	},
 	"item": [
 		{
@@ -14,7 +14,7 @@
 					"name": "token",
 					"item": [
 						{
-							"name": "New Request",
+							"name": "Refresh token",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -56,7 +56,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"admin1@gmail.comm\",\r\n  \"password\": \"password\",\r\n  \"confirmPassword\": \"password\",\r\n  \"fullName\": \"Tien\",\r\n  \"dob\": \"2002-02-10\",\r\n  \"role\": {\r\n    \"id\": 1\r\n  }\r\n}",
+							"raw": "{\r\n  \"email\": \"admin2@gmail.comm\",\r\n  \"password\": \"password\",\r\n  \"confirmPassword\": \"password\",\r\n  \"fullName\": \"Tien\",\r\n  \"dob\": \"2002-02-10\",\r\n  \"role\": {\r\n    \"id\": 2\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -122,12 +122,34 @@
 				},
 				{
 					"name": "Login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"tien226anh@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
+							"raw": "{\r\n  \"email\": \"teacher1@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -301,7 +323,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -318,22 +340,22 @@
 								},
 								{
 									"key": "name",
-									"value": "English 6",
+									"value": "English 3",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "Course 6",
+									"value": "Course 3",
 									"type": "text"
 								},
 								{
 									"key": "category_id",
-									"value": "2d2e6a02-0acd-4c1d-add4-187e2c279ab8",
+									"value": "bbbc16a2-c45e-414e-8f79-54ef24e27882",
 									"type": "text"
 								},
 								{
 									"key": "price",
-									"value": "200000",
+									"value": "100000",
 									"type": "text"
 								}
 							]
@@ -355,21 +377,33 @@
 				},
 				{
 					"name": "getAllcourse",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODcsImlhdCI6MTczMTEyNTEyOCwiZXhwIjoxNzMxMTI2OTI4fQ.faAhCTA74Mgg_HOV2WWH-vSTCYy0z1pRWpgP4vxAk7I",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/list?status=ACTIVE&userId=3",
+							"raw": "{{HOST}}/api/v1/courses/list?userId=4",
 							"host": [
 								"{{HOST}}"
 							],
@@ -380,10 +414,6 @@
 								"list"
 							],
 							"query": [
-								{
-									"key": "status",
-									"value": "ACTIVE"
-								},
 								{
 									"key": "invoiceId",
 									"value": "",
@@ -416,12 +446,17 @@
 								},
 								{
 									"key": "isMyCourse",
-									"value": "false",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "ACTIVE",
 									"disabled": true
 								},
 								{
 									"key": "userId",
-									"value": "3"
+									"value": "4"
 								}
 							]
 						}
@@ -436,7 +471,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MzMsImlhdCI6MTcyOTYxMTU2NSwiZXhwIjoxNzI5NjEzMzY1fQ.7lExQse9gFUh4NP4yVc7uTZBaAu7w7e1f9qp-9lWXeA",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -444,7 +479,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/4cbaef6c-3508-4fa4-aabd-e4ca86bf248d",
+							"raw": "{{HOST}}/api/v1/courses/87c8c076-edd8-45fd-b91b-94a73e100cc8",
 							"host": [
 								"{{HOST}}"
 							],
@@ -452,7 +487,7 @@
 								"api",
 								"v1",
 								"courses",
-								"4cbaef6c-3508-4fa4-aabd-e4ca86bf248d"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							]
 						}
 					},
@@ -466,7 +501,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -474,7 +509,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/a2a8bea1-93e8-41bc-b654-9c4653c7f1f0/details",
+							"raw": "{{HOST}}/api/v1/courses/87c8c076-edd8-45fd-b91b-94a73e100cc8",
 							"host": [
 								"{{HOST}}"
 							],
@@ -482,8 +517,7 @@
 								"api",
 								"v1",
 								"courses",
-								"a2a8bea1-93e8-41bc-b654-9c4653c7f1f0",
-								"details"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							]
 						}
 					},
@@ -497,7 +531,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NTUsImlhdCI6MTcyOTk2MjkzNCwiZXhwIjoxNzI5OTY0NzM0fQ.FmzTrSbZPxmRiU11d3suElCiIUMqoN-RhhwmHI-hS84",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -505,16 +539,22 @@
 						"method": "PATCH",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/OneDrive/Pictures/ảnh bìa sách/bg.jpg"
+								},
+								{
+									"key": "status",
+									"value": "IN_ACTIVE",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/744c8eec-e38c-4cbf-a043-1a9b779f844c",
+							"raw": "{{HOST}}/api/v1/courses/87c8c076-edd8-45fd-b91b-94a73e100cc8",
 							"host": [
 								"{{HOST}}"
 							],
@@ -522,7 +562,7 @@
 								"api",
 								"v1",
 								"courses",
-								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							]
 						}
 					},
@@ -536,7 +576,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTEsImlhdCI6MTcyOTI0NTQzNSwiZXhwIjoxNzI5MjQ3MjM1fQ.zH_a45UILktmlZQqNGXVYnuTy-3G6quHSW9DvnxTA18",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -569,7 +609,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MTMsImlhdCI6MTcyOTI2MzIyMywiZXhwIjoxNzI5MjY1MDIzfQ.rnRfKDqyT36yFS9QyuWzHBiYEZj9fDnVVqqd0euW1o0",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -586,7 +626,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/list?userId=2&invoiceId=5",
+							"raw": "{{HOST}}/api/v1/courses/list?userId=1&invoiceId=5",
 							"host": [
 								"{{HOST}}"
 							],
@@ -599,7 +639,7 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "2"
+									"value": "1"
 								},
 								{
 									"key": "invoiceId",
@@ -623,7 +663,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NywiaWF0IjoxNzI5NzUyMDExLCJleHAiOjE3Mjk3NTM4MTF9.gc77fOxIS79gBA29RZglRwG-k83Ycwd6kXhTLB5u3Fg",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -667,7 +707,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -680,11 +720,11 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Program Files/Oracle/VirtualBox/doc/UserManual.pdf"
+									"src": "postman-cloud:///1ef91c79-fd30-41a0-9fd4-71091a958ae9"
 								},
 								{
 									"key": "title",
-									"value": "Lesson 4",
+									"value": "Lesson 1",
 									"type": "text"
 								},
 								{
@@ -717,7 +757,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/744c8eec-e38c-4cbf-a043-1a9b779f844c",
+							"raw": "{{HOST}}/api/v1/lessons/87c8c076-edd8-45fd-b91b-94a73e100cc8",
 							"host": [
 								"{{HOST}}"
 							],
@@ -725,7 +765,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							]
 						}
 					},
@@ -742,7 +782,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -785,7 +825,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MzMsImlhdCI6MTcyOTYxMTU2NSwiZXhwIjoxNzI5NjEzMzY1fQ.7lExQse9gFUh4NP4yVc7uTZBaAu7w7e1f9qp-9lWXeA",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -815,7 +855,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzYsImlhdCI6MTczMTA3NDE4NSwiZXhwIjoxNzMxMDc1OTg1fQ.WuWJeeumPAcGWfAdSoGcSiuZmRaDFKeGvYoDEy7LEJo",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -823,7 +863,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/9c8c2ba9-d39a-4c8d-be55-9dae3b706ecc",
+							"raw": "{{HOST}}/api/v1/lessons/598f1386-9cf8-4d45-8910-d5e763db611d",
 							"host": [
 								"{{HOST}}"
 							],
@@ -831,7 +871,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"9c8c2ba9-d39a-4c8d-be55-9dae3b706ecc"
+								"598f1386-9cf8-4d45-8910-d5e763db611d"
 							]
 						}
 					},
@@ -845,7 +885,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODksImlhdCI6MTczMTEyODc5MCwiZXhwIjoxNzMxMTMwNTkwfQ.xveHFNivMm0l--qUsFO35HrkSh5Z6grOfRt5-1GGE6k",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -853,7 +893,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/course/744c8eec-e38c-4cbf-a043-1a9b779f844c?page=1&limit=10",
+							"raw": "{{HOST}}/api/v1/lessons/course/87c8c076-edd8-45fd-b91b-94a73e100cc8?page=1&limit=10",
 							"host": [
 								"{{HOST}}"
 							],
@@ -862,7 +902,7 @@
 								"v1",
 								"lessons",
 								"course",
-								"744c8eec-e38c-4cbf-a043-1a9b779f844c"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							],
 							"query": [
 								{
@@ -879,14 +919,14 @@
 					"response": []
 				},
 				{
-					"name": "getDetails",
+					"name": "getDetails + kèm phân trang + sắp xếp",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -894,7 +934,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/5fbe6012-aac9-45b4-89eb-f7a75b1e9d24/detail?page=1&limit=10&order=DESC&status=ACTIVE",
+							"raw": "{{HOST}}/api/v1/lessons/598f1386-9cf8-4d45-8910-d5e763db611d/detail?page=1&limit=10&order=DESC",
 							"host": [
 								"{{HOST}}"
 							],
@@ -902,7 +942,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
+								"598f1386-9cf8-4d45-8910-d5e763db611d",
 								"detail"
 							],
 							"query": [
@@ -920,8 +960,49 @@
 								},
 								{
 									"key": "status",
-									"value": "ACTIVE"
+									"value": "ACTIVE",
+									"disabled": true
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update lesson",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/E:/OneDrive/Pictures/ảnh bìa sách/cart.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/lessons/598f1386-9cf8-4d45-8910-d5e763db611d",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"lessons",
+								"598f1386-9cf8-4d45-8910-d5e763db611d"
 							]
 						}
 					},
@@ -933,14 +1014,14 @@
 			"name": "file",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "upload file",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6MjksImlhdCI6MTcyOTc4MTk2MCwiZXhwIjoxNzI5NzgzNzYwfQ.IfR-yHFJsWLNcVaDbjNPxsogrqYO591BMS1ZnPZqQsk",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -978,14 +1059,14 @@
 			"name": "user-course",
 			"item": [
 				{
-					"name": "create user-course",
+					"name": "create user-course// Không gọi // gọi tự động rồi",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MSwiaWF0IjoxNzMwMDMyNzc1LCJleHAiOjE3MzAwMzQ1NzV9.mI_kVruOvDDK-6XEwjPney0KU5YsLVThpF1mvqU4Dvo",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1016,22 +1097,31 @@
 					"response": []
 				},
 				{
-					"name": "update current-lesson",
+					"name": "update current-lesson: id kia la userId",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6eyJpZCI6MywibmFtZSI6IlVzZXIiLCJfX2VudGl0eSI6IlJvbGVFbnRpdHkifSwic2Vzc2lvbklkIjo2MSwiaWF0IjoxNzMwMDMyNzc1LCJleHAiOjE3MzAwMzQ1NzV9.mI_kVruOvDDK-6XEwjPney0KU5YsLVThpF1mvqU4Dvo",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
 						},
-						"method": "GET",
+						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentLesson\": \"598f1386-9cf8-4d45-8910-d5e763db611d\",\r\n    \"lastPosition\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/user-courses/a8232e26-97fb-4fb3-8d55-e3f534bb7411/current-lesson",
+							"raw": "{{HOST}}/api/v1/user-courses/4/current-lesson",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1039,7 +1129,7 @@
 								"api",
 								"v1",
 								"user-courses",
-								"a8232e26-97fb-4fb3-8d55-e3f534bb7411",
+								"4",
 								"current-lesson"
 							]
 						}
@@ -1059,7 +1149,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODUsImlhdCI6MTczMTA5MzAzNCwiZXhwIjoxNzMxMDk0ODM0fQ.XMbu_Fiwh_okar5sYjTISjgT-gWL_EnBwzWlgjAPlqY",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1076,7 +1166,7 @@
 								},
 								{
 									"key": "title",
-									"value": "Câu hỏi 1",
+									"value": "Câu hỏi 2",
 									"type": "text"
 								},
 								{
@@ -1104,7 +1194,7 @@
 								},
 								{
 									"key": "fileType",
-									"value": "AUDIO",
+									"value": "IMAGE",
 									"type": "text"
 								},
 								{
@@ -1120,21 +1210,15 @@
 									"disabled": true
 								},
 								{
-									"key": "practiceId",
-									"value": "",
+									"key": "lesson_id",
+									"value": "598f1386-9cf8-4d45-8910-d5e763db611d",
 									"type": "text",
 									"disabled": true
-								},
-								{
-									"key": "lesson_id",
-									"value": "5fbe6012-aac9-45b4-89eb-f7a75b1e9d24",
-									"type": "text"
 								},
 								{
 									"key": "practice_id",
-									"value": "11ca653b-d7ec-4ecc-a103-c2128e1a41d4",
-									"type": "text",
-									"disabled": true
+									"value": "710898f2-011b-4080-9abf-78b8e06807df",
+									"type": "text"
 								}
 							]
 						},
@@ -1163,7 +1247,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1206,7 +1290,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1214,7 +1298,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/questions/9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b",
+							"raw": "{{HOST}}/api/v1/questions/16a24df1-322a-4b52-8586-d94a3232e701",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1222,7 +1306,7 @@
 								"api",
 								"v1",
 								"questions",
-								"9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b"
+								"16a24df1-322a-4b52-8586-d94a3232e701"
 							]
 						}
 					},
@@ -1236,7 +1320,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODMsImlhdCI6MTczMTA4ODY0NywiZXhwIjoxNzMxMDkwNDQ3fQ.RBbS7gRjbAiI-GjsZKrtXkpQDl-OJXO6MGxvBxQGUb4",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1266,7 +1350,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzEsImlhdCI6MTczMDEwNjQzMiwiZXhwIjoxNzMwMTA4MjMyfQ.23_7bq6Jejkv6DU9cuBUzBJ8K44M61eU0Wj4BKvShCE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1274,13 +1358,20 @@
 						"method": "PATCH",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Câu hỏi 1\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": "Cau hoi 1",
+									"type": "text"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{HOST}}/api/v1/questions/9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b",
@@ -1292,6 +1383,18 @@
 								"v1",
 								"questions",
 								"9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b"
+							],
+							"query": [
+								{
+									"key": "file",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": null,
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -1310,7 +1413,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1323,7 +1426,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/C:/Program Files/Oracle/VirtualBox/doc/UserManual.pdf"
+									"src": "postman-cloud:///1ef91c79-fcfc-4d50-9440-29516ab65eee"
 								},
 								{
 									"key": "content",
@@ -1338,12 +1441,13 @@
 								{
 									"key": "isCorrect",
 									"value": "true",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/answers/9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b",
+							"raw": "{{HOST}}/api/v1/answers/c5283aa4-3642-4183-b5c2-c032b18abd65",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1351,7 +1455,7 @@
 								"api",
 								"v1",
 								"answers",
-								"9a39f7cf-740c-48d9-97e5-9ee3b8dbc37b"
+								"c5283aa4-3642-4183-b5c2-c032b18abd65"
 							]
 						}
 					},
@@ -1365,7 +1469,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1395,7 +1499,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1424,7 +1528,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzIsImlhdCI6MTczMDEwOTcxNSwiZXhwIjoxNzMwMTExNTE1fQ.WdNV0Y7mpI9hLIdzPEDAP4AmxrxKuHiEnmNroaeZs_E",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1459,7 +1563,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1468,7 +1572,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"test2@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"fullName\": \"Vũ Hoàng Tiến\",\r\n    \"dob\": \"2002/12/21\",\r\n    \"role\": {\r\n    \"id\": 1\r\n  }\r\n}",
+							"raw": "{   \r\n    \"email\": \"teacher2@gmail.com\",\r\n    \"password\": \"string\",\r\n    \"fullName\": \"Vũ Hoàng Tiến\",\r\n    \"dob\": \"2002/12/21\",\r\n    \"role\": {\r\n    \"id\": 4\r\n  }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1497,7 +1601,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1506,7 +1610,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": " {\r\n    \"role\": {\r\n        \"id\": 2,\r\n        \"name\": \"staff\"\r\n    }\r\n }",
+							"raw": " {\r\n    \"email\": \"user@gmail.com\",\r\n    \"role\": {\r\n        \"id\": 3\r\n    }\r\n }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1514,7 +1618,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/users/28",
+							"raw": "{{HOST}}/api/v1/users/32",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1522,7 +1626,7 @@
 								"api",
 								"v1",
 								"users",
-								"28"
+								"32"
 							]
 						}
 					},
@@ -1536,7 +1640,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1544,7 +1648,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/users/28",
+							"raw": "{{HOST}}/api/v1/users/31",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1552,7 +1656,7 @@
 								"api",
 								"v1",
 								"users",
-								"28"
+								"31"
 							]
 						}
 					},
@@ -1569,7 +1673,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODAsImlhdCI6MTczMTA4MjI5OSwiZXhwIjoxNzMxMDg0MDk5fQ.UBIk4Q1ztIJ-rC_Rd9qLo_gGaSgVNdfcClaLeywy0-k",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1625,7 +1729,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6NzksImlhdCI6MTczMTA3OTQ0NywiZXhwIjoxNzMxMDgxMjQ3fQ.sOAfRto4Xe0pXXKG3OP6fkcSjQ-ulJGwEgZ4XB3Vk_s",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1633,7 +1737,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/users/28",
+							"raw": "{{HOST}}/api/v1/users/32",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1641,7 +1745,7 @@
 								"api",
 								"v1",
 								"users",
-								"28"
+								"32"
 							]
 						}
 					},
@@ -1685,7 +1789,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODgsImlhdCI6MTczMTEyNjUyNiwiZXhwIjoxNzMxMTI4MzI2fQ.uQD_SDGrYXFRPd_yq_nljv9ESRNc36s2eP_au3Ql9w4",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1697,7 +1801,7 @@
 							"formdata": [
 								{
 									"key": "title",
-									"value": "Bài thực hành 4",
+									"value": "Bài thực hành 1",
 									"type": "text"
 								},
 								{
@@ -1757,7 +1861,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1765,7 +1869,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises/11ca653b-d7ec-4ecc-a103-c2128e1a41d4",
+							"raw": "{{HOST}}/api/v1/practice-exercises/710898f2-011b-4080-9abf-78b8e06807df",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1773,7 +1877,7 @@
 								"api",
 								"v1",
 								"practice-exercises",
-								"11ca653b-d7ec-4ecc-a103-c2128e1a41d4"
+								"710898f2-011b-4080-9abf-78b8e06807df"
 							]
 						}
 					},
@@ -1787,7 +1891,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6eyJpZCI6MSwibmFtZSI6IkFkbWluIiwiX19lbnRpdHkiOiJSb2xlRW50aXR5In0sInNlc3Npb25JZCI6ODYsImlhdCI6MTczMTEyMzIyOCwiZXhwIjoxNzMxMTI1MDI4fQ.YsVIlErLvdSP72Q6I5rmAftlJsv7NIvgcYd1IpGDdEE",
+									"value": "{{accessToken}}",
 									"type": "string"
 								}
 							]
@@ -1795,7 +1899,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises?page=1&limit=1",
+							"raw": "{{HOST}}/api/v1/practice-exercises?page=1&limit=10",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1811,7 +1915,7 @@
 								},
 								{
 									"key": "limit",
-									"value": "1"
+									"value": "10"
 								}
 							]
 						}
@@ -1821,10 +1925,20 @@
 				{
 					"name": "get details",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/practice-exercises/",
+							"raw": "{{HOST}}/api/v1/practice-exercises/710898f2-011b-4080-9abf-78b8e06807df",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1832,11 +1946,525 @@
 								"api",
 								"v1",
 								"practice-exercises",
-								""
+								"710898f2-011b-4080-9abf-78b8e06807df"
 							]
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Bai thuc hanh",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/practice-exercises/710898f2-011b-4080-9abf-78b8e06807df",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"practice-exercises",
+								"710898f2-011b-4080-9abf-78b8e06807df"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/practice-exercises/:710898f2-011b-4080-9abf-78b8e06807df",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"practice-exercises",
+								":710898f2-011b-4080-9abf-78b8e06807df"
+							],
+							"variable": [
+								{
+									"key": "710898f2-011b-4080-9abf-78b8e06807df",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "role",
+			"item": [
+				{
+					"name": "Create roie",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Customer care\",\r\n    \"permissions\": [\r\n        \"role:create\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/roles",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"CustomerCare\",\r\n    \"permissions\": [\r\n        \"user:create\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/roles/5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/roles",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get role detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/roles/5",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"roles",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ACTION BY USER",
+			"item": [
+				{
+					"name": "update user lesson : isCompleted",
+					"item": [
+						{
+							"name": "user-lesson",
+							"item": [
+								{
+									"name": "find all",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{HOST}}/api/v1/user-lessons",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"user-lessons"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "find al by user id",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{accessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{HOST}}/api/v1/user-lessons/4",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"user-lessons",
+												"4"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Xác nhận hoàn thành bài học",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "//Xác nhận hoàn thành bài học\r\n{\r\n    \"user_id\": 5,\r\n    \"lesson_id\": \"598f1386-9cf8-4d45-8910-d5e763db611d\",\r\n    \"isComleted\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/user-lessons",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"user-lessons"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "answer-history",
+					"item": [
+						{
+							"name": "Nộp bài: post answer_history",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"practice_id\": \"710898f2-011b-4080-9abf-78b8e06807df\",\r\n//   \"lesson_id\": \"67890\",\r\n  \"totalScore\": 92.5,\r\n  \"startedAt\": \"2024-12-16T08:00:00Z\",\r\n//   \"status\": \"ACTIVE\",\r\n  \"answers\": [\r\n    {\r\n      \"questionId\": \"q1\",\r\n      \"answerId\": \"a1\",\r\n      \"answerPick\": \"A\"\r\n    },\r\n    {\r\n      \"questionId\": \"q2\",\r\n      \"answerId\": \"a2\",\r\n      \"answerPick\": \"A\"\r\n    },\r\n    {\r\n      \"questionId\": \"q3\",\r\n      \"answerPick\": \"C\"\r\n    }\r\n  ]\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories?pages=1&&limit=10",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories"
+									],
+									"query": [
+										{
+											"key": "pages",
+											"value": "1"
+										},
+										{
+											"key": null,
+											"value": null
+										},
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "find one",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories/4d391410-9448-4437-8eea-01eed0df5342",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories",
+										"4d391410-9448-4437-8eea-01eed0df5342"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"totalScore\":9.5\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories/4d391410-9448-4437-8eea-01eed0df5342",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories",
+										"4d391410-9448-4437-8eea-01eed0df5342"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{HOST}}/api/v1/answer-histories/4d391410-9448-4437-8eea-01eed0df5342",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"answer-histories",
+										"4d391410-9448-4437-8eea-01eed0df5342"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}

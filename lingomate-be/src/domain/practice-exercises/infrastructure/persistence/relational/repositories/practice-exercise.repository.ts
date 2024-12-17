@@ -34,7 +34,12 @@ export class PracticeExerciseRelationalRepository
     const entities = await this.practiceExerciseRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
-      relations: ["questions", "questions.answers"],
+      relations: [
+        "questions",
+        "questions.file",
+        "questions.answers",
+        "questions.answers.file",
+      ],
       order: {
         createdAt: "DESC",
       },
@@ -48,6 +53,12 @@ export class PracticeExerciseRelationalRepository
   ): Promise<NullableType<PracticeExercise>> {
     const entity = await this.practiceExerciseRepository.findOne({
       where: { id },
+      relations: [
+        "questions",
+        "questions.file",
+        "questions.answers",
+        "questions.answers.file",
+      ],
     });
 
     return entity ? PracticeExerciseMapper.toDomain(entity) : null;
@@ -81,7 +92,7 @@ export class PracticeExerciseRelationalRepository
     queryBuilder
       .orderBy("question.position", order)
       .addOrderBy("answer.position", order);
-      
+
     const entity = await queryBuilder.getOne();
     return entity ? PracticeExerciseMapper.toDomain(entity) : null;
   }

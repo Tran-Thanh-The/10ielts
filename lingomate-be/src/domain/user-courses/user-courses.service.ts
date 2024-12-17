@@ -35,9 +35,9 @@ export class UserCoursesService {
 
   async updateCurrentLesson(
     updateCurrentLessonDto: UpdateCurrentLessonDto,
-    userCourseId: string,
+    userId: string,
   ) {
-    const userCourse = await this.userCourseRepository.findById(userCourseId);
+    const userCourse = await this.userCourseRepository.findUserCourseByUserId(userId);
 
     if (!userCourse) {
       throw new NotFoundException("User course not found");
@@ -45,7 +45,6 @@ export class UserCoursesService {
 
     userCourse.currentLesson = updateCurrentLessonDto.currentLesson;
     userCourse.lastPosition = updateCurrentLessonDto.lastPosition;
-
     await this.userCourseRepository.save(userCourse);
     return UserCourseMapper.toDto(userCourse);
   }

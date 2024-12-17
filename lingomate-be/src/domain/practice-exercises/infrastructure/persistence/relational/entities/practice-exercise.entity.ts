@@ -1,6 +1,7 @@
 import { DifficultyEnum, PracticeTypeEnum } from "@/common/enums/practice.enum";
 import { StatusEnum } from "@/common/enums/status.enum";
 import { AnswerHistoryEntity } from "@/domain/answer-histories/infrastructure/persistence/relational/entities/answer-history.entity";
+import { InvoiceProductEntity } from "@/domain/invoice-products/infrastructure/persistence/relational/entities/invoice-product.entity";
 import { QuestionEntity } from "@/domain/questions/infrastructure/persistence/relational/entities/question.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
@@ -8,14 +9,13 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
-import { InvoiceProductEntity } from "@/domain/invoice-products/infrastructure/persistence/relational/entities/invoice-product.entity";
 
 @Entity({
   name: "practice_exercise",
@@ -46,7 +46,7 @@ export class PracticeExerciseEntity extends EntityRelationalHelper {
     () => AnswerHistoryEntity,
     (answerHistory) => answerHistory.practice,
   )
-  answerHistory: AnswerHistoryEntity[];
+  answerHistories: AnswerHistoryEntity[];
 
   @ApiProperty({ type: String })
   @Column({ type: String, nullable: true })
@@ -117,4 +117,16 @@ export class PracticeExerciseEntity extends EntityRelationalHelper {
   @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ApiProperty()
+  @DeleteDateColumn()
+  deletedAt: Date;
+
+  @ApiProperty({ type: Number })
+  @Column({ type: Number, nullable: true })
+  createdBy: number;
+
+  @ApiPropertyOptional({ type: Number })
+  @Column({ type: Number, nullable: true })
+  updatedBy?: number | null;
 }

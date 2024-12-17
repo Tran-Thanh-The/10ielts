@@ -1,12 +1,10 @@
+import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { PracticeExercise } from "./domain/practice-exercise";
 import { CreatePracticeExerciseDto } from "./dto/create-practice-exercise.dto";
 import { UpdatePracticeExerciseDto } from "./dto/update-practice-exercise.dto";
 import { PracticeExerciseRepository } from "./infrastructure/persistence/practice-exercise.repository";
-import { IPaginationOptions } from "@/utils/types/pagination-options";
-import { PracticeExercise } from "./domain/practice-exercise";
 import { PracticeExerciseMapper } from "./infrastructure/persistence/relational/mappers/practice-exercise.mapper";
-import { StatusEnum } from "@/common/enums/status.enum";
-import { NullableType } from "@/utils/types/nullable.type";
 
 @Injectable()
 export class PracticeExercisesService {
@@ -23,6 +21,7 @@ export class PracticeExercisesService {
       createPracticeExerciseDto.price = 0;
     }
     const model = PracticeExerciseMapper.toModel(createPracticeExerciseDto);
+    model.createdBy = Number(userId);
     const savedPracticeExercise =
       await this.practiceExerciseRepository.create(model);
     return savedPracticeExercise;
@@ -41,21 +40,12 @@ export class PracticeExercisesService {
     });
   }
 
-  // async getPracticeExerciseDetail(
-  //   id: PracticeExercise["id"],
-  //   paginationOptions: IPaginationOptions & {
-  //     order: "ASC" | "DESC";
-  //     status?: StatusEnum;
-  //   },
-  // ): Promise<NullableType<PracticeExercise>> {
-  //   return this.practiceExerciseRepository.getPracticeExerciseDetail(id, paginationOptions);
-  // }
-
   findOne(id: PracticeExercise["id"]) {
     return this.practiceExerciseRepository.findById(id);
   }
 
   async update(
+    userId: string,
     id: PracticeExercise["id"],
     updatePracticeExerciseDto: UpdatePracticeExerciseDto,
   ) {
@@ -63,10 +53,11 @@ export class PracticeExercisesService {
     if (!existingPractice) {
       throw new NotFoundException(`Practice with id "${id}" not found.`);
     }
-    return this.practiceExerciseRepository.update(
-      id,
-      updatePracticeExerciseDto,
-    );
+    const updatedData = {
+      ...updatePracticeExerciseDto,
+      updatedBy: Number(userId),
+    };
+    return this.practiceExerciseRepository.update(id, updatedData);
   }
 
   remove(id: PracticeExercise["id"]) {

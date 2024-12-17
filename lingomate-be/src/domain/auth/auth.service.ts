@@ -29,6 +29,8 @@ import { AuthUpdateDto } from "./dto/auth-update.dto";
 import { LoginResponseDto } from "./dto/login-response.dto";
 import { JwtPayloadType } from "./strategies/types/jwt-payload.type";
 import { JwtRefreshPayloadType } from "./strategies/types/jwt-refresh-payload.type";
+import { log } from "console";
+import { permission } from "process";
 
 @Injectable()
 export class AuthService {
@@ -98,9 +100,12 @@ export class AuthService {
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,
       role: user.role,
+      permissions: user.role?.permissions || [],
       sessionId: session.id,
       hash,
     });
+
+    console.log("Permission: ", user.role?.permissions);
 
     return {
       refreshToken,
@@ -123,7 +128,7 @@ export class AuthService {
         });
       }
 
-      const user = await this.usersService.create({
+      const user = await this.usersService.create(null, {
         ...restDto,
         email: dto.email,
         status: StatusEnum.IN_ACTIVE,
@@ -215,7 +220,7 @@ export class AuthService {
 
     user.status = StatusEnum.ACTIVE;
 
-    await this.usersService.update(user.id, user);
+    await this.usersService.update(null, user.id, user);
   }
 
   async confirmNewEmail(hash: string): Promise<void> {
@@ -255,7 +260,7 @@ export class AuthService {
     user.email = newEmail;
     user.status = StatusEnum.ACTIVE;
 
-    await this.usersService.update(user.id, user);
+    await this.usersService.update(null, user.id, user);
   }
 
   async forgotPassword(email: string): Promise<void> {
@@ -336,7 +341,7 @@ export class AuthService {
       userId: user.id,
     });
 
-    await this.usersService.update(user.id, user);
+    await this.usersService.update(null, user.id, user);
   }
 
   async me(userJwtPayload: JwtPayloadType): Promise<NullableType<User>> {
@@ -435,7 +440,7 @@ export class AuthService {
     delete userDto.email;
     delete userDto.oldPassword;
 
-    await this.usersService.update(userJwtPayload.id, userDto);
+    await this.usersService.update(null, userJwtPayload.id, userDto);
 
     return this.usersService.findById(userJwtPayload.id);
   }
@@ -485,7 +490,7 @@ export class AuthService {
   }
 
   async softDelete(user: User): Promise<void> {
-    await this.usersService.remove(user.id);
+    await this.usersService.remove(null, user.id);
   }
 
   async logout(data: Pick<JwtRefreshPayloadType, "sessionId">) {
@@ -510,6 +515,7 @@ export class AuthService {
     role: User["role"];
     sessionId: Session["id"];
     hash: Session["hash"];
+    permissions?: string[];
   }) {
     const tokenExpiresIn = this.configService.getOrThrow("auth.expires", {
       infer: true,

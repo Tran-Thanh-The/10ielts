@@ -122,7 +122,7 @@ export class QuestionsService {
     userId: string,
     id: Question["id"],
     updateQuestionDto: UpdateQuestionDto,
-    fileQuestion?: Express.Multer.File
+    fileQuestion?: Express.Multer.File,
   ) {
     const existingQuestion = await this.questionRepository.findById(id);
     if (!existingQuestion) {
@@ -134,7 +134,7 @@ export class QuestionsService {
         await this.questionRepository.update(id, { file: null });
         await this.filesLocalService.delete(existingQuestion.file);
       }
-  
+
       const uploadedFile = await this.filesLocalService.create(fileQuestion);
       updateQuestionDto.file = uploadedFile.file;
     }
@@ -156,7 +156,7 @@ export class QuestionsService {
     const answers = await this.answerRepository.findByQuestionId(id);
     if (answers && answers.length > 0) {
       for (const answer of answers) {
-        await this.answerRepository.remove(answer.id); 
+        await this.answerRepository.remove(answer.id);
       }
     }
     if (question.lesson) {
@@ -186,5 +186,4 @@ export class QuestionsService {
       await this.questionRepository.save(questions[index]);
     }
   }
-
 }

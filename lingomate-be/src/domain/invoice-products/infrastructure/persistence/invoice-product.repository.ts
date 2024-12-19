@@ -24,4 +24,8 @@ export abstract class InvoiceProductRepository {
   ): Promise<InvoiceProduct | null>;
 
   abstract remove(id: InvoiceProduct["id"]): Promise<void>;
+
+  abstract findByInvoiceId(
+    id: InvoiceProduct["invoiceId"],
+  ): Promise<InvoiceProduct[]>;
 }

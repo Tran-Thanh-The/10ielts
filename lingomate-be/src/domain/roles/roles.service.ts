@@ -6,7 +6,6 @@ import { Role } from "./domain/role";
 import { UpdateRoleDto } from "./dto/update-role.dto";
 import { RoleMapper } from "./infrastructure/persistence/relational/mappers/role.mapper";
 
-
 @Injectable()
 export class RolesService {
   constructor(private readonly roleRepository: RoleRepository) {}

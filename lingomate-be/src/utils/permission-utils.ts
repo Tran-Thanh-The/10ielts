@@ -5,9 +5,8 @@ export function hasImplicitPermissions(
   requiredPermission: PermissionEnum,
   userRole?: any,
 ): boolean {
-  const isAdmin = 
-    userRole?.name?.toLowerCase() === "admin" || 
-    userRole?.id === 1;
+  const isAdmin =
+    userRole?.name?.toLowerCase() === "admin" || userRole?.id === 1;
 
   if (isAdmin || !requiredPermission) {
     return true;
@@ -53,23 +52,23 @@ export function hasImplicitPermissions(
     case PermissionEnum.UPDATE_PRACTICE:
     case PermissionEnum.DELETE_PRACTICE:
       return rolePermissions.includes(PermissionEnum.CREATE_PRACTICE);
-    
+
     case PermissionEnum.CREATE_ROLE:
     case PermissionEnum.READ_ROLE:
     case PermissionEnum.UPDATE_ROLE:
     case PermissionEnum.DELETE_ROLE:
       return rolePermissions.includes(PermissionEnum.CREATE_ROLE);
-      
-      case PermissionEnum.CREATE_CATEGORY:
-      case PermissionEnum.READ_CATEGORY:
-        return (
-          rolePermissions.includes(PermissionEnum.READ_CATEGORY) ||
-          rolePermissions.includes(PermissionEnum.CREATE_CATEGORY)
-        );
-      case PermissionEnum.UPDATE_CATEGORY:
-      case PermissionEnum.DELETE_CATEGORY:
-        return rolePermissions.includes(PermissionEnum.CREATE_CATEGORY);
-        
+
+    case PermissionEnum.CREATE_CATEGORY:
+    case PermissionEnum.READ_CATEGORY:
+      return (
+        rolePermissions.includes(PermissionEnum.READ_CATEGORY) ||
+        rolePermissions.includes(PermissionEnum.CREATE_CATEGORY)
+      );
+    case PermissionEnum.UPDATE_CATEGORY:
+    case PermissionEnum.DELETE_CATEGORY:
+      return rolePermissions.includes(PermissionEnum.CREATE_CATEGORY);
+
     default:
       return rolePermissions.includes(requiredPermission);
   }

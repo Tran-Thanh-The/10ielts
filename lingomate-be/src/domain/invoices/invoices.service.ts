@@ -39,4 +39,12 @@ export class InvoicesService {
   remove(id: Invoice["id"]) {
     return this.invoiceRepository.remove(id);
   }
+
+  updateByOrderCode(orderCode: number | string, data: Partial<Invoice>) {
+    return this.invoiceRepository.updateByOrderCode(orderCode, data);
+  }
+
+  findByOrderCode(orderCode: number | string) {
+    return this.invoiceRepository.findByOrderCode(orderCode);
+  }
 }

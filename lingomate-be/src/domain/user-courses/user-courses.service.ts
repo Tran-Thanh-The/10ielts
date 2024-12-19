@@ -37,7 +37,8 @@ export class UserCoursesService {
     updateCurrentLessonDto: UpdateCurrentLessonDto,
     userId: string,
   ) {
-    const userCourse = await this.userCourseRepository.findUserCourseByUserId(userId);
+    const userCourse =
+      await this.userCourseRepository.findUserCourseByUserId(userId);
 
     if (!userCourse) {
       throw new NotFoundException("User course not found");

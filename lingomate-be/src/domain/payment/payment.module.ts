@@ -18,6 +18,7 @@ import { PracticeExercisesModule } from "@/domain/practice-exercises/practice-ex
     UserInvoicesModule,
     InvoiceProductsModule,
     PracticeExercisesModule,
+    UserCoursesModule,
   ],
   controllers: [PaymentController],
   providers: [PaymentService],

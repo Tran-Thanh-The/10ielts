@@ -39,4 +39,9 @@ export class StatisticalController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async getStudentRegisterCoursesStatistics(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {}
 }

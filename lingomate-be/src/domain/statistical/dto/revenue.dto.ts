@@ -3,3 +3,9 @@ export interface RevenueByMonthOfAYearResponse {
   notPay: number;
   payed: number;
 }
+
+export interface RawRevenueRow {
+  month: number;
+  notPay: string;
+  payed: string;
+}

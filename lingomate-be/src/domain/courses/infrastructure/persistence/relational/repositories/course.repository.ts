@@ -115,24 +115,17 @@ export class CourseRelationalRepository implements CourseRepository {
   async checkIsMyCourse(userId: string, courseId: string): Promise<boolean> {
     const userIdNumber = Number(userId);
 
-    const userInvoice = await this.userInvoicesRepository
-      .createQueryBuilder("userInvoice")
-      .where("userInvoice.userId = :userId", { userId: userIdNumber })
+    const checkOwnCourse = await this.userCourseRepository
+      .createQueryBuilder("uc")
+      .select("uc")
+      .innerJoin("uc.course", "c")
+      .innerJoin("c.invoiceProducts", "ip")
+      .innerJoin("ip.invoice", "i")
+      .where("i.userId = :userId", { userId: userIdNumber })
+      .andWhere("uc.courseId = :courseId", { courseId })
       .getOne();
 
-    if (!userInvoice) {
-      return false;
-    }
-
-    const purchaseExists = await this.courseInvoicesRepository
-      .createQueryBuilder("courseInvoice")
-      .where("courseInvoice.userInvoicesId = :userInvoicesId", {
-        userInvoicesId: userInvoice.id,
-      })
-      .andWhere("courseInvoice.courseId = :courseId", { courseId })
-      .getOne();
-
-    return !!purchaseExists;
+    return !!checkOwnCourse;
   }
 
   async getCourseDetailById(

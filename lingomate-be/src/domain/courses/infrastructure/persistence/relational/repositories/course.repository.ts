@@ -1,10 +1,8 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { CourseInvoicesEntity } from "@/domain/course-invoices/infrastructure/persistence/relational/entities/course-invoices.entity";
 import { CourseWithDetailsDTO } from "@/domain/courses/dto/course-details-dto";
 import { CourseEntity } from "@/domain/courses/infrastructure/persistence/relational/entities/course.entity";
 import { LessonMapper } from "@/domain/lessons/infrastructure/persistence/relational/mappers/lesson.mapper";
 import { UserCourseEntity } from "@/domain/user-courses/infrastructure/persistence/relational/entities/user-course.entity";
-import { UserInvoicesEntity } from "@/domain/user-invoices/infrastructure/persistence/relational/entities/user-invoices.entity";
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { NullableType } from "@/utils/types/nullable.type";
@@ -28,10 +26,6 @@ export class CourseRelationalRepository implements CourseRepository {
     private readonly userLessonRepository: Repository<UserLessonEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(CourseInvoicesEntity)
-    private readonly courseInvoicesRepository: Repository<CourseInvoicesEntity>,
-    @InjectRepository(UserInvoicesEntity)
-    private readonly userInvoicesRepository: Repository<UserInvoicesEntity>,
   ) {}
 
   async create(data: Course): Promise<Course> {

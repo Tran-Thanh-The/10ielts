@@ -1,12 +1,10 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { PayOSService } from "@/common/payos/payos.service";
-import { CourseInvoicesService } from "@/domain/course-invoices/course-invoices.service";
 import { CoursesService } from "@/domain/courses/courses.service";
 import { InvoiceProductsService } from "@/domain/invoice-products/invoice-products.service";
 import { InvoicesService } from "@/domain/invoices/invoices.service";
 import { CreatePaymentDto } from "@/domain/payment/dto/create-payment.dto";
 import { PracticeExercisesService } from "@/domain/practice-exercises/practice-exercises.service";
-import { UserInvoicesService } from "@/domain/user-invoices/user-invoices.service";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
@@ -25,8 +23,6 @@ export class PaymentService {
     private readonly invoicesService: InvoicesService,
     private readonly invoiceProductsService: InvoiceProductsService,
     private readonly practiceExerciseService: PracticeExercisesService,
-    private readonly courseInvoicesService: CourseInvoicesService,
-    private readonly userInvoicesService: UserInvoicesService,
     private readonly jwtService: JwtService,
     private readonly userCourseService: UserCoursesService,
   ) {}

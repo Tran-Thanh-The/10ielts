@@ -3,14 +3,17 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { InvoiceEntity } from "../invoices/infrastructure/persistence/relational/entities/invoice.entity";
 import { Repository } from "typeorm";
-import { RevenueByMonthOfAYearResponse, RawRevenueRow, StudentRegisterByMonthByYearResponse, RawStudentRegisterRow, AllCoursesRegisterStatisticsResponse } from "./dto/revenue.dto";
+import { RevenueByMonthOfAYearResponse, RawRevenueRow, StudentRegisterByMonthByYearResponse, RawStudentRegisterRow, AllCoursesRegisterStatisticsResponse, RawAllCoursesRegisterRow, MonthlyCoursesRegisterStatisticsResponse } from "./dto/revenue.dto";
 import { Request } from "express";
+import { UserCourseEntity } from "../user-courses/infrastructure/persistence/relational/entities/user-course.entity";
 
 @Injectable()
 export class StatisticalService {
   constructor(
     @InjectRepository(InvoiceEntity)
     private readonly invoiceRepository: Repository<InvoiceEntity>,
+    @InjectRepository(UserCourseEntity)
+    private readonly userCourseRepository: Repository<UserCourseEntity>,
   ) {}
   public async getRevenueStatistics(req: Request): Promise<RevenueByMonthOfAYearResponse[]> {
     const year = req.params.year;
@@ -137,5 +140,32 @@ export class StatisticalService {
     });
 
     return sortedResult;
+  }
+
+  public async getMonthlyCoursesRegisterStatistics(req: Request): Promise<MonthlyCoursesRegisterStatisticsResponse[]> {
+    const [year, month] = [req.query.year, req.query.month];
+    const queryParameter = `${year}-${month}`;
+    const rawQuery = `
+      SELECT
+          c.name AS "courseName",
+          COUNT(uc.*) AS "totalRegistration",
+          ROUND(
+              COUNT(uc.*) * 100.0 / SUM(COUNT(uc.*)) OVER (), 
+              2
+          ) AS "percentage"
+      FROM
+          user_course uc
+      JOIN course c ON c.id = uc."courseId"
+      WHERE
+          uc.status = 'ACTIVE' -- Only count active registrations, if needed
+      GROUP BY
+          c.name, TO_CHAR(uc."createdAt", $1)
+      ORDER BY
+          "totalRegistration" DESC;
+    `;
+
+    const rawResult: RawAllCoursesRegisterRow[] = await this.userCourseRepository.query(rawQuery, [queryParameter]);
+
+    return rawResult;
   }
 }

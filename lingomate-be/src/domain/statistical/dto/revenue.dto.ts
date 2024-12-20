@@ -30,3 +30,11 @@ export interface AllCoursesRegisterStatisticsResponse {
   month: number;
   registrationCount: number;
 }
+
+export interface RawAllCoursesRegisterRow {
+  courseName: string;
+  totalRegistration: number;
+  percentage: number;
+}
+
+export type MonthlyCoursesRegisterStatisticsResponse = RawAllCoursesRegisterRow;

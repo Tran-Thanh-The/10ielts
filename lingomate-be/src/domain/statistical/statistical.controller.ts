@@ -83,4 +83,34 @@ export class StatisticalController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  @Public()
+  @Roles(RoleEnum.admin, RoleEnum.staff)
+  @ApiQuery({
+    name: "year",
+    required: true,
+    description: "Year to get monthly courses register statistics",
+    type: Number,
+    example: 2024,
+  })
+  @ApiQuery({
+    name: "month",
+    required: false,
+    description: "Month to get monthly courses register statistics",
+    type: Number,
+    example: 1,
+  })
+  @Get("/monthly-courses-register-statistics")
+  async getMonthlyCoursesRegisterStatistics(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const result =
+        await this.statisticalService.getMonthlyCoursesRegisterStatistics(req);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }

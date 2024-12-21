@@ -49,7 +49,7 @@ export class UserCoursesController {
     return this.userCoursesService.create(createUserCourseDto, userId);
   }
 
-  @Patch(":userId/current-lesson") 
+  @Patch(":userId/current-lesson")
   async updateCurrentLesson(
     @Param("userId") userId: string,
     @Body() updateCurrentLessonDto: UpdateCurrentLessonDto,

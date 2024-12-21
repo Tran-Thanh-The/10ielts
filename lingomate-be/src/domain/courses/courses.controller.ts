@@ -150,28 +150,28 @@ export class CoursesController {
   @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiParam({
-  name: "id",
-  type: String,
-  required: true,
+    name: "id",
+    type: String,
+    required: true,
   })
   @ApiOkResponse({
-  type: Course,
+    type: Course,
   })
   update(
-  @Param("id") id: string, 
-  @Body() updateCourseDto: UpdateCourseDto,
-  @UploadedFile() file?: Express.Multer.File
+    @Param("id") id: string,
+    @Body() updateCourseDto: UpdateCourseDto,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-  try {
-    return this.coursesService.update(id, updateCourseDto, file);
-  } catch (error) {
-    if (error instanceof NotFoundException) {
-      throw error;
+    try {
+      return this.coursesService.update(id, updateCourseDto, file);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException(
+        "An error occurred while updating the course. Please try again later.",
+      );
     }
-    throw new InternalServerErrorException(
-      "An error occurred while updating the course. Please try again later.",
-    );
-  }
   }
 
   @Delete(":id")

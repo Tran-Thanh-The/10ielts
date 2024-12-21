@@ -116,29 +116,29 @@ export class LessonsService {
   }
 
   async update(
-    id: Lesson["id"], 
+    id: Lesson["id"],
     updateLessonDto: UpdateLessonDto,
-    fileLesson?: Express.Multer.File
+    fileLesson?: Express.Multer.File,
   ) {
     const existingLesson = await this.lessonRepository.findById(id);
     if (!existingLesson) {
       throw new NotFoundException(`Lesson with id "${id}" not found.`);
     }
-  
+
     if (fileLesson) {
       if (existingLesson.file) {
         // Tách rời file khỏi Lesson trước khi xóa
         await this.lessonRepository.update(id, { file: null });
         await this.filesLocalService.delete(existingLesson.file);
       }
-  
+
       const uploadedFile = await this.filesLocalService.create(fileLesson);
       updateLessonDto.file = uploadedFile.file;
     }
-  
+
     return this.lessonRepository.update(id, updateLessonDto);
   }
-  
+
   async remove(id: Lesson["id"]) {
     const lessonCourse = await this.lessonCourseRepository.findByLessonId(id);
     if (!lessonCourse) {

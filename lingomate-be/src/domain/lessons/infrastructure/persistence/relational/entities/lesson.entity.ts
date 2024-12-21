@@ -67,7 +67,7 @@ export class LessonEntity extends EntityRelationalHelper {
   })
   status: StatusEnum;
 
-  @OneToMany(() => QuestionEntity, (question) => question.lesson,{
+  @OneToMany(() => QuestionEntity, (question) => question.lesson, {
     cascade: ["insert", "update"],
   })
   questions: QuestionEntity[];

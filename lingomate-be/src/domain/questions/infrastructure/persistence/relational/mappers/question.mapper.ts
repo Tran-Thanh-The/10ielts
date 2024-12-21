@@ -10,7 +10,7 @@ import { QuestionEntity } from "../entities/question.entity";
 export class QuestionMapper {
   static toDomain(raw: QuestionEntity): Question {
     const domainEntity = new Question();
-    
+
     domainEntity.id = raw.id;
     domainEntity.title = raw.title;
     domainEntity.content = raw.content;
@@ -26,7 +26,7 @@ export class QuestionMapper {
     }
     domainEntity.time = raw.time;
     domainEntity.questionType = raw.questionType;
-    if(raw.fileType) {
+    if (raw.fileType) {
       domainEntity.fileType = raw.fileType;
     }
     domainEntity.status = raw.status;

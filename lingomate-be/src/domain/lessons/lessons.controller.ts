@@ -205,7 +205,7 @@ export class LessonsController {
   async update(
     @Param("id") id: string,
     @Body() updateLessonDto: UpdateLessonDto,
-    @UploadedFile() file?: Express.Multer.File
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     try {
       return await this.lessonsService.update(id, updateLessonDto, file);

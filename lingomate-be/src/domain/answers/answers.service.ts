@@ -63,7 +63,7 @@ export class AnswersService {
     userId: string,
     id: Answer["id"],
     updateAnswerDto: UpdateAnswerDto,
-    fileAnswer?: Express.Multer.File
+    fileAnswer?: Express.Multer.File,
   ) {
     const existingAnswer = await this.answerRepository.findById(id);
     if (!existingAnswer) {
@@ -76,7 +76,7 @@ export class AnswersService {
         await this.answerRepository.update(id, { file: null });
         await this.filesLocalService.delete(existingAnswer.file);
       }
-  
+
       const uploadedFile = await this.filesLocalService.create(fileAnswer);
       updateAnswerDto.file = uploadedFile.file;
     }

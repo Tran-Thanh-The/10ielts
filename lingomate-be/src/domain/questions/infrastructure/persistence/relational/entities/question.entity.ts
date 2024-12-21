@@ -74,7 +74,7 @@ export class QuestionEntity extends EntityRelationalHelper {
   @Column({
     type: "enum",
     enum: QuestionFileTypesEnum,
-    nullable: true
+    nullable: true,
   })
   fileType?: QuestionFileTypesEnum | null;
 

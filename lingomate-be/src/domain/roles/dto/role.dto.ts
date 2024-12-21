@@ -3,7 +3,7 @@ import { IsNumber, IsOptional } from "class-validator";
 import { Role } from "../domain/role";
 import { PermissionEnum } from "@/common/enums/permissions.enum";
 
-export class RoleDto implements Role  {
+export class RoleDto implements Role {
   @ApiProperty()
   @IsNumber()
   id: number;
@@ -16,5 +16,4 @@ export class RoleDto implements Role  {
   })
   @IsOptional()
   permissions?: PermissionEnum[];
-
 }

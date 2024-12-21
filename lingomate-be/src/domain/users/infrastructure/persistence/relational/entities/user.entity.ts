@@ -21,7 +21,6 @@ import { ChatEntity } from "@/domain/chats/infrastructure/persistence/relational
 import { InvoiceEntity } from "@/domain/invoices/infrastructure/persistence/relational/entities/invoice.entity";
 import { RoleEntity } from "@/domain/roles/infrastructure/persistence/relational/entities/role.entity";
 import { UserCourseEntity } from "@/domain/user-courses/infrastructure/persistence/relational/entities/user-course.entity";
-import { UserInvoicesEntity } from "@/domain/user-invoices/infrastructure/persistence/relational/entities/user-invoices.entity";
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
 import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { UserConversationEntity } from "@/domain/user-conversations/infrastructure/persistence/relational/entities/user-conversation.entity";
@@ -151,9 +150,6 @@ export class UserEntity extends EntityRelationalHelper {
   @OneToMany(() => PracticeExerciseEntity, (practice) => practice.user)
   practices: PracticeExerciseEntity[];
 
-  @OneToMany(() => UserInvoicesEntity, (userInvoice) => userInvoice.user)
-  invoices: InvoiceEntity[];
-
   @OneToMany(() => UserLessonEntity, (userLesson) => userLesson.user)
   userLesson: UserLessonEntity[];
 
@@ -173,4 +169,9 @@ export class UserEntity extends EntityRelationalHelper {
     },
   )
   userConversations: UserConversationEntity[];
+
+  @OneToMany(() => InvoiceEntity, (invoice) => invoice.userId, {
+    cascade: true,
+  })
+  invoices: InvoiceEntity[];
 }

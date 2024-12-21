@@ -52,10 +52,7 @@ export class RoleRelationalRepository implements RoleRepository {
     return entity ? RoleMapper.toDomain(entity) : null;
   }
 
-  async update(
-    id: Role["id"],
-    payload: Partial<Role>,
-  ): Promise<Role> {
+  async update(id: Role["id"], payload: Partial<Role>): Promise<Role> {
     const entity = await this.roleRepository.findOne({
       where: { id },
     });

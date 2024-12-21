@@ -1,11 +1,7 @@
 import { PermissionEnum } from "@/common/enums/permissions.enum";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 import { ApiProperty } from "@nestjs/swagger";
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn
-} from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
   name: "role",
@@ -30,5 +26,4 @@ export class RoleEntity extends EntityRelationalHelper {
     description: "List of permissions associated with the role.",
   })
   permissions?: PermissionEnum[];
-
 }

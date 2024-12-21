@@ -59,6 +59,7 @@ import { ChatsModule } from "@/domain/chats/chats.module";
 import { UserConversationsModule } from "@/domain/user-conversations/user-conversations.module";
 import { RolesModule } from "./domain/roles/roles.module";
 import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
+import { StatisticalModule } from "./domain/statistical/statistical.module";
 
 @Module({
   imports: [
@@ -141,6 +142,7 @@ import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
     RedisModule,
     PayOSModule,
     PaymentModule,
+    StatisticalModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "..", "client"),
     }),
@@ -176,4 +178,4 @@ import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
     }),
   ],
 })
-export class AppModule {}
+export class AppModule { }

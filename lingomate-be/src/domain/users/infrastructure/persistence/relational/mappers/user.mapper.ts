@@ -64,5 +64,4 @@ export class UserMapper {
     persistenceEntity.deletedBy = domainEntity.deletedBy;
     return persistenceEntity;
   }
-
 }

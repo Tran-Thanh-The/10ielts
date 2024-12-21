@@ -7,15 +7,15 @@ import { FileDto } from "@/files/dto/file.dto";
 import { IsOptional } from "class-validator";
 
 export class UpdateLessonDto extends PartialType(CreateLessonDto) {
-    @ApiProperty({
-        type: 'string',
-        format: 'binary',
-        required: false,
-        description: 'Lesson photo file'
-        })
-    fileUpload?: Express.Multer.File;
+  @ApiProperty({
+    type: "string",
+    format: "binary",
+    required: false,
+    description: "Lesson photo file",
+  })
+  fileUpload?: Express.Multer.File;
 
-    @ApiPropertyOptional({ type: () => FileDto })
-    @IsOptional()
-    file?: FileDto | null;
+  @ApiPropertyOptional({ type: () => FileDto })
+  @IsOptional()
+  file?: FileDto | null;
 }

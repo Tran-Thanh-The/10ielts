@@ -45,9 +45,9 @@ export class AnswerHistoriesController {
   @ApiCreatedResponse({
     type: AnswerHistory,
   })
-  create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto,  @Req() req,) {
+  create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto, @Req() req) {
     const userId = req.user.id;
-    return this.answerHistoriesService.create(userId,createAnswerHistoryDto);
+    return this.answerHistoriesService.create(userId, createAnswerHistoryDto);
   }
 
   @Get()

@@ -12,7 +12,7 @@ import { RoleEnum } from "@/common/enums/roles.enum";
 @ApiTags("Statistical")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, PermissionGuard)
-@Controller("statistical")
+@Controller("v1/statistical")
 export class StatisticalController {
   constructor(private readonly statisticalService: StatisticalService) {}
 
@@ -84,7 +84,6 @@ export class StatisticalController {
     }
   }
 
-  @Public()
   @Roles(RoleEnum.admin, RoleEnum.staff)
   @ApiQuery({
     name: "year",

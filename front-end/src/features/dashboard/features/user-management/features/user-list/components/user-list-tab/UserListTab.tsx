@@ -1,6 +1,6 @@
 import { deleteUser, getUsers } from '@/api/api';
 import CreateUpdateUserModal from '@/features/dashboard/features/user-management/features/user-list/components/create-update-user-modal/CreateUpdateUserModal';
-import { setAppLoading } from '@/stores/slices/appSlice';
+import { selectRoles, setAppLoading } from '@/stores/slices/appSlice';
 import { IUser } from '@/types/interface/User';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
@@ -18,7 +18,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import dayjs from 'dayjs';
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 
 interface TablePaginationActionsProps {
@@ -101,8 +101,9 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   );
 }
 
-export default function UserListTab() {
+export default function UserListTab({ userList }: any) {
   const dispatch = useDispatch();
+  const roles = useSelector(selectRoles);
   const [page, setPage] = React.useState(2);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [users, setUsers] = React.useState<IUser[]>([]);
@@ -113,12 +114,25 @@ export default function UserListTab() {
 
   useEffect(() => {
     handleFetchUsers();
-  }, [refresh]);
+  }, [refresh, roles]);
 
   const handleFetchUsers = async () => {
     try {
+      if (!roles?.length) return;
+      const roleFilter = roles
+        .filter((role) => userList ? role.name === 'User' : role.name !== 'User')
+        .map((role) => ({
+          id: role.id,
+        }));
+      console.log('roleFilter', roleFilter);
       dispatch(setAppLoading(true));
-      const response = await getUsers();
+      const response = await getUsers({
+        page: 1,
+        limit: 1000,
+        filters: JSON.stringify({
+          roles: roleFilter,
+        }),
+      });
       setUsers(response?.data?.data ?? []);
       dispatch(setAppLoading(false));
     } catch (error) {

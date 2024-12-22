@@ -21,7 +21,7 @@ export default function Practices() {
 
   return (
     <FeatureLayout>
-      <Box sx={{ padding: 3 }}>
+      <Box>
         <PracticeFilter value={filter} onChange={setFilter} />
 
         <Box sx={{ marginTop: '20px' }}>

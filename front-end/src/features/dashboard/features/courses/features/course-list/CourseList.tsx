@@ -96,7 +96,7 @@ export default function CourseList() {
           description="Các khóa học bạn đang sở hữu đã được chia theo từng cấp trình độ, tương ứng với mỗi chặng mục tiêu. Hãy chọn trình độ mà bạn muốn bắt đầu nhé."
         />
       </RoleBasedComponent>
-      <Box sx={{ padding: 3 }}>
+      <Box>
         <Box
           sx={{
             display: 'flex',

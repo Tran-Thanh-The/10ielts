@@ -1,16 +1,30 @@
 import QuestionList from '@/features/dashboard/components/quesion/question-list/QuestionList';
 import { Box, Button, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { selectIsStudentDashboard } from '@/features/auth/slices/authSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { LessonTypes } from '@/types/enum/LessonType';
+import { setDoExerciseForm } from '@/stores/slices/appSlice';
 
 export default function DoLesson({ lesson, course }: any) {
+  const dispatch = useDispatch();
   const { idCourse, selectedLessonId } = useParams();
   const isStudentDashboard = useSelector(selectIsStudentDashboard);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (lesson?.lessonType === LessonTypes.Exercise) {
+      console.log('lesson?.questions', lesson?.questions);
+      dispatch(setDoExerciseForm(lesson?.questions));
+    }
+
+    return () => {
+      dispatch(setDoExerciseForm(null));
+    };
+  }, [lesson?.lessonType])
 
   const handleNextLesson = () => {
     const index = course?.lessons.findIndex(
@@ -35,6 +49,7 @@ export default function DoLesson({ lesson, course }: any) {
       }
     }
   };
+
   return (
     <>
       <Box>

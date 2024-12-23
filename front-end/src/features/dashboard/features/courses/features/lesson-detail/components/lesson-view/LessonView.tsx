@@ -1,4 +1,8 @@
-import { getLessonDetailsById, getLessonDetailsByIdV2 } from '@/api/api';
+import {
+  getLessonDetailsById,
+  getLessonDetailsByIdV2,
+  submitCourseLesson,
+} from '@/api/api';
 import courseApi from '@/api/courseApi';
 import Breadcrumb from '@/features/dashboard/components/breadcrumb/Breadcrumb';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
@@ -9,22 +13,27 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useDispatch } from 'react-redux';
-import { setAppLoading } from '@/stores/slices/appSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectDoExerciseForm, setAppLoading } from '@/stores/slices/appSlice';
 import QuestionList from '@/features/dashboard/components/quesion/question-list/QuestionList';
 import RoleBasedComponent from '@/components/RoleBasedComponent';
 import { ROLE, ROLES } from '@/utils/constants/constants';
 import DoLesson from '@/features/dashboard/features/courses/features/lesson-detail/components/lesson-view/components/DoLesson/DoLesson';
 import CreateUpdateLesson from '@/features/dashboard/features/courses/components/create-update-lesson/CreateUpdateLesson';
 import CreateUpdateLessonForm from '@/features/dashboard/features/courses/components/create-update-lesson/components/CreateUpdateLessonForm/CreateUpdateLessonForm';
+import { LessonTypes } from '@/types/enum/LessonType';
+import Swal from 'sweetalert2';
+import ViewHistory from '@/features/dashboard/components/view-history/ViewHistory';
 
 export default function LessonView() {
   const { idCourse, selectedLessonId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const exerciseForm = useSelector(selectDoExerciseForm);
   const [course, setCourse] = useState<any>(null);
   const [lesson, setLesson] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'VIEW' | 'EDIT'>('VIEW');
+  const [openHistory, setOpenHistory] = useState(false);
 
   useEffect(() => {
     handleFetchData();
@@ -37,6 +46,49 @@ export default function LessonView() {
     const res2 = await getLessonDetailsByIdV2(selectedLessonId as string);
     setLesson(res2.data);
     dispatch(setAppLoading(false));
+  };
+
+  const handleSubmit = () => {
+    // console.log('exerciseForm', exerciseForm);
+    const correctQuestions = exerciseForm.reduce((acc: number, item: any) => {
+      const correctAnswer =
+        item.questionType === 'INPUT'
+          ? item.answers[0].content
+          : item.answers.find((answer: any) => answer.isCorrect)?.id;
+      return item.userAnswer === correctAnswer ? acc + 1 : acc;
+    }, 0);
+
+    const score = Math.round((correctQuestions / exerciseForm.length) * 100);
+
+    submitCourseLesson({
+      lesson_id: selectedLessonId,
+      totalScore: score,
+      startedAt: new Date().toISOString(),
+      answers: exerciseForm.map((item: any) => ({
+        questionId: item.id,
+        answerPick: item.userAnswer,
+      })),
+    }).then((res) => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Nộp bài thành công',
+        text: `Bạn đã đạt được ${score} điểm`,
+      }).then(() => {
+        const index = course?.lessons.findIndex(
+          (item: any) => item.id === selectedLessonId,
+        );
+        if (index !== -1) {
+          const nextLesson = course?.lessons[index + 1];
+          if (nextLesson) {
+            navigate(`/dashboard/courses/${idCourse}/lesson/${nextLesson.id}`);
+          }
+        }
+      });
+    });
+  };
+
+  const handleViewHistory = () => {
+    setOpenHistory(true);
   };
 
   return (
@@ -92,6 +144,37 @@ export default function LessonView() {
               </Button>
             </Box>
           </RoleBasedComponent>
+
+          <RoleBasedComponent allowedRoles={[ROLE.USER]}>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {lesson?.lessonType === LessonTypes.Exercise ? (
+                <>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="success"
+                    onClick={handleViewHistory}
+                  >
+                    Lịch sử nộp bài
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleSubmit}
+                  >
+                    Nộp bài
+                  </Button>
+                </>
+              ) : null}
+            </Box>
+          </RoleBasedComponent>
         </>
       </FeatureHeader>
 
@@ -100,6 +183,15 @@ export default function LessonView() {
       ) : (
         <CreateUpdateLessonForm />
       )}
+
+      {openHistory ? (
+        <ViewHistory
+          open={openHistory}
+          onClose={() => setOpenHistory(false)}
+          data={lesson}
+          onOk={() => setOpenHistory(false)}
+        />
+      ) : null}
     </FeatureLayout>
   );
 }

@@ -9,7 +9,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React from 'react';
 
 export default function RoleForm() {
   return (
@@ -24,10 +23,10 @@ export default function RoleForm() {
           gap: '20px',
         }}
       >
-        <Typography variant="h6">Tên vai trò</Typography>
+        <Typography variant="body1">Tên vai trò</Typography>
         <TextField label="Tên vai trò" fullWidth />
 
-        <Typography variant="h6">Chức năng</Typography>
+        <Typography variant="body1">Chức năng</Typography>
         <Box
           sx={{
             border: '1px solid #e0e0e0',

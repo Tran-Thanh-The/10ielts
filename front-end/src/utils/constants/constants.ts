@@ -66,13 +66,13 @@ export const PRACTICE_FILTER = [
   {
     title: 'Writing',
     value: EPracticeFilter.WRITING,
-    disabled: true,
+    disabled: false,
     icon: 'https://api.prep.vn/images/skills/test_practice/writing.png',
   },
   {
     title: 'Speaking',
     value: EPracticeFilter.SPEAKING,
-    disabled: true,
+    disabled: false,
     icon: 'https://api.prep.vn/images/skills/test_practice/speaking.png',
   },
 ];

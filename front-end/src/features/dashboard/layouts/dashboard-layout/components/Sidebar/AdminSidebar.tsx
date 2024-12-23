@@ -107,7 +107,7 @@ export default function AdminSidebar() {
               active={location.pathname.startsWith(EAppPath.PRACTICES_CATEGORY)}
               onClick={() => navigate(EAppPath.PRACTICES_CATEGORY)}
             >
-              Danh mục
+              Quản lý nộp bài
             </MenuItem>
           </SubMenu>
           <MenuItem

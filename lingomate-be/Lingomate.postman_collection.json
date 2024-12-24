@@ -4,7 +4,7 @@
 		"name": "Lingomate",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "27048953",
-		"_collection_link": "https://restless-star-284637.postman.co/workspace/f7b00c24-6202-49bd-8c42-3526b8e9896d/collection/27048953-31a1f4f4-4e5f-4741-ba7f-b8a3419dd035?action=share&source=collection_link&creator=27048953"
+		"_collection_link": "https://restless-star-284637.postman.co/workspace/Team-Workspace~f7b00c24-6202-49bd-8c42-3526b8e9896d/collection/27048953-31a1f4f4-4e5f-4741-ba7f-b8a3419dd035?action=share&source=collection_link&creator=27048953"
 	},
 	"item": [
 		{
@@ -56,7 +56,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"admin2@gmail.comm\",\r\n  \"password\": \"password\",\r\n  \"confirmPassword\": \"password\",\r\n  \"fullName\": \"Tien\",\r\n  \"dob\": \"2002-02-10\",\r\n  \"role\": {\r\n    \"id\": 2\r\n  }\r\n}",
+							"raw": "{\r\n  \"email\": \"vht.20021020@gmail.com\",\r\n  \"password\": \"password\",\r\n  \"confirmPassword\": \"password\",\r\n  \"fullName\": \"Tien\",\r\n  \"dob\": \"2002-02-10\"\r\n//   \"role\": {\r\n//     \"id\": 3\r\n//   }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -149,7 +149,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"teacher1@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
+							"raw": "{\r\n  \"email\": \"leaping226@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -179,7 +179,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"hash\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25maXJtRW1haWxVc2VySWQiOjMsImlhdCI6MTcyOTk1OTI3NSwiZXhwIjoxNzMwMDQ1Njc1fQ.ZCPNy0MsjZyOATjpcaBm9s6WrAlLBkyDQaBQs6k2OVE\"\r\n}",
+							"raw": "{\r\n    \"hash\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25maXJtRW1haWxVc2VySWQiOjE2LCJpYXQiOjE3MzQ5NzEyNDgsImV4cCI6MTczNTA1NzY0OH0.eIjSi4_Us66ym10HdGhh3sA_Z3PSo6P5YSrRTyNeWRU\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -584,7 +584,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/4ed7ce2b-449a-4976-9297-b9be7621a2d4",
+							"raw": "{{HOST}}/api/v1/courses/87c8c076-edd8-45fd-b91b-94a73e100cc8",
 							"host": [
 								"{{HOST}}"
 							],
@@ -592,7 +592,7 @@
 								"api",
 								"v1",
 								"courses",
-								"4ed7ce2b-449a-4976-9297-b9be7621a2d4"
+								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
 							]
 						}
 					},
@@ -693,6 +693,75 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"English\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/v1/categories/bbbc16a2-c45e-414e-8f79-54ef24e27882",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"bbbc16a2-c45e-414e-8f79-54ef24e27882"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/v1/categories/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -724,7 +793,7 @@
 								},
 								{
 									"key": "title",
-									"value": "Lesson 1",
+									"value": "Lesson 2",
 									"type": "text"
 								},
 								{
@@ -757,7 +826,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/87c8c076-edd8-45fd-b91b-94a73e100cc8",
+							"raw": "{{HOST}}/api/v1/lessons/a8791a5f-ab38-4ad8-89c7-e8a67b1d40a4",
 							"host": [
 								"{{HOST}}"
 							],
@@ -765,7 +834,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
+								"a8791a5f-ab38-4ad8-89c7-e8a67b1d40a4"
 							]
 						}
 					},
@@ -833,7 +902,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/7368df02-110e-494e-8801-c7c9091283d5",
+							"raw": "{{HOST}}/api/v1/lessons/84fcfc6b-5b32-4d70-a13a-9402123a502a",
 							"host": [
 								"{{HOST}}"
 							],
@@ -841,7 +910,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"7368df02-110e-494e-8801-c7c9091283d5"
+								"84fcfc6b-5b32-4d70-a13a-9402123a502a"
 							]
 						}
 					},
@@ -1328,7 +1397,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/questions/158dc9fc-3e97-4ba1-a93e-5f19f3a5f2fd",
+							"raw": "{{HOST}}/api/v1/questions/c5283aa4-3642-4183-b5c2-c032b18abd65",
 							"host": [
 								"{{HOST}}"
 							],
@@ -1336,7 +1405,7 @@
 								"api",
 								"v1",
 								"questions",
-								"158dc9fc-3e97-4ba1-a93e-5f19f3a5f2fd"
+								"c5283aa4-3642-4183-b5c2-c032b18abd65"
 							]
 						}
 					},
@@ -2285,7 +2354,7 @@
 					"name": "answer-history",
 					"item": [
 						{
-							"name": "Nộp bài: post answer_history",
+							"name": "Nộp bài: post answer_history(R&L thì sang body raw)",
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -2300,13 +2369,35 @@
 								"method": "POST",
 								"header": [],
 								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"practice_id\": \"710898f2-011b-4080-9abf-78b8e06807df\",\r\n//   \"lesson_id\": \"67890\",\r\n  \"totalScore\": 92.5,\r\n  \"startedAt\": \"2024-12-16T08:00:00Z\",\r\n//   \"status\": \"ACTIVE\",\r\n  \"answers\": [\r\n    {\r\n      \"questionId\": \"q1\",\r\n      \"answerId\": \"a1\",\r\n      \"answerPick\": \"A\"\r\n    },\r\n    {\r\n      \"questionId\": \"q2\",\r\n      \"answerId\": \"a2\",\r\n      \"answerPick\": \"A\"\r\n    },\r\n    {\r\n      \"questionId\": \"q3\",\r\n      \"answerPick\": \"C\"\r\n    }\r\n  ]\r\n}\r\n",
-									"options": {
-										"raw": {
-											"language": "json"
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "practice_id",
+											"value": "1ee63eca-40ef-4d93-a270-c61852b3c28f",
+											"type": "text"
+										},
+										{
+											"key": "totalScore",
+											"value": "10",
+											"type": "text"
+										},
+										{
+											"key": "startedAt",
+											"value": "2024-12-16T08:00:00Z",
+											"type": "text"
+										},
+										{
+											"key": "audioAnswer",
+											"type": "file",
+											"src": "/E:/OneDrive/Desktop/sample-3s.mp3"
+										},
+										{
+											"key": "writingAnswer",
+											"value": "",
+											"type": "text",
+											"disabled": true
 										}
-									}
+									]
 								},
 								"url": {
 									"raw": "{{HOST}}/api/v1/answer-histories",
@@ -2412,7 +2503,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"totalScore\":9.5\r\n}",
+									"raw": "{\r\n    \"teacherScore\": 9.5,\r\n    \"teacherFeedback\": \"Nhận xét\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2420,7 +2511,7 @@
 									}
 								},
 								"url": {
-									"raw": "{{HOST}}/api/v1/answer-histories/4d391410-9448-4437-8eea-01eed0df5342",
+									"raw": "{{HOST}}/api/v1/answer-histories/e9335cb3-279d-4e5b-8d37-69b239cb4ff8",
 									"host": [
 										"{{HOST}}"
 									],
@@ -2428,7 +2519,7 @@
 										"api",
 										"v1",
 										"answer-histories",
-										"4d391410-9448-4437-8eea-01eed0df5342"
+										"e9335cb3-279d-4e5b-8d37-69b239cb4ff8"
 									]
 								}
 							},

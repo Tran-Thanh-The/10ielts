@@ -24,20 +24,19 @@ import {
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 
+import { PermissionEnum } from "@/common/enums/permissions.enum";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { NullableType } from "@/utils/types/nullable.type";
-import { RolesGuard } from "../auth/guards/roles.guard";
 import { User } from "./domain/user";
 import { QueryUserDto } from "./dto/query-user.dto";
 import { RolesRestrictionGuard } from "./guards/roles.restriction.guard";
 import { UsersService } from "./users.service";
-import { PermissionGuard } from "@/guards/permission.guard";
-import { Permissions } from "@/utils/decorators/permission.decorator";
-import { PermissionEnum } from "@/common/enums/permissions.enum";
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard("jwt"), PermissionGuard)

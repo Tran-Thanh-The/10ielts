@@ -25,7 +25,7 @@ const infrastructurePersistenceModule = RelationalFilePersistenceModule;
         return {
           fileFilter: (request, file, callback) => {
             if (
-              !file.originalname.match(/\.(jpg|jpeg|png|gif|mp4|avi|mkv)$/i)
+              !file.originalname.match(/\.(jpg|jpeg|png|gif|mp4|mp3|avi|mkv)$/i)
             ) {
               return callback(
                 new UnprocessableEntityException({

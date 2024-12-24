@@ -24,4 +24,5 @@ export abstract class AnswerHistoryRepository {
   ): Promise<AnswerHistory | null>;
 
   abstract remove(id: AnswerHistory["id"]): Promise<void>;
+  abstract save(answerHistory: AnswerHistory): Promise<void>;
 }

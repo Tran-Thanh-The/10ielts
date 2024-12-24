@@ -1,15 +1,12 @@
-import { AnswerHistory } from "@/domain/answer-histories/domain/answer-history";
-import { AnswerHistoryEntity } from "../entities/answer-history.entity";
-import { PracticeExerciseMapper } from "@/domain/practice-exercises/infrastructure/persistence/relational/mappers/practice-exercise.mapper";
-import { LessonMapper } from "@/domain/lessons/infrastructure/persistence/relational/mappers/lesson.mapper";
-import { CreateAnswerHistoryDto } from "@/domain/answer-histories/dto/create-answer-history.dto";
-import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
-import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
 import { StatusEnum } from "@/common/enums/status.enum";
-import { UserMapper } from "@/domain/users/infrastructure/persistence/relational/mappers/user.mapper";
+import { AnswerHistory } from "@/domain/answer-histories/domain/answer-history";
+import { CreateAnswerHistoryDto } from "@/domain/answer-histories/dto/create-answer-history.dto";
 import { ResponseAnswerHistoryDto } from "@/domain/answer-histories/dto/response-answer-history.dto";
-import { User } from "@/domain/users/domain/user";
+import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
+import { AnswerHistoryEntity } from "../entities/answer-history.entity";
+import { FileMapper } from './../../../../../../files/infrastructure/persistence/relational/mappers/file.mapper';
 
 export class AnswerHistoryMapper {
   static toDomain(raw: AnswerHistoryEntity): AnswerHistory {
@@ -23,6 +20,12 @@ export class AnswerHistoryMapper {
     domainEntity.startedAt = raw.startedAt;
     domainEntity.completedAt = raw.completedAt;
     domainEntity.status = raw.status;
+    if (raw.audioAnswer) {
+      domainEntity.audioAnswer = FileMapper.toDomain(raw.audioAnswer);
+    }
+    domainEntity.writingAnswer = raw.writingAnswer;
+    domainEntity.teacherScore = raw.teacherScore;
+    domainEntity.teacherFeedback = raw.teacherFeedback;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -44,6 +47,14 @@ export class AnswerHistoryMapper {
     persistenceEntity.status = domainEntity.status;
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
+    if (domainEntity.audioAnswer) {
+      persistenceEntity.audioAnswer = FileMapper.toPersistence(domainEntity.audioAnswer);
+    } else {
+      persistenceEntity.audioAnswer = null;
+    }
+    persistenceEntity.writingAnswer = domainEntity.writingAnswer;
+    persistenceEntity.teacherScore = domainEntity.teacherScore;
+    persistenceEntity.teacherFeedback = domainEntity.teacherFeedback;
 
     return persistenceEntity;
   }
@@ -72,6 +83,9 @@ export class AnswerHistoryMapper {
     } else {
       model.status = dto.status;
     }
+    model.writingAnswer = dto.writingAnswer;
+    model.teacherScore = dto.teacherScore;
+    model.teacherFeedback = dto.teacherFeedback;
     return model;
   }
 
@@ -94,6 +108,12 @@ export class AnswerHistoryMapper {
     dto.completedAt = model.completedAt;
     dto.createdAt = model.createdAt;
     dto.updatedAt = model.updatedAt;
+    if(model.audioAnswer) {
+      dto.audioAnswer = model.audioAnswer;
+    }
+    dto.writingAnswer = model.writingAnswer;
+    dto.teacherScore = model.teacherScore;
+    dto.teacherFeedback = model.teacherFeedback;
     return dto;
   }
 }

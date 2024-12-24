@@ -24,7 +24,6 @@ export class CreateAnswerHistoryDto {
   lesson_id?: string | null;
 
   @ApiPropertyOptional({ type: Number })
-  @IsNumber()
   @IsOptional()
   totalScore?: number | null;
 
@@ -36,4 +35,16 @@ export class CreateAnswerHistoryDto {
   @IsOptional()
   @IsEnum(StatusEnum)
   status?: StatusEnum;
+
+  @ApiPropertyOptional({ type: () => String })
+  @IsOptional()
+  writingAnswer?: string; 
+
+  @ApiPropertyOptional({ type: () => Number })
+  @IsOptional()
+  teacherScore?: number;
+
+  @ApiPropertyOptional({ type: () => String })
+  @IsOptional()
+  teacherFeedback?: string; 
 }

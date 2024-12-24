@@ -82,8 +82,10 @@ export class UsersService {
     } else {
       clonedPayload.role = { id: RoleEnum.user };
     }
-    clonedPayload.status = StatusEnum.ACTIVE;
 
+    if (!clonedPayload.status) {
+      clonedPayload.status = StatusEnum.ACTIVE;
+    }
     return this.usersRepository.create(clonedPayload);
   }
 

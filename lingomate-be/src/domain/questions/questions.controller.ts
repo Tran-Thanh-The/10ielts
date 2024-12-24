@@ -119,6 +119,7 @@ export class QuestionsController {
 
   @Patch(":id")
   @Permissions(PermissionEnum.UPDATE_QUESTION)
+  @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiParam({
     name: "id",
     type: String,
@@ -131,9 +132,10 @@ export class QuestionsController {
     @Req() req,
     @Param("id") id: string,
     @Body() updateQuestionDto: UpdateQuestionDto,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     const userId = req.user.id;
-    return this.questionsService.update(userId, id, updateQuestionDto);
+    return this.questionsService.update(userId, id, updateQuestionDto, file);
   }
 
   @Delete(":id")

@@ -32,63 +32,6 @@ import LessonCard from '../../components/lesson-card/LessonCard';
 import { setAppLoading } from '@/stores/slices/appSlice';
 import { useDispatch } from 'react-redux';
 
-const MOCK_LESSONS = [
-  {
-    id: '6d157dd9-950a-4b77-a9a4-398da18c2c04',
-    title: 'Lesson 1: Intro to React',
-    lessonType: LessonTypes.Video,
-    sections: 0,
-    totalSections: 1,
-    stars: 0,
-    totalStars: 3,
-  },
-  {
-    id: '02',
-    title: 'Lesson 2: JSX and Components',
-    lessonType: LessonTypes.Docs,
-    sections: 0,
-    totalSections: 1,
-    stars: 0,
-    totalStars: 3,
-  },
-  {
-    id: '03',
-    title: 'Lesson 3: State and Props',
-    lessonType: LessonTypes.Video,
-    sections: 0,
-    totalSections: 1,
-    stars: 0,
-    totalStars: 3,
-  },
-  {
-    id: '04',
-    title: 'Lesson 4: React Lifecycle',
-    lessonType: LessonTypes.Exercise,
-    sections: 0,
-    totalSections: 1,
-    stars: 0,
-    totalStars: 3,
-  },
-  {
-    id: '05',
-    title: 'Lesson 5: Event Handling',
-    lessonType: LessonTypes.Docs,
-    sections: 0,
-    totalSections: 1,
-    stars: 0,
-    totalStars: 3,
-  },
-  {
-    id: '06',
-    title: 'Lesson 6: Hooks in React',
-    lessonType: LessonTypes.Exercise,
-    sections: 0,
-    totalSections: 1,
-    stars: 0,
-    totalStars: 3,
-  },
-];
-
 export default function CourseDetail() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState<CourseResponse | null>(
@@ -235,6 +178,34 @@ export default function CourseDetail() {
     }
   };
 
+  const handleEditCourse = () => {
+    if (idCourse) {
+      Swal.fire({
+        title: 'Bạn có chắc chắn muốn xuất bản khóa học này?',
+        showDenyButton: true,
+        confirmButtonText: `Xuất bản`,
+        denyButtonText: `Hủy`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            dispatch(setAppLoading(true));
+            await courseApi.updateCourse(idCourse, { status: 'ACTIVE' });
+            Swal.fire('Thành công!', 'Khóa học đã được xuất bản.', 'success');
+          } catch (error) {
+            console.error('Lỗi khi cập nhật khóa học:', error);
+            Swal.fire(
+              'Thất bại',
+              'Không thể xuất bản khóa học. Vui lòng thử lại.',
+              'error',
+            );
+          } finally {
+            dispatch(setAppLoading(false));
+          }
+        }
+      });
+    }
+  };
+
   return (
     <FeatureLayout>
       <Breadcrumbs aria-label="breadcrumb">
@@ -263,7 +234,9 @@ export default function CourseDetail() {
                 <Box flex={6}>
                   <Typography variant="h4">
                     {course.name}{' '}
-                    <Chip label="Đã xuất bản khóa học" color="success"></Chip>
+                    {course?.status == 'ACTIVE' && (
+                      <Chip label="Đã xuất bản khóa học" color="success"></Chip>
+                    )}
                     {/* <Chip label='Chưa xuất bản khóa học'></Chip> */}
                   </Typography>
                   <Typography
@@ -359,14 +332,16 @@ export default function CourseDetail() {
                   padding: 2,
                 }}
               >
-                <Button
-                  variant="outlined"
-                  color="success"
-                  size="small"
-                  onClick={handleDeleteCourse}
-                >
-                  Xuất bản khóa học
-                </Button>
+                {course?.status != 'ACTIVE' && (
+                  <Button
+                    variant="outlined"
+                    color="success"
+                    size="small"
+                    onClick={handleEditCourse}
+                  >
+                    Xuất bản khóa học
+                  </Button>
+                )}
                 <Button
                   variant="outlined"
                   color="error"

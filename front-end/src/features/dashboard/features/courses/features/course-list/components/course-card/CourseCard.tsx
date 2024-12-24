@@ -133,7 +133,9 @@ const CourseCard = ({
         <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
           <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
             <Chip label={`Giá: ${price} VND`} size="small"></Chip>
-            <Chip label="Đã đăng ký" color="success" size="small"></Chip>
+            {isMyCourse && (
+              <Chip label="Đã đăng ký" color="success" size="small"></Chip>
+            )}
           </Box>
         </RoleBasedComponent>
         <Box sx={{ display: 'flex', gap: '8px' }}>

@@ -1,15 +1,33 @@
 import axiosInstance from '@/core/intercepter/Intercepter';
+import { CourseParams } from '@/types/interface/Course';
 
 const courseApi = {
   getCategories: () => {
     return axiosInstance.get<any>('/categories');
   },
-  getCourses: ({ params }) => {
-    return axiosInstance.get<any>('/courses/list', {
-      params: {
-        ...params,
-      },
-    });
+  getCourses: ({
+    status,
+    userId,
+    invoiceId,
+    paginationOptions,
+    search,
+    isMyCourse,
+    orderBy,
+    categoryId,
+  }: CourseParams) => {
+    const params = {
+      status,
+      userId,
+      invoiceId,
+      page: paginationOptions?.page || 1,
+      limit: paginationOptions?.limit || 10,
+      search,
+      isMyCourse,
+      orderBy: orderBy || {},
+      categoryId,
+    };
+
+    return axiosInstance.get('/courses/list', { params });
   },
   createCourse: (data: any) => {
     return axiosInstance.post('/courses', data, {

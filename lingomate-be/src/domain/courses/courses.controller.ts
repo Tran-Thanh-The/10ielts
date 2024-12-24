@@ -39,6 +39,7 @@ import { CourseResponseDto } from "./dto/course-response-dto";
 import { CourseListResponseDto } from "./dto/courses-response-dto";
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
+import { CourseWithDetailsDTO } from "./dto/course-details-dto";
 
 @ApiTags("Courses")
 @ApiBearerAuth()
@@ -103,7 +104,7 @@ export class CoursesController {
   })
   async getListCourse(
     @Query() query: CourseQueryDto,
-  ): Promise<CourseListResponseDto<CourseResponseDto>> {
+  ): Promise<CourseListResponseDto<CourseWithDetailsDTO>> {
     const orderBy = parseOrderBy(query.orderBy);
     return this.coursesService.getListCourse(
       query.status,

@@ -346,6 +346,7 @@ export class CourseRelationalRepository implements CourseRepository {
       photo: courseEntity.photo,
       category: courseEntity.category,
       createdAt: courseEntity.createdAt,
+      status: courseEntity.status,
       totalLesson: courseEntity.lessonCourses.length,
       completedLesson: completedLessons,
       lessons: courseEntity.lessonCourses.map((lc) => ({
@@ -372,7 +373,7 @@ export class CourseRelationalRepository implements CourseRepository {
     search?: string;
     orderBy?: { [key: string]: "ASC" | "DESC" };
   }): Promise<{
-    data: Course[];
+    data: CourseWithDetailsDTO[];
     total: number;
     page: number;
     limit: number;
@@ -476,22 +477,87 @@ export class CourseRelationalRepository implements CourseRepository {
       queryBuilder.skip((page - 1) * limit).take(limit);
     }
 
-    // Fetch courses
-    const courses = await queryBuilder.getMany();
-    const mappedCourses = courses.map((course) => ({
-      ...CourseMapper.toDomain(course),
-      createdAt: course.createdAt,
-      updatedAt: course.updatedAt,
-    }));
+    // // Fetch courses
+    // const courses = await queryBuilder.getMany();
+    // const mappedCourses = courses.map(async (course) => ({
+    //   ...CourseMapper.toDomain(course),
+    //   createdAt: course.createdAt,
+    //   updatedAt: course.updatedAt,
+    //   isMyCourse: userId ? await this.checkIsMyCourse(userId, course.id) : false
+    // }));
+    // // const mappedCourses = await Promise.all(courses.map(async (course) => ({
+    // //   id: course.id,
+    // //   title: course.name,
+    // //   price: course.price,
+    // //   description: course.description,
+    // //   photo: course.photo,
+    // //   category: course.category,
+    // //   status: course.status,
+    // //   createdAt: course.createdAt,
+    // //   isMyCourse: userId ? await this.checkIsMyCourse(userId, course.id) : false
+    // // })));
 
-    return {
-      data: mappedCourses,
-      total,
-      page: paginationOptions?.page || 1,
-      limit: paginationOptions?.limit || total,
-      totalPages: paginationOptions
-        ? Math.ceil(total / paginationOptions.limit)
-        : 1,
-    };
+    // return {
+    //   data: mappedCourses,
+    //   total,
+    //   page: paginationOptions?.page || 1,
+    //   limit: paginationOptions?.limit || total,
+    //   totalPages: paginationOptions
+    //     ? Math.ceil(total / paginationOptions.limit)
+    //     : 1,
+    // };
+    // Fetch courses
+const courses = await queryBuilder.getMany();
+
+const mappedCourses = await Promise.all(courses.map(async (course) => {
+ const courseEntity = await this.courseRepository
+   .createQueryBuilder("course")
+   .leftJoinAndSelect("course.category", "category") 
+   .leftJoinAndSelect("course.photo", "photo")
+   .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
+   .leftJoinAndSelect("lessonCourse.lesson", "lesson")
+   .leftJoinAndSelect(
+     "lesson.userLessons",
+     "userLesson",
+     "userLesson.userId = :userId",
+     { userId: userId ? Number(userId) : null }
+   )
+   .where("course.id = :id", { id: course.id })
+   .getOne();
+
+ if (!courseEntity) return null;
+
+ const completedLessons = courseEntity.lessonCourses.filter(
+   (lc) => lc.lesson.userLessons?.[0]?.isCompleted
+ ).length;
+
+ const courseDetail: CourseWithDetailsDTO = {
+   id: courseEntity.id,
+   title: courseEntity.name, 
+   price: courseEntity.price,
+   description: courseEntity.description,
+   photo: courseEntity.photo,
+   category: courseEntity.category,
+   createdAt: courseEntity.createdAt,
+   status: courseEntity.status,
+   totalLesson: courseEntity.lessonCourses.length,
+   completedLesson: completedLessons,
+   lessons: courseEntity.lessonCourses.map((lc) => ({
+     ...LessonMapper.toDto(lc.lesson),
+     isCompleted: lc.lesson.userLessons?.[0]?.isCompleted || false,
+   })),
+   isMyCourse: userId ? await this.checkIsMyCourse(userId, courseEntity.id) : false
+ };
+
+ return courseDetail;
+}));
+
+return {
+ data: mappedCourses.filter(course => course !== null) as CourseWithDetailsDTO[],
+ total,
+ page: paginationOptions?.page || 1,
+ limit: paginationOptions?.limit || total, 
+ totalPages: paginationOptions ? Math.ceil(total / paginationOptions.limit) : 1,
+};
   }
 }

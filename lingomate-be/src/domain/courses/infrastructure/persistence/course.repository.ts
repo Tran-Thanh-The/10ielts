@@ -43,7 +43,7 @@ export abstract class CourseRepository {
     search?: string;
     orderBy?: { [key: string]: "ASC" | "DESC" };
   }): Promise<{
-    data: Course[];
+    data: CourseWithDetailsDTO[];
     total: number;
     page: number;
     limit: number;

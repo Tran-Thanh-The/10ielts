@@ -126,6 +126,84 @@ export class UsersService {
     });
   }
 
+  // async update(
+  //   userId: string | null,
+  //   id: User["id"],
+  //   payload: DeepPartial<User>,
+  // ): Promise<User | null> {
+  //   const clonedPayload = { ...payload };
+
+  //   if (
+  //     clonedPayload.password &&
+  //     clonedPayload.previousPassword !== clonedPayload.password
+  //   ) {
+  //     const salt = await bcrypt.genSalt();
+  //     clonedPayload.password = await bcrypt.hash(clonedPayload.password, salt);
+  //   }
+
+  //   if (clonedPayload.email) {
+  //     const userObject = await this.usersRepository.findByEmail(
+  //       clonedPayload.email,
+  //     );
+
+  //     if (userObject && userObject.id !== id) {
+  //       throw new UnprocessableEntityException({
+  //         status: HttpStatus.UNPROCESSABLE_ENTITY,
+  //         errors: {
+  //           email: "emailAlreadyExists",
+  //         },
+  //       });
+  //     }
+  //   }
+
+  //   if (clonedPayload.photo?.id) {
+  //     const fileObject = await this.filesService.findById(
+  //       clonedPayload.photo.id,
+  //     );
+  //     if (!fileObject) {
+  //       throw new UnprocessableEntityException({
+  //         status: HttpStatus.UNPROCESSABLE_ENTITY,
+  //         errors: {
+  //           photo: "imageNotExists",
+  //         },
+  //       });
+  //     }
+  //     clonedPayload.photo = fileObject;
+  //   }
+
+  //   if (clonedPayload.role?.id) {
+  //     const roleObject = Object.values(RoleEnum)
+  //       .map(String)
+  //       .includes(String(clonedPayload.role.id));
+  //     if (!roleObject) {
+  //       throw new UnprocessableEntityException({
+  //         status: HttpStatus.UNPROCESSABLE_ENTITY,
+  //         errors: {
+  //           role: "roleNotExists",
+  //         },
+  //       });
+  //     }
+  //   }
+
+  //   if (clonedPayload.status) {
+  //     const statusObject = Object.values(StatusEnum)
+  //       .map(String)
+  //       .includes(String(clonedPayload.status));
+  //     if (!statusObject) {
+  //       throw new UnprocessableEntityException({
+  //         status: HttpStatus.UNPROCESSABLE_ENTITY,
+  //         errors: {
+  //           status: "statusNotExists",
+  //         },
+  //       });
+  //     }
+  //   }
+  //   if (userId) {
+  //     clonedPayload.updatedBy = Number(userId);
+  //   }
+  //   return this.usersRepository.update(id, clonedPayload);
+  // }
+
   async update(
     userId: string | null,
     id: User["id"],
@@ -141,7 +219,19 @@ export class UsersService {
       clonedPayload.password = await bcrypt.hash(clonedPayload.password, salt);
     }
 
-    if (clonedPayload.email) {
+    // Lấy thông tin user hiện tại từ id
+    const currentUser = await this.usersRepository.findById(id);
+    if (!currentUser) {
+      throw new UnprocessableEntityException({
+        status: HttpStatus.UNPROCESSABLE_ENTITY,
+        errors: {
+          user: "userNotFound",
+        },
+      });
+    }
+
+    // Kiểm tra email có thay đổi không trước khi kiểm tra trùng lặp
+    if (clonedPayload.email && clonedPayload.email !== currentUser.email) {
       const userObject = await this.usersRepository.findByEmail(
         clonedPayload.email,
       );
@@ -198,9 +288,11 @@ export class UsersService {
         });
       }
     }
+
     if (userId) {
       clonedPayload.updatedBy = Number(userId);
     }
+
     return this.usersRepository.update(id, clonedPayload);
   }
 

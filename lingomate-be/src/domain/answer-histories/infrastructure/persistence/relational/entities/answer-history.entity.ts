@@ -2,6 +2,7 @@ import { StatusEnum } from "@/common/enums/status.enum";
 import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
 import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
+import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 import { ApiProperty } from "@nestjs/swagger";
 import {
@@ -9,6 +10,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -63,12 +65,32 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
   totalScore?: number | null;
 
   @ApiProperty({
+    type: () => FileEntity,
+  })
+  @OneToOne(() => FileEntity, {
+    eager: true,
+  })
+  audioAnswer?: FileEntity | null; 
+
+  @ApiProperty({ type: () => String })
+  @Column({ type: 'text', nullable: true })
+  writingAnswer?: string; 
+
+  @ApiProperty({ type: () => Number })
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  teacherScore?: number;
+
+  @ApiProperty({ type: () => String })
+  @Column({ type: 'text', nullable: true }) 
+  teacherFeedback?: string; 
+
+  @ApiProperty({
     enum: StatusEnum,
   })
   @Column({
     type: "enum",
     enum: StatusEnum,
-    default: StatusEnum.IN_ACTIVE,
+    default: StatusEnum.ACTIVE,
   })
   status: StatusEnum;
 

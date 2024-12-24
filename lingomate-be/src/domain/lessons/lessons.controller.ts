@@ -1,23 +1,33 @@
+import { PermissionEnum } from "@/common/enums/permissions.enum";
+import { StatusEnum } from "@/common/enums/status.enum";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Permissions } from "@/utils/decorators/permission.decorator";
 import {
-  Controller,
-  Get,
-  Post,
+  InfinityPaginationResponse,
+  InfinityPaginationResponseDto,
+} from "@/utils/dto/infinity-pagination-response.dto";
+import { infinityPagination } from "@/utils/infinity-pagination";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
+import { NullableType } from "@/utils/types/nullable.type";
+import {
   Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
   ConflictException,
+  Controller,
+  Delete,
+  Get,
   InternalServerErrorException,
   NotFoundException,
-  UseInterceptors,
-  UploadedFile,
+  Param,
+  Patch,
+  Post,
+  Query,
   Req,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
-import { LessonsService } from "./lessons.service";
-import { CreateLessonDto } from "./dto/create-lesson.dto";
-import { UpdateLessonDto } from "./dto/update-lesson.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
   ApiConsumes,
@@ -28,23 +38,10 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { Lesson } from "./domain/lesson";
-import { AuthGuard } from "@nestjs/passport";
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from "@/utils/dto/infinity-pagination-response.dto";
-import { infinityPagination } from "@/utils/infinity-pagination";
+import { CreateLessonDto } from "./dto/create-lesson.dto";
 import { FindAllLessonsDto } from "./dto/find-all-lessons.dto";
-import { RolesGuard } from "../auth/guards/roles.guard";
-import { RoleEnum } from "../../common/enums/roles.enum";
-import { Roles } from "../../utils/decorators/roles.decorator";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
-import { NullableType } from "@/utils/types/nullable.type";
-import { StatusEnum } from "@/common/enums/status.enum";
-import { PermissionGuard } from "@/guards/permission.guard";
-import { Permissions } from "@/utils/decorators/permission.decorator";
-import { PermissionEnum } from "@/common/enums/permissions.enum";
+import { UpdateLessonDto } from "./dto/update-lesson.dto";
+import { LessonsService } from "./lessons.service";
 
 @ApiTags("Lessons")
 @ApiBearerAuth()

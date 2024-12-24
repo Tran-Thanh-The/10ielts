@@ -1,4 +1,5 @@
 import { StatusEnum } from "@/common/enums/status.enum";
+import { FileDto } from "@/files/dto/file.dto";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 
@@ -48,4 +49,20 @@ export class ResponseAnswerHistoryDto {
 
   @ApiProperty({ type: Date })
   updatedAt?: Date;
+
+  @ApiPropertyOptional({ type: () => FileDto })
+  @IsOptional()
+  audioAnswer?: FileDto | null;
+
+  @ApiPropertyOptional({ type: () => String })
+  @IsOptional()
+  writingAnswer?: string; 
+
+  @ApiPropertyOptional({ type: () => Number })
+  @IsOptional()
+  teacherScore?: number;
+
+  @ApiPropertyOptional({ type: () => String })
+  @IsOptional()
+  teacherFeedback?: string; 
 }

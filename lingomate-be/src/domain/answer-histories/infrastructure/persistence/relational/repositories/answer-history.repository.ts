@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { AnswerHistoryEntity } from "../entities/answer-history.entity";
@@ -16,6 +16,13 @@ export class AnswerHistoryRelationalRepository
     @InjectRepository(AnswerHistoryEntity)
     private readonly answerHistoryRepository: Repository<AnswerHistoryEntity>,
   ) {}
+  
+  async save(answerHistory: AnswerHistory): Promise<void> {
+    if (!answerHistory || !answerHistory.id) {
+      throw new NotFoundException("answerHistory not found");
+    }
+    await this.answerHistoryRepository.save(answerHistory);
+  }
 
   async create(data: AnswerHistory): Promise<AnswerHistory> {
     const persistenceModel = AnswerHistoryMapper.toPersistence(data);

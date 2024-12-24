@@ -5,19 +5,25 @@ import {
 import { infinityPagination } from "@/utils/infinity-pagination";
 import {
   Body,
+  ConflictException,
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
@@ -28,6 +34,8 @@ import { AnswerHistory } from "./domain/answer-history";
 import { CreateAnswerHistoryDto } from "./dto/create-answer-history.dto";
 import { FindAllAnswerHistoriesDto } from "./dto/find-all-answer-histories.dto";
 import { UpdateAnswerHistoryDto } from "./dto/update-answer-history.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 
 @ApiTags("Answerhistories")
 @ApiBearerAuth()
@@ -42,12 +50,23 @@ export class AnswerHistoriesController {
   ) {}
 
   @Post()
+  @UseInterceptors(FileInterceptor("file", multerConfig))
+  @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: AnswerHistory,
   })
-  create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto, @Req() req) {
-    const userId = req.user.id;
-    return this.answerHistoriesService.create(userId, createAnswerHistoryDto);
+  async create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto, @Req() req, @UploadedFile() file: Express.Multer.File,) {
+    try {
+      const userId = req.user.id;
+      return await this.answerHistoriesService.create(userId, createAnswerHistoryDto,file);
+    } catch (error) {
+       if (error instanceof NotFoundException) {
+          throw error;
+        }
+        throw new InternalServerErrorException(
+          "An error occurred while creating the answer-history. Please try again later.",
+        );
+    }
   }
 
   @Get()
@@ -88,6 +107,7 @@ export class AnswerHistoriesController {
   }
 
   @Patch(":id")
+  @UseInterceptors(FileInterceptor("file", multerConfig))
   @ApiParam({
     name: "id",
     type: String,
@@ -96,11 +116,18 @@ export class AnswerHistoriesController {
   @ApiOkResponse({
     type: AnswerHistory,
   })
-  update(
+  async update(
     @Param("id") id: string,
     @Body() updateAnswerHistoryDto: UpdateAnswerHistoryDto,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.answerHistoriesService.update(id, updateAnswerHistoryDto);
+    try {
+      return await this.answerHistoriesService.update(id, updateAnswerHistoryDto, file);
+    } catch (error) {
+        throw new InternalServerErrorException(
+          "An error occurred while updating the answer-history. Please try again later.",
+        );
+    }
   }
 
   @Delete(":id")

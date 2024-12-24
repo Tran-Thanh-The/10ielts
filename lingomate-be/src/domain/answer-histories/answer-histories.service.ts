@@ -11,17 +11,20 @@ import { AnswerHistoryRepository } from "./infrastructure/persistence/answer-his
 import { AnswerHistoryMapper } from "./infrastructure/persistence/relational/mappers/answer-history.mapper";
 import { UserRepository } from "../users/infrastructure/persistence/user.repository";
 import { UserMapper } from "../users/infrastructure/persistence/relational/mappers/user.mapper";
+import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
+import { StatusEnum } from "@/common/enums/status.enum";
 
 @Injectable()
 export class AnswerHistoriesService {
   constructor(
     private readonly answerHistoryRepository: AnswerHistoryRepository,
     private readonly practiceExerciseRepository: PracticeExerciseRepository,
+    private readonly filesLocalService: FilesLocalService,
     private readonly lessonRepository: LessonRepository,
     private readonly userRepository: UserRepository,
   ) {}
 
-  async create(userId: string, createAnswerHistoryDto: CreateAnswerHistoryDto) {
+  async create(userId: string, createAnswerHistoryDto: CreateAnswerHistoryDto, audioAnswer: Express.Multer.File,) {
     const model = AnswerHistoryMapper.toModel(createAnswerHistoryDto);
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -45,6 +48,11 @@ export class AnswerHistoriesService {
         throw new NotFoundException("Lesson not found");
       }
       model.lesson = LessonMapper.toPersistence(lesson);
+    }
+
+    if (audioAnswer) {
+      const uploadedFile = await this.filesLocalService.create(audioAnswer);
+      model.audioAnswer = uploadedFile.file;
     }
 
     const savedEntity = await this.answerHistoryRepository.create(model);
@@ -72,16 +80,34 @@ export class AnswerHistoriesService {
   async update(
     id: AnswerHistory["id"],
     updateAnswerHistoryDto: UpdateAnswerHistoryDto,
+    audioAnswer?: Express.Multer.File,
   ) {
     const existingAnswerHistory =
       await this.answerHistoryRepository.findById(id);
     if (!existingAnswerHistory) {
       throw new NotFoundException(`AnswerHistory with id "${id}" not found.`);
     }
+    if(audioAnswer) {
+      if (existingAnswerHistory.audioAnswer) {
+        await this.answerHistoryRepository.update(id, {audioAnswer: null});
+        await this.answerHistoryRepository,delete(existingAnswerHistory.audioAnswer);
+      }
+      const uploadedFile = await this.filesLocalService.create(audioAnswer);
+      updateAnswerHistoryDto.audioAnswer = uploadedFile.file;
+    }
+
     return this.answerHistoryRepository.update(id, updateAnswerHistoryDto);
   }
 
-  remove(id: AnswerHistory["id"]) {
+  async remove(id: AnswerHistory["id"]) {
+    const answerHistory = await this.answerHistoryRepository.findById(id);
+    if (!answerHistory) {
+      throw new NotFoundException(
+        `No answer-history found with id "${id}".`,
+      );
+    }
+    answerHistory.status = StatusEnum.IN_ACTIVE;
+    await this.answerHistoryRepository.save(answerHistory);
     return this.answerHistoryRepository.remove(id);
   }
 }

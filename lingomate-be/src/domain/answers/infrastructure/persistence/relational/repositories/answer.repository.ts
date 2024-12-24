@@ -15,10 +15,12 @@ export class AnswerRelationalRepository implements AnswerRepository {
     private readonly answerRepository: Repository<AnswerEntity>,
   ) {}
 
-  async findByQuestionId(questionId: string): Promise<NullableType<AnswerEntity[]>> {
+  async findByQuestionId(
+    questionId: string,
+  ): Promise<NullableType<AnswerEntity[]>> {
     return this.answerRepository.find({
       where: { question: { id: questionId } },
-      relations: ['question'],
+      relations: ["question"],
     });
   }
   async create(data: Answer): Promise<Answer> {

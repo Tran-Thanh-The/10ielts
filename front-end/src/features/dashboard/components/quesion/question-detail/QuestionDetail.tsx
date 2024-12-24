@@ -1,4 +1,8 @@
 import RoleBasedComponent from '@/components/RoleBasedComponent';
+import {
+  selectDoExerciseForm,
+  setDoExerciseForm,
+} from '@/stores/slices/appSlice';
 import { ROLE } from '@/utils/constants/constants';
 import {
   Box,
@@ -11,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function QuestionDetail({
   question,
@@ -18,7 +23,39 @@ export default function QuestionDetail({
   readOnly,
   onDelete,
   onEdit,
+  userAnswer,
 }: any) {
+  const dispatch = useDispatch();
+  const doExerciseForm = useSelector(selectDoExerciseForm);
+
+  const handleChangeInputAnswer = (e: any) => {
+    const updateForm = doExerciseForm.map((item: any) => {
+      if (item.id === question.id) {
+        return {
+          ...item,
+          userAnswer: e.target.value,
+        };
+      }
+      return item;
+    });
+
+    dispatch(setDoExerciseForm(updateForm));
+  };
+
+  const handleChangeRadioAnswer = (e: any) => {
+    const updateForm = doExerciseForm.map((item: any) => {
+      if (item.id === question.id) {
+        return {
+          ...item,
+          userAnswer: e.target.value,
+        };
+      }
+      return item;
+    });
+
+    dispatch(setDoExerciseForm(updateForm));
+  };
+
   return (
     <Box sx={{ padding: '12px 0' }}>
       <Box
@@ -77,6 +114,7 @@ export default function QuestionDetail({
             label="Nhập câu trả lời"
             variant="outlined"
             disabled={readOnly}
+            onChange={handleChangeInputAnswer}
           />
         </Box>
       ) : (
@@ -128,6 +166,18 @@ export default function QuestionDetail({
                     defaultChecked={readOnly ? option.isCorrect : false}
                     // checked={option.isCorrect}
                     disabled={readOnly}
+                    onChange={handleChangeRadioAnswer}
+                    sx={{
+                      background:
+                        readOnly && userAnswer
+                          ? option.isCorrect
+                            ? 'green'
+                            : userAnswer === option.id
+                              ? 'red'
+                              : 'unset'
+                          : 'unset',
+                    }}
+                    {...(userAnswer ? {checked: userAnswer === option.id} : {})}
                   />
                   {option.file?.path && (
                     <img src={option.file.path} width={200} height="auto" />

@@ -68,13 +68,10 @@ export class InvoiceEntity extends EntityRelationalHelper {
   })
   status: StatusEnum;
 
-  @ManyToOne(() => UserEntity, (user) => user.invoices, {
-    eager: true,
+  @Column({
+    type: "integer",
+    nullable: false,
   })
-  @JoinColumn({ name: "userId" })
-  user: UserEntity;
-
-  @Column("uuid")
   @Index()
   userId: string;
 

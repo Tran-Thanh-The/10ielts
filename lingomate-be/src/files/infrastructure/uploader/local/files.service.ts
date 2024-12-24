@@ -45,7 +45,7 @@ export class FilesLocalService {
         },
       });
     }
-  
+
     try {
       // Xóa file từ FileRepository
       await this.fileRepository.delete(file.id);

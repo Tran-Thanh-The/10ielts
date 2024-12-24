@@ -22,4 +22,13 @@ export abstract class InvoiceRepository {
   ): Promise<Invoice | null>;
 
   abstract remove(id: Invoice["id"]): Promise<void>;
+
+  abstract updateByOrderCode(
+    orderCode: number | string,
+    data: Partial<Invoice>,
+  );
+
+  abstract findByOrderCode(
+    orderCode: number | string,
+  ): Promise<NullableType<Invoice>>;
 }

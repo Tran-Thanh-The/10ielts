@@ -62,3 +62,41 @@ export const createQuestionAnswer = async (questionId: string, data: any) => {
 export const deleteQuestion = async (questionId: string) => {
   return axiosInstance.delete<any>(`questions/${questionId}`);
 };
+
+export const getRoles = async () => {
+  return axiosInstance.get<any>('roles');
+};
+
+export const submitCourseLesson = async (data: any) => {
+  return axiosInstance.post<any>('answer-histories', data);
+};
+
+export const getAnswerHistories = async () => {
+  return axiosInstance.get<any>('answer-histories', {
+    params: {
+      pages: 1,
+      limit: 1000,
+    },
+  });
+};
+
+export const createPractice = async (data: any) => {
+  return axiosInstance.post<any>('practice-exercises', data);
+};
+
+export const updatePractice = async (id: string, data: any) => {
+  return axiosInstance.patch<any>(`practice-exercises/${id}`, data);
+};
+
+export const getPracticeExercises = async () => {
+  return axiosInstance.get<any>('practice-exercises', {
+    params: {
+      pages: 1,
+      limit: 1000,
+    },
+  });
+};
+
+export const getPracticeExerciseById = async (id: string) => {
+  return axiosInstance.get<any>(`practice-exercises/${id}`);
+};

@@ -46,8 +46,7 @@ export class AnswerHistoriesService {
       }
       model.lesson = LessonMapper.toPersistence(lesson);
     }
- 
-    
+
     const savedEntity = await this.answerHistoryRepository.create(model);
 
     return savedEntity;

@@ -42,11 +42,11 @@ export default function DashboardLayout({ children }) {
       >
         {!isLessonDetailPage && (
           <>
-            {/* <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+            <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
               <AdminSidebar />
-            </RoleBasedComponent> */}
+            </RoleBasedComponent>
             <RoleBasedComponent
-              allowedRoles={[ROLE.USER, ROLE.ADMIN, ROLE.STAFF]}
+              allowedRoles={[ROLE.USER]}
             >
               <Sidebar />
             </RoleBasedComponent>

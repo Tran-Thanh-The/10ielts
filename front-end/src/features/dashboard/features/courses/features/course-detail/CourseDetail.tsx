@@ -180,15 +180,15 @@ export default function CourseDetail() {
       switch (tabIndex) {
         case 1:
           return course.lessons.filter(
-            (lesson) => lesson.lessonType === 'Video',
+            (lesson) => lesson.lessonType === LessonTypes.Video,
           );
         case 2:
           return course.lessons.filter(
-            (lesson) => lesson.lessonType === 'Docs',
+            (lesson) => lesson.lessonType === LessonTypes.Docs,
           );
         case 3:
           return course.lessons.filter(
-            (lesson) => lesson.lessonType === 'Exercise',
+            (lesson) => lesson.lessonType === LessonTypes.Exercise,
           );
         default:
           return course.lessons;

@@ -34,13 +34,13 @@ export class FileRelationalRepository implements FileRepository {
 
   async delete(id: FileType["id"]): Promise<void> {
     const file = await this.fileRepository.findOne({
-      where: { id: id }
+      where: { id: id },
     });
-  
+
     if (!file) {
-      throw new Error('File not found');
+      throw new Error("File not found");
     }
-  
+
     await this.fileRepository.remove(file);
   }
 }

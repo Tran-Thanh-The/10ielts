@@ -134,7 +134,7 @@ export class AnswersController {
     @Req() req,
     @Param("id") id: string,
     @Body() updateAnswerDto: UpdateAnswerDto,
-    @UploadedFile() file?: Express.Multer.File
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     const userId = req.user.id;
     return this.answersService.update(userId, id, updateAnswerDto, file);

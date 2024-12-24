@@ -22,7 +22,7 @@ export class AnswerHistoryRelationalRepository
     const newEntity = await this.answerHistoryRepository.save(
       this.answerHistoryRepository.create(persistenceModel),
     );
-    
+
     return AnswerHistoryMapper.toDomain(newEntity);
   }
 

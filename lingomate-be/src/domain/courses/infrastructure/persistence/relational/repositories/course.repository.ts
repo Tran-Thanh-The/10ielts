@@ -1,10 +1,8 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { CourseInvoicesEntity } from "@/domain/course-invoices/infrastructure/persistence/relational/entities/course-invoices.entity";
 import { CourseWithDetailsDTO } from "@/domain/courses/dto/course-details-dto";
 import { CourseEntity } from "@/domain/courses/infrastructure/persistence/relational/entities/course.entity";
 import { LessonMapper } from "@/domain/lessons/infrastructure/persistence/relational/mappers/lesson.mapper";
 import { UserCourseEntity } from "@/domain/user-courses/infrastructure/persistence/relational/entities/user-course.entity";
-import { UserInvoicesEntity } from "@/domain/user-invoices/infrastructure/persistence/relational/entities/user-invoices.entity";
 import { UserLessonEntity } from "@/domain/user-lessons/infrastructure/persistence/relational/entities/user-lesson.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { NullableType } from "@/utils/types/nullable.type";
@@ -28,10 +26,6 @@ export class CourseRelationalRepository implements CourseRepository {
     private readonly userLessonRepository: Repository<UserLessonEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(CourseInvoicesEntity)
-    private readonly courseInvoicesRepository: Repository<CourseInvoicesEntity>,
-    @InjectRepository(UserInvoicesEntity)
-    private readonly userInvoicesRepository: Repository<UserInvoicesEntity>,
   ) {}
 
   async create(data: Course): Promise<Course> {
@@ -115,24 +109,17 @@ export class CourseRelationalRepository implements CourseRepository {
   async checkIsMyCourse(userId: string, courseId: string): Promise<boolean> {
     const userIdNumber = Number(userId);
 
-    const userInvoice = await this.userInvoicesRepository
-      .createQueryBuilder("userInvoice")
-      .where("userInvoice.userId = :userId", { userId: userIdNumber })
+    const checkOwnCourse = await this.userCourseRepository
+      .createQueryBuilder("uc")
+      .select("uc")
+      .innerJoin("uc.course", "c")
+      .innerJoin("c.invoiceProducts", "ip")
+      .innerJoin("ip.invoice", "i")
+      .where("i.userId = :userId", { userId: userIdNumber })
+      .andWhere("uc.courseId = :courseId", { courseId })
       .getOne();
 
-    if (!userInvoice) {
-      return false;
-    }
-
-    const purchaseExists = await this.courseInvoicesRepository
-      .createQueryBuilder("courseInvoice")
-      .where("courseInvoice.userInvoicesId = :userInvoicesId", {
-        userInvoicesId: userInvoice.id,
-      })
-      .andWhere("courseInvoice.courseId = :courseId", { courseId })
-      .getOne();
-
-    return !!purchaseExists;
+    return !!checkOwnCourse;
   }
 
   async getCourseDetailById(
@@ -347,7 +334,7 @@ export class CourseRelationalRepository implements CourseRepository {
       isMyCourse,
       search,
     } = params;
-  
+
     const queryBuilder = this.courseRepository
       .createQueryBuilder("course")
       .leftJoinAndSelect("course.photo", "photo")
@@ -355,47 +342,49 @@ export class CourseRelationalRepository implements CourseRepository {
       .leftJoin("course.userCourses", "userCourse")
       .leftJoin("course.invoiceProducts", "invoiceProducts")
       .leftJoin("invoice", "invoice", "invoice.id = invoiceProducts.invoiceId");
-  
+
     // Filter by userId
     if (userId) {
       console.log("UserID tồng tài");
-      
+
       queryBuilder.andWhere(
         "(userCourse.userId = :userId OR invoice.userId = :userId)",
-        { userId: Number(userId) }
+        { userId: Number(userId) },
       );
     }
-  
+
     // Filter by invoiceId
     if (invoiceId && isUUID(invoiceId)) {
       queryBuilder.andWhere("invoice.id = :invoiceId", { invoiceId });
     }
-  
+
     // Filter by course status
     if (status) {
       queryBuilder.andWhere("course.status = :status", { status });
     }
-  
+
     // Filter by search query
     if (search) {
       queryBuilder.andWhere(
         "(course.name LIKE :search OR course.description LIKE :search)",
-        { search: `%${search}%` }
+        { search: `%${search}%` },
       );
     }
-  
+
     // Filter by isMyCourse
     if (isMyCourse !== undefined && userId) {
       if (isMyCourse) {
-        queryBuilder.andWhere("invoice.userId = :userId", { userId: Number(userId) });
+        queryBuilder.andWhere("invoice.userId = :userId", {
+          userId: Number(userId),
+        });
       } else {
         queryBuilder.andWhere(
           "(invoice.userId IS NULL OR invoice.userId != :userId)",
-          { userId: Number(userId) }
+          { userId: Number(userId) },
         );
       }
     }
-  
+
     // Order by specified columns
     const validColumns = [
       "id",
@@ -407,7 +396,7 @@ export class CourseRelationalRepository implements CourseRepository {
       "updatedAt",
       "photo",
     ];
-  
+
     if (orderBy && Object.keys(orderBy).length > 0) {
       Object.entries(orderBy).forEach(([key, value]) => {
         if (validColumns.includes(key)) {
@@ -417,17 +406,17 @@ export class CourseRelationalRepository implements CourseRepository {
     } else {
       queryBuilder.orderBy("course.createdAt", "DESC");
     }
-  
+
     queryBuilder.addOrderBy("course.id", "ASC");
-  
+
     // Pagination
     const total = await queryBuilder.getCount();
-  
+
     if (paginationOptions) {
       const { page, limit } = paginationOptions;
       queryBuilder.skip((page - 1) * limit).take(limit);
     }
-  
+
     // Fetch courses
     const courses = await queryBuilder.getMany();
     const mappedCourses = courses.map((course) => ({
@@ -435,7 +424,7 @@ export class CourseRelationalRepository implements CourseRepository {
       createdAt: course.createdAt,
       updatedAt: course.updatedAt,
     }));
-  
+
     return {
       data: mappedCourses,
       total,
@@ -446,5 +435,4 @@ export class CourseRelationalRepository implements CourseRepository {
         : 1,
     };
   }
-  
 }

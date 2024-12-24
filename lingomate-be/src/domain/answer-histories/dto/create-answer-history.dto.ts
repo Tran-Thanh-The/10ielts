@@ -13,8 +13,8 @@ export class CreateAnswerHistoryDto {
   @IsString()
   @IsOptional()
   practice_id?: string | null;
-  
-  @ApiPropertyOptional({ type: "jsonb"})
+
+  @ApiPropertyOptional({ type: "jsonb" })
   @IsOptional()
   answers?: Record<string, any>;
 

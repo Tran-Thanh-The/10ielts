@@ -398,7 +398,7 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/list?userId=1",
+							"raw": "{{HOST}}/api/v1/courses/list?categoryId=147ef9cb-5d7d-4991-a2d9-0221144945ca",
 							"host": [
 								"{{HOST}}"
 							],
@@ -451,7 +451,12 @@
 								},
 								{
 									"key": "userId",
-									"value": "1"
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "categoryId",
+									"value": "147ef9cb-5d7d-4991-a2d9-0221144945ca"
 								}
 							]
 						}
@@ -2451,7 +2456,7 @@
 									]
 								},
 								"url": {
-									"raw": "{{HOST}}/api/v1/answer-histories?pages=1&limit=10&userId=&lessonId&practiceId=1ee63eca-40ef-4d93-a270-c61852b3c28f",
+									"raw": "{{HOST}}/api/v1/answer-histories?pages=1&limit=10&userId=1&lessonId&practiceId=1ee63eca-40ef-4d93-a270-c61852b3c28f",
 									"host": [
 										"{{HOST}}"
 									],
@@ -2471,7 +2476,7 @@
 										},
 										{
 											"key": "userId",
-											"value": ""
+											"value": "1"
 										},
 										{
 											"key": "lessonId",

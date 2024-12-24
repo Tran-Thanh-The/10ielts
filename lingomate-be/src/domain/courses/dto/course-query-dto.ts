@@ -23,6 +23,13 @@ export class CourseQueryDto {
   invoiceId?: string;
 
   @ApiPropertyOptional({
+    description: "Filter courses by category ID",
+  })
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
+
+  @ApiPropertyOptional({
     description: "Filter courses by search",
   })
   @IsOptional()

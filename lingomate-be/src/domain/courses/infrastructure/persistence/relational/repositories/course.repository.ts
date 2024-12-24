@@ -366,6 +366,7 @@ export class CourseRelationalRepository implements CourseRepository {
     status?: StatusEnum;
     userId?: string;
     invoiceId?: string;
+    categoryId?: string;
     paginationOptions?: IPaginationOptions;
     isMyCourse?: boolean;
     search?: string;
@@ -381,6 +382,7 @@ export class CourseRelationalRepository implements CourseRepository {
       status,
       userId,
       invoiceId,
+      categoryId,
       paginationOptions,
       orderBy,
       isMyCourse,
@@ -408,6 +410,11 @@ export class CourseRelationalRepository implements CourseRepository {
     // Filter by invoiceId
     if (invoiceId && isUUID(invoiceId)) {
       queryBuilder.andWhere("invoice.id = :invoiceId", { invoiceId });
+    }
+
+    // Filter by categoryId
+    if (categoryId && isUUID(categoryId)) {
+      queryBuilder.andWhere("category.id = :categoryId", { categoryId });
     }
 
     // Filter by course status

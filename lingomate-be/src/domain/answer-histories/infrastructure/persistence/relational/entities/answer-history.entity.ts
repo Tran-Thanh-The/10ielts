@@ -72,19 +72,19 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
     eager: true,
   })
   @JoinColumn()
-  audioAnswer?: FileEntity | null; 
+  audioAnswer?: FileEntity | null;
 
   @ApiProperty({ type: () => String })
-  @Column({ type: 'text', nullable: true })
-  writingAnswer?: string; 
+  @Column({ type: "text", nullable: true })
+  writingAnswer?: string;
 
   @ApiProperty({ type: () => Number })
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({ type: "decimal", precision: 5, scale: 2, nullable: true })
   teacherScore?: number;
 
   @ApiProperty({ type: () => String })
-  @Column({ type: 'text', nullable: true }) 
-  teacherFeedback?: string; 
+  @Column({ type: "text", nullable: true })
+  teacherFeedback?: string;
 
   @ApiProperty({
     enum: StatusEnum,

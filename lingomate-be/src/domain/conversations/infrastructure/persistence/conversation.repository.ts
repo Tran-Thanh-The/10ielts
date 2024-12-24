@@ -1,10 +1,9 @@
+import { ConversationEntity } from "@/domain/conversations/infrastructure/persistence/relational/entities/conversation.entity";
 import { DeepPartial } from "@/utils/types/deep-partial.type";
 import { NullableType } from "@/utils/types/nullable.type";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
-import { Conversation } from "../../domain/conversation";
-import { FindOptionsWhere } from "typeorm/find-options/FindOptionsWhere";
 import { FindManyOptions } from "typeorm";
-import { ConversationEntity } from "@/domain/conversations/infrastructure/persistence/relational/entities/conversation.entity";
+import { Conversation } from "../../domain/conversation";
 
 export abstract class ConversationRepository {
   abstract create(

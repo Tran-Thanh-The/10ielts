@@ -6,7 +6,7 @@ import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relati
 import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { AnswerHistoryEntity } from "../entities/answer-history.entity";
-import { FileMapper } from './../../../../../../files/infrastructure/persistence/relational/mappers/file.mapper';
+import { FileMapper } from "./../../../../../../files/infrastructure/persistence/relational/mappers/file.mapper";
 
 export class AnswerHistoryMapper {
   static toDomain(raw: AnswerHistoryEntity): AnswerHistory {
@@ -48,7 +48,9 @@ export class AnswerHistoryMapper {
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
     if (domainEntity.audioAnswer) {
-      persistenceEntity.audioAnswer = FileMapper.toPersistence(domainEntity.audioAnswer);
+      persistenceEntity.audioAnswer = FileMapper.toPersistence(
+        domainEntity.audioAnswer,
+      );
     } else {
       persistenceEntity.audioAnswer = null;
     }
@@ -108,7 +110,7 @@ export class AnswerHistoryMapper {
     dto.completedAt = model.completedAt;
     dto.createdAt = model.createdAt;
     dto.updatedAt = model.updatedAt;
-    if(model.audioAnswer) {
+    if (model.audioAnswer) {
       dto.audioAnswer = model.audioAnswer;
     }
     dto.writingAnswer = model.writingAnswer;

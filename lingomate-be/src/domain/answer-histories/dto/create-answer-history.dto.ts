@@ -1,6 +1,6 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsOptional, IsString } from "class-validator";
 
 export class CreateAnswerHistoryDto {
   // Don't forget to use the class-validator decorators in the DTO properties.
@@ -38,7 +38,7 @@ export class CreateAnswerHistoryDto {
 
   @ApiPropertyOptional({ type: () => String })
   @IsOptional()
-  writingAnswer?: string; 
+  writingAnswer?: string;
 
   @ApiPropertyOptional({ type: () => Number })
   @IsOptional()
@@ -46,5 +46,5 @@ export class CreateAnswerHistoryDto {
 
   @ApiPropertyOptional({ type: () => String })
   @IsOptional()
-  teacherFeedback?: string; 
+  teacherFeedback?: string;
 }

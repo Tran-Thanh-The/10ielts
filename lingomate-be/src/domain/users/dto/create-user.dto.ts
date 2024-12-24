@@ -1,7 +1,8 @@
 import { StatusEnum } from "@/common/enums/status.enum";
+import { Role } from "@/domain/roles/domain/role";
 import { lowerCaseTransformer } from "@/utils/transformers/lower-case.transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Transform, Type } from "class-transformer";
+import { Transform } from "class-transformer";
 import {
   // decorators here
   IsEmail,
@@ -11,7 +12,6 @@ import {
   MinLength,
 } from "class-validator";
 import { FileDto } from "../../../files/dto/file.dto";
-import { Role } from "@/domain/roles/domain/role";
 
 export class CreateUserDto {
   @ApiProperty({ example: "test1@example.com", type: String })

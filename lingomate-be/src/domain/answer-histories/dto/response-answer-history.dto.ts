@@ -56,7 +56,7 @@ export class ResponseAnswerHistoryDto {
 
   @ApiPropertyOptional({ type: () => String })
   @IsOptional()
-  writingAnswer?: string; 
+  writingAnswer?: string;
 
   @ApiPropertyOptional({ type: () => Number })
   @IsOptional()
@@ -64,5 +64,5 @@ export class ResponseAnswerHistoryDto {
 
   @ApiPropertyOptional({ type: () => String })
   @IsOptional()
-  teacherFeedback?: string; 
+  teacherFeedback?: string;
 }

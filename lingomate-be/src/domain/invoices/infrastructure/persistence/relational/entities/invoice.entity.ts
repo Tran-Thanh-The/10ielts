@@ -1,6 +1,5 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { InvoiceProductEntity } from "@/domain/invoice-products/infrastructure/persistence/relational/entities/invoice-product.entity";
-import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { EntityRelationalHelper } from "@/utils/relational-entity-helper";
 import { ApiProperty } from "@nestjs/swagger";
 import {
@@ -9,11 +8,9 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
-  JoinColumn,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from "typeorm";
 
 @Entity({

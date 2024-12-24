@@ -29,8 +29,6 @@ import { AuthUpdateDto } from "./dto/auth-update.dto";
 import { LoginResponseDto } from "./dto/login-response.dto";
 import { JwtPayloadType } from "./strategies/types/jwt-payload.type";
 import { JwtRefreshPayloadType } from "./strategies/types/jwt-refresh-payload.type";
-import { log } from "console";
-import { permission } from "process";
 
 @Injectable()
 export class AuthService {
@@ -54,7 +52,7 @@ export class AuthService {
         },
       });
     }
-    
+
     if (user.status === StatusEnum.IN_ACTIVE) {
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -63,7 +61,6 @@ export class AuthService {
         },
       });
     }
-
 
     if (user.provider !== AuthProvidersEnum.email) {
       throw new UnprocessableEntityException({

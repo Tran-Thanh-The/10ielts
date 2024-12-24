@@ -10,14 +10,14 @@ export class UpdateAnswerHistoryDto extends PartialType(
   CreateAnswerHistoryDto,
 ) {
   @ApiProperty({
-      type: "string",
-      format: "binary",
-      required: false,
-      description: "Speaking audio file",
-    })
-    fileUpload?: Express.Multer.File;
-  
-    @ApiPropertyOptional({ type: () => FileDto })
-    @IsOptional()
-    audioAnswer?: FileDto | null;
+    type: "string",
+    format: "binary",
+    required: false,
+    description: "Speaking audio file",
+  })
+  fileUpload?: Express.Multer.File;
+
+  @ApiPropertyOptional({ type: () => FileDto })
+  @IsOptional()
+  audioAnswer?: FileDto | null;
 }

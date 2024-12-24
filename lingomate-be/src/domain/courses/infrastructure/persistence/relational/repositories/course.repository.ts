@@ -329,15 +329,15 @@ export class CourseRelationalRepository implements CourseRepository {
       )
       .where("course.id = :id", { id })
       .getOne();
-  
+
     if (!courseEntity) {
       return null;
     }
-  
+
     const completedLessons = courseEntity.lessonCourses.filter(
-      lc => lc.lesson.userLessons?.[0]?.isCompleted
+      (lc) => lc.lesson.userLessons?.[0]?.isCompleted,
     ).length;
-  
+
     const courseDetail: Omit<CourseWithDetailsDTO, "isMyCourse"> = {
       id: courseEntity.id,
       title: courseEntity.name,
@@ -353,7 +353,7 @@ export class CourseRelationalRepository implements CourseRepository {
         isCompleted: lc.lesson.userLessons?.[0]?.isCompleted || false,
       })),
     };
-  
+
     const isMyCourse = userId ? await this.checkIsMyCourse(userId, id) : false;
     const result = {
       ...courseDetail,
@@ -361,7 +361,7 @@ export class CourseRelationalRepository implements CourseRepository {
     };
     return result;
   }
-  
+
   async getListCourse(params: {
     status?: StatusEnum;
     userId?: string;

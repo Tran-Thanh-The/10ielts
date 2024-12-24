@@ -18,7 +18,9 @@ export abstract class AnswerHistoryRepository {
   // }: {
   //   paginationOptions: IPaginationOptions;
   // }): Promise<AnswerHistory[]>;
-  abstract findAllWithPagination(options: FindAnswerHistoryOptions): Promise<AnswerHistory[]>;
+  abstract findAllWithPagination(
+    options: FindAnswerHistoryOptions,
+  ): Promise<AnswerHistory[]>;
 
   abstract findById(
     id: AnswerHistory["id"],

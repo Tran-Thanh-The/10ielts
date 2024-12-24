@@ -3,14 +3,13 @@ import {
   InfinityPaginationResponseDto,
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
+import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 import {
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
   InternalServerErrorException,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -18,9 +17,10 @@ import {
   Req,
   UploadedFile,
   UseGuards,
-  UseInterceptors,
+  UseInterceptors
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBearerAuth,
   ApiConsumes,
@@ -32,10 +32,11 @@ import {
 import { AnswerHistoriesService } from "./answer-histories.service";
 import { AnswerHistory } from "./domain/answer-history";
 import { CreateAnswerHistoryDto } from "./dto/create-answer-history.dto";
-import { FindAllAnswerHistoriesDto, PaginationOptionsDto } from "./dto/find-all-answer-histories.dto";
+import {
+  FindAllAnswerHistoriesDto,
+  PaginationOptionsDto,
+} from "./dto/find-all-answer-histories.dto";
 import { UpdateAnswerHistoryDto } from "./dto/update-answer-history.dto";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
 
 @ApiTags("Answerhistories")
 @ApiBearerAuth()
@@ -55,10 +56,18 @@ export class AnswerHistoriesController {
   @ApiCreatedResponse({
     type: AnswerHistory,
   })
-  async create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto, @Req() req, @UploadedFile() audioAnswer: Express.Multer.File,) {
+  async create(
+    @Body() createAnswerHistoryDto: CreateAnswerHistoryDto,
+    @Req() req,
+    @UploadedFile() audioAnswer: Express.Multer.File,
+  ) {
     // try {
-      const userId = req.user.id;
-      return await this.answerHistoriesService.create(userId, createAnswerHistoryDto, audioAnswer);
+    const userId = req.user.id;
+    return await this.answerHistoriesService.create(
+      userId,
+      createAnswerHistoryDto,
+      audioAnswer,
+    );
     // } catch (error) {
     //    if (error instanceof NotFoundException) {
     //       throw error;
@@ -106,12 +115,13 @@ export class AnswerHistoriesController {
       limit = 50;
     }
 
-    const answerHistories = await this.answerHistoriesService.findAllWithPagination({
-      paginationOptions: { page, limit },
-      practiceId: query.practiceId,
-      lessonId: query.lessonId,
-      userId: query.userId,
-    });
+    const answerHistories =
+      await this.answerHistoriesService.findAllWithPagination({
+        paginationOptions: { page, limit },
+        practiceId: query.practiceId,
+        lessonId: query.lessonId,
+        userId: query.userId,
+      });
 
     return infinityPagination(answerHistories, { page, limit });
   }
@@ -145,11 +155,15 @@ export class AnswerHistoriesController {
     @UploadedFile() file?: Express.Multer.File,
   ) {
     try {
-      return await this.answerHistoriesService.update(id, updateAnswerHistoryDto, file);
+      return await this.answerHistoriesService.update(
+        id,
+        updateAnswerHistoryDto,
+        file,
+      );
     } catch (error) {
-        throw new InternalServerErrorException(
-          "An error occurred while updating the answer-history. Please try again later.",
-        );
+      throw new InternalServerErrorException(
+        "An error occurred while updating the answer-history. Please try again later.",
+      );
     }
   }
 

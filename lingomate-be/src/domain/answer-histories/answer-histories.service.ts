@@ -24,7 +24,11 @@ export class AnswerHistoriesService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async create(userId: string, createAnswerHistoryDto: CreateAnswerHistoryDto, audioAnswer: Express.Multer.File,) {
+  async create(
+    userId: string,
+    createAnswerHistoryDto: CreateAnswerHistoryDto,
+    audioAnswer: Express.Multer.File,
+  ) {
     const model = AnswerHistoryMapper.toModel(createAnswerHistoryDto);
     const user = await this.userRepository.findById(userId);
     if (!user) {
@@ -68,7 +72,7 @@ export class AnswerHistoriesService {
   }: {
     paginationOptions: IPaginationOptions;
     practiceId?: string;
-    lessonId,
+    lessonId;
     userId?: string;
   }): Promise<AnswerHistory[]> {
     return this.answerHistoryRepository.findAllWithPagination({
@@ -81,7 +85,6 @@ export class AnswerHistoriesService {
       userId,
     });
   }
-  
 
   findOne(id: AnswerHistory["id"]) {
     return this.answerHistoryRepository.findById(id);
@@ -97,10 +100,11 @@ export class AnswerHistoriesService {
     if (!existingAnswerHistory) {
       throw new NotFoundException(`AnswerHistory with id "${id}" not found.`);
     }
-    if(audioAnswer) {
+    if (audioAnswer) {
       if (existingAnswerHistory.audioAnswer) {
-        await this.answerHistoryRepository.update(id, {audioAnswer: null});
-        await this.answerHistoryRepository,delete(existingAnswerHistory.audioAnswer);
+        await this.answerHistoryRepository.update(id, { audioAnswer: null });
+        this.answerHistoryRepository,
+          delete existingAnswerHistory.audioAnswer;
       }
       const uploadedFile = await this.filesLocalService.create(audioAnswer);
       updateAnswerHistoryDto.audioAnswer = uploadedFile.file;
@@ -112,9 +116,7 @@ export class AnswerHistoriesService {
   async remove(id: AnswerHistory["id"]) {
     const answerHistory = await this.answerHistoryRepository.findById(id);
     if (!answerHistory) {
-      throw new NotFoundException(
-        `No answer-history found with id "${id}".`,
-      );
+      throw new NotFoundException(`No answer-history found with id "${id}".`);
     }
     answerHistory.status = StatusEnum.IN_ACTIVE;
     await this.answerHistoryRepository.save(answerHistory);

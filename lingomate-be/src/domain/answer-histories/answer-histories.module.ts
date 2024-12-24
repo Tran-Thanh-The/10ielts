@@ -15,7 +15,7 @@ import { RelationalAnswerHistoryPersistenceModule } from "./infrastructure/persi
     LessonsModule,
     AnswersModule,
     UsersModule,
-    FilesLocalModule
+    FilesLocalModule,
   ],
   controllers: [AnswerHistoriesController],
   providers: [AnswerHistoriesService],

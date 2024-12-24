@@ -1,12 +1,14 @@
+import { AnswerHistory } from "@/domain/answer-histories/domain/answer-history";
+import { NullableType } from "@/utils/types/nullable.type";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import {
+  AnswerHistoryRepository,
+  FindAnswerHistoryOptions,
+} from "../../answer-history.repository";
 import { AnswerHistoryEntity } from "../entities/answer-history.entity";
-import { NullableType } from "@/utils/types/nullable.type";
-import { AnswerHistoryRepository, FindAnswerHistoryOptions } from "../../answer-history.repository";
 import { AnswerHistoryMapper } from "../mappers/answer-history.mapper";
-import { IPaginationOptions } from "@/utils/types/pagination-options";
-import { AnswerHistory } from "@/domain/answer-histories/domain/answer-history";
 
 @Injectable()
 export class AnswerHistoryRelationalRepository
@@ -16,7 +18,7 @@ export class AnswerHistoryRelationalRepository
     @InjectRepository(AnswerHistoryEntity)
     private readonly answerHistoryRepository: Repository<AnswerHistoryEntity>,
   ) {}
-  
+
   async save(answerHistory: AnswerHistory): Promise<void> {
     if (!answerHistory || !answerHistory.id) {
       throw new NotFoundException("answerHistory not found");
@@ -57,32 +59,31 @@ export class AnswerHistoryRelationalRepository
     userId,
   }: FindAnswerHistoryOptions): Promise<AnswerHistory[]> {
     const queryBuilder = this.answerHistoryRepository
-      .createQueryBuilder('answerHistory')
-      .leftJoinAndSelect('answerHistory.practice', 'practice')
-      .leftJoinAndSelect('answerHistory.lesson', 'lesson')
-      .leftJoinAndSelect('answerHistory.user', 'user');
+      .createQueryBuilder("answerHistory")
+      .leftJoinAndSelect("answerHistory.practice", "practice")
+      .leftJoinAndSelect("answerHistory.lesson", "lesson")
+      .leftJoinAndSelect("answerHistory.user", "user");
 
     if (practiceId) {
-      queryBuilder.andWhere('practice.id = :practiceId', { practiceId });
+      queryBuilder.andWhere("practice.id = :practiceId", { practiceId });
     }
 
     if (lessonId) {
-      queryBuilder.andWhere('lesson.id = :lessonId', { lessonId });
+      queryBuilder.andWhere("lesson.id = :lessonId", { lessonId });
     }
 
     if (userId) {
-      queryBuilder.andWhere('user.id = :userId', { userId });
+      queryBuilder.andWhere("user.id = :userId", { userId });
     }
 
     const [entities] = await queryBuilder
       .skip((paginationOptions.page - 1) * paginationOptions.limit)
       .take(paginationOptions.limit)
-      .orderBy('answerHistory.createdAt', 'DESC')
+      .orderBy("answerHistory.createdAt", "DESC")
       .getManyAndCount();
 
     return entities.map((entity) => AnswerHistoryMapper.toDomain(entity));
   }
-  
 
   async findById(
     id: AnswerHistory["id"],

@@ -1,13 +1,12 @@
+import { RoleEnum } from "@/common/enums/roles.enum";
 import { PermissionGuard } from "@/guards/permission.guard";
-import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
-import { ApiBearerAuth, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
-import { StatisticalService } from "./statistical.service";
 import { Public } from "@/utils/decorators/public.decorator";
+import { Roles } from "@/utils/decorators/roles.decorator";
+import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request, Response } from "express";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
-import { Roles } from "@/utils/decorators/roles.decorator";
-import { RoleEnum } from "@/common/enums/roles.enum";
+import { StatisticalService } from "./statistical.service";
 
 @ApiTags("Statistical")
 @ApiBearerAuth()

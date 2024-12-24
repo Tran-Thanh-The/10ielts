@@ -1,16 +1,12 @@
-import { FileMapper } from './../../../../../../files/infrastructure/persistence/relational/mappers/file.mapper';
-import { AnswerHistory } from "@/domain/answer-histories/domain/answer-history";
-import { AnswerHistoryEntity } from "../entities/answer-history.entity";
-import { PracticeExerciseMapper } from "@/domain/practice-exercises/infrastructure/persistence/relational/mappers/practice-exercise.mapper";
-import { LessonMapper } from "@/domain/lessons/infrastructure/persistence/relational/mappers/lesson.mapper";
-import { CreateAnswerHistoryDto } from "@/domain/answer-histories/dto/create-answer-history.dto";
-import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
-import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
 import { StatusEnum } from "@/common/enums/status.enum";
-import { UserMapper } from "@/domain/users/infrastructure/persistence/relational/mappers/user.mapper";
+import { AnswerHistory } from "@/domain/answer-histories/domain/answer-history";
+import { CreateAnswerHistoryDto } from "@/domain/answer-histories/dto/create-answer-history.dto";
 import { ResponseAnswerHistoryDto } from "@/domain/answer-histories/dto/response-answer-history.dto";
-import { User } from "@/domain/users/domain/user";
+import { LessonEntity } from "@/domain/lessons/infrastructure/persistence/relational/entities/lesson.entity";
+import { PracticeExerciseEntity } from "@/domain/practice-exercises/infrastructure/persistence/relational/entities/practice-exercise.entity";
 import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
+import { AnswerHistoryEntity } from "../entities/answer-history.entity";
+import { FileMapper } from './../../../../../../files/infrastructure/persistence/relational/mappers/file.mapper';
 
 export class AnswerHistoryMapper {
   static toDomain(raw: AnswerHistoryEntity): AnswerHistory {

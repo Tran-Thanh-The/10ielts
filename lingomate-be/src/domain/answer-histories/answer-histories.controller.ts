@@ -50,23 +50,23 @@ export class AnswerHistoriesController {
   ) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor("file", multerConfig))
+  @UseInterceptors(FileInterceptor("audioAnswer", multerConfig))
   @ApiConsumes("multipart/form-data")
   @ApiCreatedResponse({
     type: AnswerHistory,
   })
-  async create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto, @Req() req, @UploadedFile() file: Express.Multer.File,) {
-    try {
+  async create(@Body() createAnswerHistoryDto: CreateAnswerHistoryDto, @Req() req, @UploadedFile() audioAnswer: Express.Multer.File,) {
+    // try {
       const userId = req.user.id;
-      return await this.answerHistoriesService.create(userId, createAnswerHistoryDto,file);
-    } catch (error) {
-       if (error instanceof NotFoundException) {
-          throw error;
-        }
-        throw new InternalServerErrorException(
-          "An error occurred while creating the answer-history. Please try again later.",
-        );
-    }
+      return await this.answerHistoriesService.create(userId, createAnswerHistoryDto, audioAnswer);
+    // } catch (error) {
+    //    if (error instanceof NotFoundException) {
+    //       throw error;
+    //     }
+    //     throw new InternalServerErrorException(
+    //       "An error occurred while creating the answer-history. Please try again later.",
+    //     );
+    // }
   }
 
   @Get()

@@ -1,5 +1,4 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { FileEntity } from "@/files/infrastructure/persistence/relational/entities/file.entity";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
 
@@ -25,7 +24,6 @@ export class CreateAnswerHistoryDto {
   lesson_id?: string | null;
 
   @ApiPropertyOptional({ type: Number })
-  @IsNumber()
   @IsOptional()
   totalScore?: number | null;
 

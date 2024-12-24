@@ -9,6 +9,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -70,6 +71,7 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
   @OneToOne(() => FileEntity, {
     eager: true,
   })
+  @JoinColumn()
   audioAnswer?: FileEntity | null; 
 
   @ApiProperty({ type: () => String })

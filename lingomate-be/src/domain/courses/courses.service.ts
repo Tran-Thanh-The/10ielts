@@ -101,6 +101,7 @@ export class CoursesService {
     status?: StatusEnum,
     userId?: string,
     invoiceId?: string,
+    categoryId?: string,
     page: number = 1,
     limit: number = 10,
     search?: string,
@@ -111,6 +112,7 @@ export class CoursesService {
       status,
       userId,
       invoiceId,
+      categoryId,
       paginationOptions: {
         page,
         limit,

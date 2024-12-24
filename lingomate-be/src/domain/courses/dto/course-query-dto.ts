@@ -64,6 +64,10 @@ export class CourseQueryDto {
   @IsOptional()
   @IsString()
   orderBy?: string = "created_at:DESC";
+
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
 }
 
 export interface IParsedOrderBy {

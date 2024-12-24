@@ -37,6 +37,7 @@ export abstract class CourseRepository {
     status?: StatusEnum;
     userId?: string;
     invoiceId?: string;
+    categoryId?: string;
     paginationOptions?: IPaginationOptions;
     isMyCourse?: boolean;
     search?: string;

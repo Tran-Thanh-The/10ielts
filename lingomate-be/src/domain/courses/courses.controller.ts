@@ -109,6 +109,7 @@ export class CoursesController {
       query.status,
       query.userId,
       query.invoiceId,
+      query.categoryId,
       query.page,
       query.limit,
       query.search,

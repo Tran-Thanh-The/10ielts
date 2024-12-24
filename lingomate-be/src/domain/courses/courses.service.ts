@@ -107,7 +107,7 @@ export class CoursesService {
     search?: string,
     isMyCourse?: string,
     orderBy: { [key: string]: "ASC" | "DESC" } = { created_at: "DESC" },
-  ): Promise<CourseListResponseDto<CourseResponseDto>> {
+  ): Promise<CourseListResponseDto<CourseWithDetailsDTO>> {
     const params = {
       status,
       userId,
@@ -122,10 +122,11 @@ export class CoursesService {
       orderBy,
     };
     const result = await this.courseRepository.getListCourse(params);
-    return {
-      ...result,
-      data: result.data.map((course) => CourseMapper.toDto(course)),
-    };
+    // return {
+    //   ...result,
+    //   data: result.data.map((course) => CourseMapper.toDto(course)),
+    // };
+    return result;
   }
 
   async findOne(id: Course["id"]) {

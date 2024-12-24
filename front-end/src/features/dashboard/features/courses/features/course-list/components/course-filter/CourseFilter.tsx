@@ -6,21 +6,23 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-export default function CourseFilter({ refreshPage }: any) {
+interface CourseFilterProps {
+  refreshPage: () => void;
+  onFilterChange: (params: any) => void;
+}
+
+export default function CourseFilter({
+  refreshPage,
+  onFilterChange,
+}: CourseFilterProps) {
   const navigate = useNavigate();
   const studentDashboard = useSelector(selectIsStudentDashboard);
-  const [categories, setCategories] = React.useState([]);
-  const [selectCategory, setSelectCategory] = React.useState(0);
-  const [selectedCourseType, setSelectedCourseType] = React.useState(1);
-
-  useEffect(() => {
-    if (studentDashboard) {
-      const currentParams = new URLSearchParams(window.location.search);
-      currentParams.set('category', selectCategory.toString());
-      currentParams.set('courseType', selectedCourseType.toString());
-      navigate(`?${currentParams.toString()}`, { replace: true });
-    }
-  }, [studentDashboard, selectCategory, selectedCourseType]);
+  const [categories, setCategories] = React.useState<any[]>([]);
+  const [selectCategory, setSelectCategory] = React.useState<string>('0');
+  const [selectedCourseType, setSelectedCourseType] =
+    React.useState<string>('1');
+  const [selectedStatus, setSelectedStatus] = React.useState<string>('0');
+  const [searchTerm, setSearchTerm] = React.useState<string>('');
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -34,32 +36,110 @@ export default function CourseFilter({ refreshPage }: any) {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    if (studentDashboard) {
+      const currentParams = new URLSearchParams(window.location.search);
+      currentParams.set('category', selectCategory);
+      currentParams.set('courseType', selectedCourseType);
+      navigate(`?${currentParams.toString()}`, { replace: true });
+    }
+  }, [studentDashboard, selectCategory, selectedCourseType]);
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    onFilterChange({
+      paginationOptions: {
+        page: 1,
+        limit: 10,
+      },
+      search: value,
+      orderBy: 'created_at:DESC',
+    });
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setSelectCategory(value);
+    onFilterChange({
+      paginationOptions: {
+        page: 1,
+        limit: 10,
+      },
+      categoryId: value !== '0' ? value : undefined,
+      orderBy: 'created_at:DESC',
+    });
+  };
+
+  const handleCourseTypeChange = (value: string) => {
+    setSelectedCourseType(value);
+    onFilterChange({
+      paginationOptions: {
+        page: 1,
+        limit: 10,
+      },
+      isMyCourse: value === '1' ? 'true' : 'false',
+      orderBy: 'created_at:DESC',
+    });
+  };
+
+  const handleStatusChange = (value: string) => {
+    setSelectedStatus(value);
+    onFilterChange({
+      paginationOptions: {
+        page: 1,
+        limit: 10,
+      },
+      status:
+        value === '1' ? 'ACTIVE' : value === '2' ? 'IN_ACTIVE' : undefined,
+      orderBy: 'created_at:DESC',
+    });
+  };
+
   return (
-    <Box sx={{ display: 'flex', gap: '20px', flex: 1, alignItems: 'center' }}>
-      <Box flex={1}>
+    <Box
+      sx={{
+        display: 'flex',
+        gap: '20px',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+      }}
+    >
+      <Box sx={{ flex: 1, minWidth: 250, maxWidth: 400 }}>
         <TextField
           label="Tìm kiếm"
           variant="outlined"
           fullWidth
           margin="normal"
+          onChange={(e) => handleSearch(e.target.value)}
           sx={{
-            minWidth: 400,
-            margin: 0,
             '& input': {
               padding: '16px 14px',
+            },
+            '& .MuiInputLabel-root': {
+              fontSize: '16px',
+            },
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
             },
           }}
         />
       </Box>
-      <Box flex={1}>
+
+      <Box sx={{ flex: 1, minWidth: 250, maxWidth: 400 }}>
         <Select
           label="Danh mục"
-          placeholder="Danh mục"
           fullWidth
           value={selectCategory}
-          onChange={(e) => setSelectCategory(e.target.value as number)}
+          onChange={(e) => handleCategoryChange(e.target.value)}
+          sx={{
+            '& .MuiInputLabel-root': {
+              fontSize: '16px',
+            },
+            '& .MuiOutlinedInput-root': {
+              borderRadius: '8px',
+            },
+          }}
         >
-          <MenuItem value={0}>Tất cả</MenuItem>
+          <MenuItem value="0">Tất cả</MenuItem>
           {categories.map((category) => (
             <MenuItem key={category.id} value={category.id}>
               {category.name}
@@ -67,32 +147,46 @@ export default function CourseFilter({ refreshPage }: any) {
           ))}
         </Select>
       </Box>
+
       {studentDashboard ? (
-        <Box flex={1}>
+        <Box sx={{ flex: 1, minWidth: 250, maxWidth: 400 }}>
           <Select
             label="Phân loại"
-            placeholder="Phân loại"
-            size="small"
             fullWidth
             value={selectedCourseType}
-            onChange={(e) => setSelectedCourseType(e.target.value as number)}
+            onChange={(e) => handleCourseTypeChange(e.target.value)}
+            sx={{
+              '& .MuiInputLabel-root': {
+                fontSize: '16px',
+              },
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+              },
+            }}
           >
-            <MenuItem value={1}>Đã đăng ký</MenuItem>
-            <MenuItem value={0}>Chưa đăng ký</MenuItem>
+            <MenuItem value="1">Đã đăng ký</MenuItem>
+            <MenuItem value="0">Chưa đăng ký</MenuItem>
           </Select>
         </Box>
       ) : (
-        <Box flex={1}>
+        <Box sx={{ flex: 1, minWidth: 250, maxWidth: 400 }}>
           <Select
-            label="Phân loại"
-            placeholder="Phân loại"
-            size="small"
+            label="Trạng thái"
             fullWidth
-            value={0}
+            value={selectedStatus}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            sx={{
+              '& .MuiInputLabel-root': {
+                fontSize: '16px',
+              },
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+              },
+            }}
           >
-            <MenuItem value={0}>Tất cả</MenuItem>
-            <MenuItem>Đã xuất bản</MenuItem>
-            <MenuItem>Chưa xuất bản xuất bản</MenuItem>
+            <MenuItem value="0">Tất cả</MenuItem>
+            <MenuItem value="1">Đã xuất bản</MenuItem>
+            <MenuItem value="2">Chưa xuất bản</MenuItem>
           </Select>
         </Box>
       )}

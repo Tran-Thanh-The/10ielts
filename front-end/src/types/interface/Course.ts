@@ -14,4 +14,39 @@ export interface CourseResponse {
   lessons: LessonResponse[];
   photo: IPhoto;
   category: ICategory;
+  status: StatusCourse;
+}
+
+export enum StatusCourse {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+export interface Course {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  createAt: Date | string;
+  totalLesson: number;
+  completedLesson: number;
+  isMyCourse: boolean;
+  photo: {
+    id: string;
+    path: string;
+  };
+  status?: string;
+}
+
+export interface CourseParams {
+  status?: string;
+  userId?: string;
+  invoiceId?: string;
+  paginationOptions: {
+    page: number;
+    limit: number;
+  };
+  search?: string;
+  isMyCourse?: string;
+  orderBy?: { [key: string]: 'ASC' | 'DESC' };
+  categoryId?: string;
 }

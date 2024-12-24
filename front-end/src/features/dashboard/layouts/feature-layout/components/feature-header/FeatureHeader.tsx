@@ -38,7 +38,7 @@ export default function FeatureHeader({
             Back
           </Button>
         ) : null}
-        <Typography variant="h4">{title}</Typography>
+        <Typography variant="h6">{title}</Typography>
         {description ? (
           <Typography variant="body1">{description}</Typography>
         ) : null}

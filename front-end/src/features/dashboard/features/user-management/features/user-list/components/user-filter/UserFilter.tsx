@@ -2,7 +2,16 @@ import CreateUpdateUserModal from '@/features/dashboard/features/user-management
 import { Box, Button, TextField } from '@mui/material';
 import React from 'react';
 
-export default function UserFilter() {
+type UserFilterProps = {
+  buttonLabel?: string;
+  onButtonClick?: () => void;
+  onSearch?: (search: string) => void;
+};
+export default function UserFilter({
+  buttonLabel = 'Tạo học sinh',
+  onButtonClick,
+  onSearch,
+}: UserFilterProps) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -16,15 +25,24 @@ export default function UserFilter() {
           sx={{
             minWidth: 400,
             margin: 0,
+            height: '48px',
             '& input': {
-              padding: '16px 14px',
+              padding: '13px 14px',
             },
           }}
+          size="small"
         />
       </Box>
 
-      <Button variant="contained" onClick={() => setOpen(true)}>
-        Tạo học sinh
+      <Button
+        sx={{
+          height: '48px',
+        }}
+        variant="contained"
+        onClick={() => (onButtonClick ? onButtonClick() : setOpen(true))}
+        size="small"
+      >
+        {buttonLabel}
       </Button>
       <CreateUpdateUserModal
         open={open}

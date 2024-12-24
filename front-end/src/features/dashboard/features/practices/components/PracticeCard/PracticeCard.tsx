@@ -1,13 +1,20 @@
-import { Box, Typography } from '@mui/material'
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Box, Typography } from '@mui/material';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function PracticeCard({ title }) {
-  const naigate = useNavigate()
+const PracticeTypeMap = {
+  READING: 'Luyện đọc',
+  LISTENING: 'Luyện nghe',
+  WRITING: 'Luyện viết',
+  SPEAKING: 'Luyện nói',
+};
+
+export default function PracticeCard({ title, data }) {
+  const naigate = useNavigate();
 
   const handleNavigateToPracticeDetail = () => {
-    naigate('/dashboard/practices/1');
-  }
+    naigate('/dashboard/practices/' + data.id);
+  };
 
   return (
     <Box
@@ -30,11 +37,17 @@ export default function PracticeCard({ title }) {
           borderRadius: 4,
         }}
       >
-        <img src='https://app.prepedu.com/imgs/test-practice/ic-book.svg' alt='' />
+        <img
+          src="https://app.prepedu.com/imgs/test-practice/ic-book.svg"
+          alt=""
+        />
       </Box>
       <Box>
-        <Typography variant='h6'>{title}</Typography>
+        <Typography variant="h6">{title}</Typography>
+        <Typography variant="body1">
+          {PracticeTypeMap[data?.practiceType]}
+        </Typography>
       </Box>
     </Box>
-  )
+  );
 }

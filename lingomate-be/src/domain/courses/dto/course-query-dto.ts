@@ -23,6 +23,13 @@ export class CourseQueryDto {
   invoiceId?: string;
 
   @ApiPropertyOptional({
+    description: "Filter courses by category ID",
+  })
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
+
+  @ApiPropertyOptional({
     description: "Filter courses by search",
   })
   @IsOptional()
@@ -64,10 +71,6 @@ export class CourseQueryDto {
   @IsOptional()
   @IsString()
   orderBy?: string = "created_at:DESC";
-
-  @IsOptional()
-  @IsString()
-  categoryId?: string;
 }
 
 export interface IParsedOrderBy {

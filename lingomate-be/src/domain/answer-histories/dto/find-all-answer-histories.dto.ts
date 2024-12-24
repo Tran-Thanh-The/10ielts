@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNumber, IsOptional } from "class-validator";
 import { Transform } from "class-transformer";
 
-export class FindAllAnswerHistoriesDto {
+export class PaginationOptionsDto {
   @ApiPropertyOptional()
   @Transform(({ value }) => (value ? Number(value) : 1))
   @IsNumber()
@@ -14,4 +14,18 @@ export class FindAllAnswerHistoriesDto {
   @IsNumber()
   @IsOptional()
   limit?: number;
+}
+
+export class FindAllAnswerHistoriesDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  practiceId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  lessonId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  userId?: string;
 }

@@ -32,7 +32,7 @@ import {
 import { AnswerHistoriesService } from "./answer-histories.service";
 import { AnswerHistory } from "./domain/answer-history";
 import { CreateAnswerHistoryDto } from "./dto/create-answer-history.dto";
-import { FindAllAnswerHistoriesDto } from "./dto/find-all-answer-histories.dto";
+import { FindAllAnswerHistoriesDto, PaginationOptionsDto } from "./dto/find-all-answer-histories.dto";
 import { UpdateAnswerHistoryDto } from "./dto/update-answer-history.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { multerConfig } from "@/utils/interceptors/multerConfig.interceptor";
@@ -69,28 +69,51 @@ export class AnswerHistoriesController {
     // }
   }
 
+  // @Get()
+  // @ApiOkResponse({
+  //   type: InfinityPaginationResponse(AnswerHistory),
+  // })
+  // async findAll(
+  //   @Query() query: FindAllAnswerHistoriesDto,
+  // ): Promise<InfinityPaginationResponseDto<AnswerHistory>> {
+  //   const page = query?.page ?? 1;
+  //   let limit = query?.limit ?? 10;
+  //   if (limit > 50) {
+  //     limit = 50;
+  //   }
+
+  //   return infinityPagination(
+  //     await this.answerHistoriesService.findAllWithPagination({
+  //       paginationOptions: {
+  //         page,
+  //         limit,
+  //       },
+  //     }),
+  //     { page, limit },
+  //   );
+  // }
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(AnswerHistory),
   })
   async findAll(
     @Query() query: FindAllAnswerHistoriesDto,
+    @Query() pagination: PaginationOptionsDto,
   ): Promise<InfinityPaginationResponseDto<AnswerHistory>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
+    const page = pagination?.page ?? 1;
+    let limit = pagination?.limit ?? 10;
     if (limit > 50) {
       limit = 50;
     }
 
-    return infinityPagination(
-      await this.answerHistoriesService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
+    const answerHistories = await this.answerHistoriesService.findAllWithPagination({
+      paginationOptions: { page, limit },
+      practiceId: query.practiceId,
+      lessonId: query.lessonId,
+      userId: query.userId,
+    });
+
+    return infinityPagination(answerHistories, { page, limit });
   }
 
   @Get(":id")

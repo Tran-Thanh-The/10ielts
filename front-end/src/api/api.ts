@@ -1,7 +1,26 @@
 import axiosInstance from '@/core/intercepter/Intercepter';
 
-export const getUsers = async (params: any) => {
-  return axiosInstance.get<any>('users', { params: params });
+export const getRevenue = async (year: number) => {
+  return axiosInstance.get<any>(`statistical/revenue?year=${year}`);
+};
+
+export const getCourseStatistic = async (year: number) => {
+  return axiosInstance.get<any>(
+    `statistical/all-courses-register-statistics?year=${year}`,
+  );
+};
+
+export const getCourseRegisterStatistic = async (
+  year: number,
+  month: number,
+) => {
+  return axiosInstance.get<any>(
+    `statistical/monthly-courses-register-statistics?year=${year}&month=${month}`,
+  );
+};
+
+export const getUsers = async () => {
+  return axiosInstance.get<any>('users?page=1&&limit=10');
 };
 
 export const createUser = async (data: any) => {
@@ -74,7 +93,7 @@ export const getPracticeExercises = async () => {
     params: {
       pages: 1,
       limit: 1000,
-    }
+    },
   });
 };
 

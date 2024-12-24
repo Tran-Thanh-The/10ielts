@@ -80,8 +80,8 @@ export class UserLessonsController {
     @Query() query: FindAllUserLessonsDto,
     @Req() req,
   ): Promise<NullableType<UserLesson[]>> {
-      const userId = req.user.id;
-      return this.userLessonsService.findAllByUserId(userId);
+    const userId = req.user.id;
+    return this.userLessonsService.findAllByUserId(userId);
   }
 
   @Get(":id")

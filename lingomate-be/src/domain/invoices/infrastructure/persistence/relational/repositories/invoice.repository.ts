@@ -68,4 +68,21 @@ export class InvoiceRelationalRepository implements InvoiceRepository {
   async remove(id: Invoice["id"]): Promise<void> {
     await this.invoiceRepository.delete(id);
   }
+
+  async updateByOrderCode(orderCode: number, data: Partial<Invoice>) {
+    await this.invoiceRepository.update(
+      { orderCode },
+      {
+        paymentStatus: data.paymentStatus,
+      },
+    );
+  }
+
+  async findByOrderCode(orderCode: number): Promise<NullableType<Invoice>> {
+    const entity = await this.invoiceRepository.findOne({
+      where: { orderCode },
+    });
+
+    return entity ? InvoiceMapper.toDomain(entity) : null;
+  }
 }

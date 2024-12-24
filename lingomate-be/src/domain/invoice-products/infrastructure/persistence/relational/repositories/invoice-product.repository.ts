@@ -75,4 +75,13 @@ export class InvoiceProductRelationalRepository
   async remove(id: InvoiceProduct["id"]): Promise<void> {
     await this.invoiceProductRepository.delete(id);
   }
+
+  async findByInvoiceId(
+    id: InvoiceProduct["invoiceId"],
+  ): Promise<InvoiceProduct[]> {
+    const entities = await this.invoiceProductRepository.find({
+      where: { invoiceId: id },
+    });
+    return entities.map((entity) => InvoiceProductMapper.toDomain(entity));
+  }
 }

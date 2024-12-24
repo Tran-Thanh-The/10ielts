@@ -69,13 +69,15 @@ export class RoleSeedService {
           PermissionEnum.READ_LESSON,
           PermissionEnum.READ_PRACTICE,
           PermissionEnum.READ_CATEGORY,
-          PermissionEnum.ACCESS_CHAT
+          PermissionEnum.ACCESS_CHAT,
         ],
-      }
+      },
     ];
 
     for (const roleData of rolesToSeed) {
-      const existingRole = await this.repository.findOne({ where: { name: roleData.name } });
+      const existingRole = await this.repository.findOne({
+        where: { name: roleData.name },
+      });
 
       if (existingRole) {
         // Cập nhật role nếu đã tồn tại

@@ -9,9 +9,9 @@ export class ResponseAnswerHistoryDto {
   @ApiProperty({ type: Number })
   user_id: number;
 
-  @ApiPropertyOptional({ type: "jsonb"})
+  @ApiPropertyOptional({ type: "jsonb" })
   @IsOptional()
-  answers?: Record<string, any>;;
+  answers?: Record<string, any>;
 
   @ApiPropertyOptional({ type: String })
   @IsString()

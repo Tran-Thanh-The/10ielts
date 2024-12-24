@@ -42,4 +42,8 @@ export class InvoiceProductsService {
   remove(id: InvoiceProduct["id"]) {
     return this.invoiceProductRepository.remove(id);
   }
+
+  findByInvoiceId(invoiceId: InvoiceProduct["invoiceId"]) {
+    return this.invoiceProductRepository.findByInvoiceId(invoiceId);
+  }
 }

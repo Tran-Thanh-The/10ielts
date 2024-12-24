@@ -4,9 +4,7 @@ import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { Role } from "../../domain/role";
 
 export abstract class RoleRepository {
-  abstract create(
-    data: Omit<Role, "id">,
-  ): Promise<Role>;
+  abstract create(data: Omit<Role, "id">): Promise<Role>;
 
   abstract findAllWithPagination({
     paginationOptions,

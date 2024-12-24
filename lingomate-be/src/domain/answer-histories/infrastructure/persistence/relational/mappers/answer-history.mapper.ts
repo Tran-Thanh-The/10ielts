@@ -52,11 +52,11 @@ export class AnswerHistoryMapper {
     const model = new AnswerHistory();
     if (dto.user_id) {
       model.user = new UserEntity();
-      model.user.id = dto.user_id
+      model.user.id = dto.user_id;
     }
     if (dto.practice_id) {
       model.practice = new PracticeExerciseEntity();
-      model.practice.id = dto.practice_id
+      model.practice.id = dto.practice_id;
     }
 
     if (dto.lesson_id) {

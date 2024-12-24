@@ -15,7 +15,9 @@ export abstract class UserCourseRepository {
   }): Promise<UserCourse[]>;
   abstract save(userCourse: UserCourse): Promise<void>;
   abstract findById(id: UserCourse["id"]): Promise<NullableType<UserCourse>>;
-  abstract findUserCourseByUserId(userId: string): Promise<NullableType<UserCourse>>
+  abstract findUserCourseByUserId(
+    userId: string,
+  ): Promise<NullableType<UserCourse>>;
   abstract findByCourseId(
     course_id: string,
   ): Promise<NullableType<UserCourse[]>>;

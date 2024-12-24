@@ -99,10 +99,7 @@ export class RolesController {
   @ApiOkResponse({
     type: Role,
   })
-  update(
-    @Param("id") id: string,
-    @Body() updateRoleDto: UpdateRoleDto,
-  ) {
+  update(@Param("id") id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.rolesService.update(Number(id), updateRoleDto);
   }
 

@@ -1,12 +1,10 @@
 import { StatusEnum } from "@/common/enums/status.enum";
 import { PayOSService } from "@/common/payos/payos.service";
-import { CourseInvoicesService } from "@/domain/course-invoices/course-invoices.service";
 import { CoursesService } from "@/domain/courses/courses.service";
 import { InvoiceProductsService } from "@/domain/invoice-products/invoice-products.service";
 import { InvoicesService } from "@/domain/invoices/invoices.service";
 import { CreatePaymentDto } from "@/domain/payment/dto/create-payment.dto";
 import { PracticeExercisesService } from "@/domain/practice-exercises/practice-exercises.service";
-import { UserInvoicesService } from "@/domain/user-invoices/user-invoices.service";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
@@ -15,6 +13,7 @@ import {
   WebhookType,
 } from "@payos/node/lib/type";
 import { Request } from "express";
+import { UserCoursesService } from "../user-courses/user-courses.service";
 
 @Injectable()
 export class PaymentService {
@@ -24,9 +23,8 @@ export class PaymentService {
     private readonly invoicesService: InvoicesService,
     private readonly invoiceProductsService: InvoiceProductsService,
     private readonly practiceExerciseService: PracticeExercisesService,
-    private readonly courseInvoicesService: CourseInvoicesService,
-    private readonly userInvoicesService: UserInvoicesService,
     private readonly jwtService: JwtService,
+    private readonly userCourseService: UserCoursesService,
   ) {}
 
   /**
@@ -72,18 +70,11 @@ export class PaymentService {
         courseId: body.id,
         paymentStatus: false,
       });
-      const invoiceProductCreated =
-        body.type === "course"
-          ? await this.invoiceProductsService.create({
-              courseId: body.id,
-              invoiceId: invoiceCreated.id,
-              practiceId: null,
-            })
-          : await this.invoiceProductsService.create({
-              courseId: null,
-              invoiceId: invoiceCreated.id,
-              practiceId: body.id,
-            });
+      await this.invoiceProductsService.create({
+        courseId: body.type === "course" ? body.id : null,
+        invoiceId: invoiceCreated.id,
+        practiceId: body.type === "course" ? null : body.id,
+      });
       const paymentLinkReponse =
         await this.payosService.createPaymentLink(paymentRequest);
       return paymentLinkReponse;
@@ -134,6 +125,57 @@ export class PaymentService {
       return result;
     } catch (error) {
       throw error;
+    }
+  }
+
+  public async webhookHandler(req: Request) {
+    try {
+      const webhookData = req.body.data;
+      const updateInvoice = await this.invoicesService.updateByOrderCode(
+        webhookData.orderCode,
+        {
+          paymentStatus: true,
+          updatedAt: new Date(),
+        },
+      );
+      if (!updateInvoice) {
+        throw new Error("Invoice not found");
+      }
+      const updatedInvoice = await this.invoicesService.findByOrderCode(
+        webhookData.orderCode,
+      );
+      if (!updatedInvoice) {
+        throw new Error("Invoice not found");
+      }
+      const productInvoice = await this.invoiceProductsService.findByInvoiceId(
+        updatedInvoice.id,
+      );
+      if (!productInvoice) {
+        throw new Error("Product invoice not found");
+      }
+      if (productInvoice[0].courseId) {
+        await this.userCourseService.create(
+          {
+            course_id: productInvoice[0].courseId,
+            user_id: req.user?.["id"],
+          },
+          req.user?.["id"],
+        );
+      }
+      return {
+        statusCode: 200,
+        message: {
+          success: true,
+        },
+      };
+    } catch (error) {
+      return {
+        statusCode: 400,
+        message: {
+          success: false,
+          error: error.message,
+        },
+      };
     }
   }
 }

@@ -40,11 +40,11 @@ export class LessonRelationalRepository implements LessonRepository {
       skip: (page - 1) * limit,
       take: limit,
       relations: [
-        "questions", 
+        "questions",
         "questions.file",
-        "questions.answers", 
+        "questions.answers",
         "questions.answers.file",
-        "file"
+        "file",
       ],
       order: {
         createdAt: "DESC",
@@ -118,17 +118,17 @@ export class LessonRelationalRepository implements LessonRepository {
     const entity = await this.lessonRepository.findOne({
       where: { id },
       relations: [
-        "questions", 
+        "questions",
         "questions.file",
-        "questions.answers", 
+        "questions.answers",
         "questions.answers.file",
-        "file"
+        "file",
       ],
     });
-  
+
     return entity ? LessonMapper.toDomain(entity) : null;
   }
-  
+
   async findByQuestionId(questionId: string): Promise<NullableType<Lesson>> {
     return await this.lessonRepository
       .createQueryBuilder("lesson")

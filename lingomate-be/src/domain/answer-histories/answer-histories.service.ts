@@ -60,18 +60,28 @@ export class AnswerHistoriesService {
     return savedEntity;
   }
 
-  findAllWithPagination({
+  async findAllWithPagination({
     paginationOptions,
+    practiceId,
+    lessonId,
+    userId,
   }: {
     paginationOptions: IPaginationOptions;
-  }) {
+    practiceId?: string;
+    lessonId,
+    userId?: string;
+  }): Promise<AnswerHistory[]> {
     return this.answerHistoryRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
       },
+      practiceId,
+      lessonId,
+      userId,
     });
   }
+  
 
   findOne(id: AnswerHistory["id"]) {
     return this.answerHistoryRepository.findById(id);

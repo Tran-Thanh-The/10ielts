@@ -149,7 +149,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"leaping226@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
+							"raw": "{\r\n  \"email\": \"tien226anh@gmail.com\",\r\n  \"password\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -340,17 +340,17 @@
 								},
 								{
 									"key": "name",
-									"value": "English 3",
+									"value": "English 1",
 									"type": "text"
 								},
 								{
 									"key": "description",
-									"value": "Course 3",
+									"value": "Course 1",
 									"type": "text"
 								},
 								{
 									"key": "category_id",
-									"value": "bbbc16a2-c45e-414e-8f79-54ef24e27882",
+									"value": "147ef9cb-5d7d-4991-a2d9-0221144945ca",
 									"type": "text"
 								},
 								{
@@ -394,16 +394,11 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							"mode": "formdata",
+							"formdata": []
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/list?userId=4",
+							"raw": "{{HOST}}/api/v1/courses/list?userId=1",
 							"host": [
 								"{{HOST}}"
 							],
@@ -456,7 +451,7 @@
 								},
 								{
 									"key": "userId",
-									"value": "4"
+									"value": "1"
 								}
 							]
 						}
@@ -479,7 +474,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/87c8c076-edd8-45fd-b91b-94a73e100cc8",
+							"raw": "{{HOST}}/api/v1/courses/658361db-2628-4a70-aa0e-7007e46ee11d",
 							"host": [
 								"{{HOST}}"
 							],
@@ -487,7 +482,7 @@
 								"api",
 								"v1",
 								"courses",
-								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
+								"658361db-2628-4a70-aa0e-7007e46ee11d"
 							]
 						}
 					},
@@ -509,7 +504,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{HOST}}/api/v1/courses/87c8c076-edd8-45fd-b91b-94a73e100cc8",
+							"raw": "{{HOST}}/api/v1/courses/658361db-2628-4a70-aa0e-7007e46ee11d/details",
 							"host": [
 								"{{HOST}}"
 							],
@@ -517,7 +512,8 @@
 								"api",
 								"v1",
 								"courses",
-								"87c8c076-edd8-45fd-b91b-94a73e100cc8"
+								"658361db-2628-4a70-aa0e-7007e46ee11d",
+								"details"
 							]
 						}
 					},
@@ -672,7 +668,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Math\"\r\n}",
+							"raw": "{\r\n    \"name\": \"English\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -826,7 +822,7 @@
 							]
 						},
 						"url": {
-							"raw": "{{HOST}}/api/v1/lessons/a8791a5f-ab38-4ad8-89c7-e8a67b1d40a4",
+							"raw": "{{HOST}}/api/v1/lessons/658361db-2628-4a70-aa0e-7007e46ee11d",
 							"host": [
 								"{{HOST}}"
 							],
@@ -834,7 +830,7 @@
 								"api",
 								"v1",
 								"lessons",
-								"a8791a5f-ab38-4ad8-89c7-e8a67b1d40a4"
+								"658361db-2628-4a70-aa0e-7007e46ee11d"
 							]
 						}
 					},
@@ -859,8 +855,8 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": []
+							"mode": "raw",
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{HOST}}/api/v1/lessons?page=1&limit=10",
@@ -2415,6 +2411,9 @@
 						},
 						{
 							"name": "get all",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
 							"request": {
 								"auth": {
 									"type": "bearer",
@@ -2428,8 +2427,31 @@
 								},
 								"method": "GET",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "userId",
+											"value": "2",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "lessonId",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "practiceId",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
 								"url": {
-									"raw": "{{HOST}}/api/v1/answer-histories?pages=1&&limit=10",
+									"raw": "{{HOST}}/api/v1/answer-histories?pages=1&limit=10&userId=&lessonId&practiceId=1ee63eca-40ef-4d93-a270-c61852b3c28f",
 									"host": [
 										"{{HOST}}"
 									],
@@ -2444,12 +2466,20 @@
 											"value": "1"
 										},
 										{
-											"key": null,
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "userId",
+											"value": ""
+										},
+										{
+											"key": "lessonId",
 											"value": null
 										},
 										{
-											"key": "limit",
-											"value": "10"
+											"key": "practiceId",
+											"value": "1ee63eca-40ef-4d93-a270-c61852b3c28f"
 										}
 									]
 								}

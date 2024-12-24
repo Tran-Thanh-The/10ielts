@@ -122,51 +122,51 @@ export class CourseRelationalRepository implements CourseRepository {
     return !!checkOwnCourse;
   }
 
-  async getCourseDetailById(
-    id: string,
-    userId: string,
-  ): Promise<CourseWithDetailsDTO | null> {
-    const courseEntity = await this.courseRepository
-      .createQueryBuilder("course")
-      .leftJoinAndSelect("course.category", "category")
-      .leftJoinAndSelect("course.photo", "photo")
-      .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
-      .leftJoinAndSelect("lessonCourse.lesson", "lesson")
-      .leftJoinAndSelect(
-        "lesson.userLessons",
-        "userLesson",
-        "userLesson.userId = :userId",
-        { userId: Number(userId) },
-      )
-      .where("course.id = :id", { id })
-      .getOne();
+  // async getCourseDetailById(
+  //   id: string,
+  //   userId: string,
+  // ): Promise<CourseWithDetailsDTO | null> {
+  //   const courseEntity = await this.courseRepository
+  //     .createQueryBuilder("course")
+  //     .leftJoinAndSelect("course.category", "category")
+  //     .leftJoinAndSelect("course.photo", "photo")
+  //     .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
+  //     .leftJoinAndSelect("lessonCourse.lesson", "lesson")
+  //     .leftJoinAndSelect(
+  //       "lesson.userLessons",
+  //       "userLesson",
+  //       "userLesson.userId = :userId",
+  //       { userId: Number(userId) },
+  //     )
+  //     .where("course.id = :id", { id })
+  //     .getOne();
 
-    if (!courseEntity) {
-      return null;
-    }
-    console.log(courseEntity);
+  //   if (!courseEntity) {
+  //     return null;
+  //   }
+  //   console.log(courseEntity);
 
-    const courseDetail: Omit<CourseWithDetailsDTO, "isMyCourse"> = {
-      id: courseEntity.id,
-      title: courseEntity.name,
-      price: courseEntity.price,
-      description: courseEntity.description,
-      photo: courseEntity.photo,
-      category: courseEntity.category,
-      createdAt: courseEntity.createdAt,
-      totalLesson: courseEntity.lessonCourses.length,
-      lessons: courseEntity.lessonCourses.map((lc) =>
-        LessonMapper.toDto(lc.lesson),
-      ),
-    };
+  //   const courseDetail: Omit<CourseWithDetailsDTO, "isMyCourse"> = {
+  //     id: courseEntity.id,
+  //     title: courseEntity.name,
+  //     price: courseEntity.price,
+  //     description: courseEntity.description,
+  //     photo: courseEntity.photo,
+  //     category: courseEntity.category,
+  //     createdAt: courseEntity.createdAt,
+  //     totalLesson: courseEntity.lessonCourses.length,
+  //     lessons: courseEntity.lessonCourses.map((lc) =>
+  //       LessonMapper.toDto(lc.lesson),
+  //     ),
+  //   };
 
-    const isMyCourse = userId ? await this.checkIsMyCourse(userId, id) : false;
-
-    return {
-      ...courseDetail,
-      isMyCourse,
-    };
-  }
+  //   const isMyCourse = userId ? await this.checkIsMyCourse(userId, id) : false;
+  //   const result = {
+  //     ...courseDetail,
+  //     isMyCourse,
+  //   };
+  //   return result;
+  // }
 
   // async getListCourse(params: {
   //   status?: StatusEnum;
@@ -310,6 +310,58 @@ export class CourseRelationalRepository implements CourseRepository {
   //       : 1,
   //   };
   // }
+
+  async getCourseDetailById(
+    id: string,
+    userId: string,
+  ): Promise<CourseWithDetailsDTO | null> {
+    const courseEntity = await this.courseRepository
+      .createQueryBuilder("course")
+      .leftJoinAndSelect("course.category", "category")
+      .leftJoinAndSelect("course.photo", "photo")
+      .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
+      .leftJoinAndSelect("lessonCourse.lesson", "lesson")
+      .leftJoinAndSelect(
+        "lesson.userLessons",
+        "userLesson",
+        "userLesson.userId = :userId",
+        { userId: Number(userId) },
+      )
+      .where("course.id = :id", { id })
+      .getOne();
+  
+    if (!courseEntity) {
+      return null;
+    }
+  
+    const completedLessons = courseEntity.lessonCourses.filter(
+      lc => lc.lesson.userLessons?.[0]?.isCompleted
+    ).length;
+  
+    const courseDetail: Omit<CourseWithDetailsDTO, "isMyCourse"> = {
+      id: courseEntity.id,
+      title: courseEntity.name,
+      price: courseEntity.price,
+      description: courseEntity.description,
+      photo: courseEntity.photo,
+      category: courseEntity.category,
+      createdAt: courseEntity.createdAt,
+      totalLesson: courseEntity.lessonCourses.length,
+      completedLesson: completedLessons,
+      lessons: courseEntity.lessonCourses.map((lc) => ({
+        ...LessonMapper.toDto(lc.lesson),
+        isCompleted: lc.lesson.userLessons?.[0]?.isCompleted || false,
+      })),
+    };
+  
+    const isMyCourse = userId ? await this.checkIsMyCourse(userId, id) : false;
+    const result = {
+      ...courseDetail,
+      isMyCourse,
+    };
+    return result;
+  }
+  
   async getListCourse(params: {
     status?: StatusEnum;
     userId?: string;

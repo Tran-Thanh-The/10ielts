@@ -51,7 +51,7 @@ export class FilesLocalService {
       await this.fileRepository.delete(file.id);
     } catch (error) {
       console.log("Error when delete file: ", error);
-      
+
       // Xử lý lỗi nếu không thể xóa file
       throw new UnprocessableEntityException({
         status: HttpStatus.UNPROCESSABLE_ENTITY,

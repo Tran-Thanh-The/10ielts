@@ -507,57 +507,65 @@ export class CourseRelationalRepository implements CourseRepository {
     //     : 1,
     // };
     // Fetch courses
-const courses = await queryBuilder.getMany();
+    const courses = await queryBuilder.getMany();
 
-const mappedCourses = await Promise.all(courses.map(async (course) => {
- const courseEntity = await this.courseRepository
-   .createQueryBuilder("course")
-   .leftJoinAndSelect("course.category", "category") 
-   .leftJoinAndSelect("course.photo", "photo")
-   .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
-   .leftJoinAndSelect("lessonCourse.lesson", "lesson")
-   .leftJoinAndSelect(
-     "lesson.userLessons",
-     "userLesson",
-     "userLesson.userId = :userId",
-     { userId: userId ? Number(userId) : null }
-   )
-   .where("course.id = :id", { id: course.id })
-   .getOne();
+    const mappedCourses = await Promise.all(
+      courses.map(async (course) => {
+        const courseEntity = await this.courseRepository
+          .createQueryBuilder("course")
+          .leftJoinAndSelect("course.category", "category")
+          .leftJoinAndSelect("course.photo", "photo")
+          .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
+          .leftJoinAndSelect("lessonCourse.lesson", "lesson")
+          .leftJoinAndSelect(
+            "lesson.userLessons",
+            "userLesson",
+            "userLesson.userId = :userId",
+            { userId: userId ? Number(userId) : null },
+          )
+          .where("course.id = :id", { id: course.id })
+          .getOne();
 
- if (!courseEntity) return null;
+        if (!courseEntity) return null;
 
- const completedLessons = courseEntity.lessonCourses.filter(
-   (lc) => lc.lesson.userLessons?.[0]?.isCompleted
- ).length;
+        const completedLessons = courseEntity.lessonCourses.filter(
+          (lc) => lc.lesson.userLessons?.[0]?.isCompleted,
+        ).length;
 
- const courseDetail: CourseWithDetailsDTO = {
-   id: courseEntity.id,
-   title: courseEntity.name, 
-   price: courseEntity.price,
-   description: courseEntity.description,
-   photo: courseEntity.photo,
-   category: courseEntity.category,
-   createdAt: courseEntity.createdAt,
-   status: courseEntity.status,
-   totalLesson: courseEntity.lessonCourses.length,
-   completedLesson: completedLessons,
-   lessons: courseEntity.lessonCourses.map((lc) => ({
-     ...LessonMapper.toDto(lc.lesson),
-     isCompleted: lc.lesson.userLessons?.[0]?.isCompleted || false,
-   })),
-   isMyCourse: userId ? await this.checkIsMyCourse(userId, courseEntity.id) : false
- };
+        const courseDetail: CourseWithDetailsDTO = {
+          id: courseEntity.id,
+          title: courseEntity.name,
+          price: courseEntity.price,
+          description: courseEntity.description,
+          photo: courseEntity.photo,
+          category: courseEntity.category,
+          createdAt: courseEntity.createdAt,
+          status: courseEntity.status,
+          totalLesson: courseEntity.lessonCourses.length,
+          completedLesson: completedLessons,
+          lessons: courseEntity.lessonCourses.map((lc) => ({
+            ...LessonMapper.toDto(lc.lesson),
+            isCompleted: lc.lesson.userLessons?.[0]?.isCompleted || false,
+          })),
+          isMyCourse: userId
+            ? await this.checkIsMyCourse(userId, courseEntity.id)
+            : false,
+        };
 
- return courseDetail;
-}));
+        return courseDetail;
+      }),
+    );
 
-return {
- data: mappedCourses.filter(course => course !== null) as CourseWithDetailsDTO[],
- total,
- page: paginationOptions?.page || 1,
- limit: paginationOptions?.limit || total, 
- totalPages: paginationOptions ? Math.ceil(total / paginationOptions.limit) : 1,
-};
+    return {
+      data: mappedCourses.filter(
+        (course) => course !== null,
+      ) as CourseWithDetailsDTO[],
+      total,
+      page: paginationOptions?.page || 1,
+      limit: paginationOptions?.limit || total,
+      totalPages: paginationOptions
+        ? Math.ceil(total / paginationOptions.limit)
+        : 1,
+    };
   }
 }

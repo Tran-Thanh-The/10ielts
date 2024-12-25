@@ -103,8 +103,7 @@ export class AnswerHistoriesService {
     if (audioAnswer) {
       if (existingAnswerHistory.audioAnswer) {
         await this.answerHistoryRepository.update(id, { audioAnswer: null });
-        this.answerHistoryRepository,
-          delete existingAnswerHistory.audioAnswer;
+        await this.filesLocalService.delete(existingAnswerHistory.audioAnswer);
       }
       const uploadedFile = await this.filesLocalService.create(audioAnswer);
       updateAnswerHistoryDto.audioAnswer = uploadedFile.file;

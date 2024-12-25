@@ -419,9 +419,15 @@ export class CourseRelationalRepository implements CourseRepository {
       queryBuilder.andWhere("course.status = :status", { status });
     }
 
+    // if (search) {
+    //   queryBuilder.andWhere(
+    //     "(course.name LIKE :search OR course.description LIKE :search)",
+    //     { search: `%${search}%` },
+    //   );
+    // }
     if (search) {
       queryBuilder.andWhere(
-        "(course.name LIKE :search OR course.description LIKE :search)",
+        "CONVERT(course.name USING utf8) COLLATE utf8_general_ci LIKE :search OR CONVERT(course.description USING utf8) COLLATE utf8_general_ci LIKE :search",
         { search: `%${search}%` },
       );
     }

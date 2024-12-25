@@ -31,4 +31,18 @@ export abstract class InvoiceRepository {
   abstract findByOrderCode(
     orderCode: number | string,
   ): Promise<NullableType<Invoice>>;
+
+  abstract getCurrentUserInvoices(
+    userId: string,
+    limit: number,
+    page: number,
+  ): Promise<any>;
+
+  abstract getAllInvoices(
+    limit: number,
+    page: number,
+    search?: string,
+  ): Promise<any>;
+
+  abstract getInvoiceDetail(id: string): Promise<any>;
 }

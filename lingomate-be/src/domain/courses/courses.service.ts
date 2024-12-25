@@ -20,6 +20,7 @@ import { CreateCourseDto } from "./dto/create-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
 import { CourseRepository } from "./infrastructure/persistence/course.repository";
 import { CourseMapper } from "./infrastructure/persistence/relational/mappers/course.mapper";
+import { Request } from "express";
 
 @Injectable()
 export class CoursesService {
@@ -98,6 +99,7 @@ export class CoursesService {
   }
 
   async getListCourse(
+    req: Request,
     status?: StatusEnum,
     userId?: string,
     invoiceId?: string,
@@ -108,9 +110,10 @@ export class CoursesService {
     isMyCourse?: string,
     orderBy: { [key: string]: "ASC" | "DESC" } = { created_at: "DESC" },
   ): Promise<CourseListResponseDto<CourseWithDetailsDTO>> {
+    const currentUserId = req.user?.["id"];
     const params = {
       status,
-      userId,
+      userId: userId ? userId : currentUserId,
       invoiceId,
       categoryId,
       paginationOptions: {

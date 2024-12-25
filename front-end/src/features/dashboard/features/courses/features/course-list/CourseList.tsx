@@ -93,7 +93,6 @@ export default function CourseList() {
           }}
         >
           <CourseFilter
-            refreshPage={setReload}
             onFilterChange={(newParams) => {
               setParams((prev) => ({
                 ...prev,

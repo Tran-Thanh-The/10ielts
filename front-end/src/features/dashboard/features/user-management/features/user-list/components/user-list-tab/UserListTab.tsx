@@ -124,7 +124,6 @@ export default function UserListTab({ userList }: any) {
         .map((role) => ({
           id: role.id,
         }));
-      console.log('roleFilter', roleFilter);
       dispatch(setAppLoading(true));
       const response = await getUsers({
         page: 1,

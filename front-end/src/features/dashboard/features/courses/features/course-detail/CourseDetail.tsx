@@ -401,15 +401,23 @@ export default function CourseDetail() {
               {tabIndex === 2 && 'Danh sách bài học Docs'}
               {tabIndex === 3 && 'Danh sách Exercises'}
             </Typography>
-            {paginatedFilteredLessons.map((lesson, index) => (
-              <LessonCard
-                key={lesson.id}
-                index={index}
-                lesson={lesson}
-                onMenuOpen={handleMenuOpen}
-                handRouterLessonDetail={handRouterLessonDetail}
-              />
-            ))}
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '20px'
+              }}
+            >
+              {paginatedFilteredLessons.map((lesson, index) => (
+                <LessonCard
+                  key={lesson.id}
+                  index={index}
+                  lesson={lesson}
+                  onMenuOpen={handleMenuOpen}
+                  handRouterLessonDetail={handRouterLessonDetail}
+                />
+              ))}
+            </Box>
           </Box>
 
           <Box
@@ -434,12 +442,15 @@ export default function CourseDetail() {
           </Menu>
         </Box>
       )}
-      <CreateCourseModal
-        data={course}
-        open={openCourseForm}
-        onClose={setOpenCourseForm}
-        onOk={triggerReload}
-      />
+
+      {openCourseForm && (
+        <CreateCourseModal
+          data={course}
+          open={openCourseForm}
+          onClose={setOpenCourseForm}
+          onOk={triggerReload}
+        />
+      )}
     </FeatureLayout>
   );
 }

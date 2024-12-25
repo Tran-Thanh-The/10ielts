@@ -318,7 +318,7 @@ export default function CreatePracticeModal({
             Hủy
           </Button>
           <Button onClick={handleSubmit} variant="contained">
-            Lưu khóa học
+            Lưu bài luyện tập
           </Button>
         </Box>
       </Box>

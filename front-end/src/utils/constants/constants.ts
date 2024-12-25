@@ -36,7 +36,7 @@ export const TYPE_LESSON = {
 
 export type Role = (typeof ROLE)[keyof typeof ROLE];
 
-export const LESSONS_PER_PAGE = 5;
+export const LESSONS_PER_PAGE = 10;
 
 export const ROLES = [
   { id: 1, name: 'Admin' },

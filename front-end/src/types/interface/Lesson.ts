@@ -1,3 +1,4 @@
+import { is } from 'date-fns/locale';
 import { LessonTypes } from '../enum/LessonType';
 export interface LessonResponse {
   id: string;
@@ -8,6 +9,7 @@ export interface LessonResponse {
   stars?: number;
   totalStars?: number;
   content?: string;
+  isCompleted?: boolean;
 }
 export interface LessonRequest {
   id?: string;

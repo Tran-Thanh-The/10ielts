@@ -51,7 +51,7 @@ export default function CourseList() {
         invoiceId: params.invoiceId,
         categoryId: params.categoryId,
         search: params.search,
-        isMyCourse: params.isMyCourse,
+        isMyCourse: isStudentDashboard ? params.isMyCourse ?? true : undefined,
         status: params.status,
         page: params.paginationOptions.page,
         limit: params.paginationOptions.limit,
@@ -149,15 +149,17 @@ export default function CourseList() {
         </Grid>
       </Box>
 
-      <CreateCourseModal
-        open={open}
-        data={selectedCourse}
-        onClose={(value: boolean) => {
-          setOpen(value);
-          setSelectedCourse(null);
-        }}
-        onOk={triggerReload}
-      />
+      {open && (
+        <CreateCourseModal
+          open={open}
+          data={selectedCourse}
+          onClose={(value: boolean) => {
+            setOpen(value);
+            setSelectedCourse(null);
+          }}
+          onOk={triggerReload}
+        />
+      )}
     </FeatureLayout>
   );
 }

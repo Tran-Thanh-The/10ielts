@@ -19,8 +19,10 @@ export const getCourseRegisterStatistic = async (
   );
 };
 
-export const getUsers = async () => {
-  return axiosInstance.get<any>('users?page=1&&limit=10');
+export const getUsers = async (params: any) => {
+  return axiosInstance.get<any>('users', {
+    params: params
+  });
 };
 
 export const createUser = async (data: any) => {
@@ -99,4 +101,16 @@ export const getPracticeExercises = async () => {
 
 export const getPracticeExerciseById = async (id: string) => {
   return axiosInstance.get<any>(`practice-exercises/${id}`);
+};
+
+export const updateUserCouse = async (data: any) => {
+  return axiosInstance.post<any>('user-lessons', data);
+};
+
+export const createCourseCategory = async (data: any) => {
+  return axiosInstance.post<any>('categories', data);
+};
+
+export const deleteCourseCategory = async (id: string) => {
+  return axiosInstance.delete<any>(`categories/${id}`);
 };

@@ -2,6 +2,7 @@ import {
   getLessonDetailsById,
   getLessonDetailsByIdV2,
   submitCourseLesson,
+  updateUserCouse,
 } from '@/api/api';
 import courseApi from '@/api/courseApi';
 import Breadcrumb from '@/features/dashboard/components/breadcrumb/Breadcrumb';
@@ -29,11 +30,31 @@ export default function LessonView() {
   const { idCourse, selectedLessonId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.auth.user);
   const exerciseForm = useSelector(selectDoExerciseForm);
   const [course, setCourse] = useState<any>(null);
   const [lesson, setLesson] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'VIEW' | 'EDIT'>('VIEW');
   const [openHistory, setOpenHistory] = useState(false);
+
+  useEffect(() => {
+    if (
+      user.role.name !== ROLE.USER ||
+      !lesson?.lessonType ||
+      lesson.lessonType == LessonTypes.Exercise
+    )
+      return;
+    const timeout = setTimeout(() => {
+      updateUserCouse({
+        isCompleted: true,
+        user_id: user.id + '',
+        lesson_id: selectedLessonId as string,
+      });
+    }, 1000 * 60);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [lesson?.lessonType]);
 
   useEffect(() => {
     handleFetchData();
@@ -74,6 +95,11 @@ export default function LessonView() {
         title: 'Nộp bài thành công',
         text: `Bạn đã đạt được ${score} điểm`,
       }).then(() => {
+        updateUserCouse({
+          isCompleted: true,
+          user_id: user.id + '',
+          lesson_id: selectedLessonId as string,
+        })
         const index = course?.lessons.findIndex(
           (item: any) => item.id === selectedLessonId,
         );

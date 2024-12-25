@@ -185,6 +185,181 @@ export class CourseRelationalRepository implements CourseRepository {
     return result;
   }
 
+  // async getListCourse(params: {
+  //   status?: StatusEnum;
+  //   userId?: string;
+  //   invoiceId?: string;
+  //   categoryId?: string;
+  //   paginationOptions?: IPaginationOptions;
+  //   isMyCourse?: boolean;
+  //   search?: string;
+  //   orderBy?: { [key: string]: "ASC" | "DESC" };
+  // }): Promise<{
+  //   data: CourseWithDetailsDTO[];
+  //   total: number;
+  //   page: number;
+  //   limit: number;
+  //   totalPages: number;
+  // }> {
+  //   const {
+  //     status,
+  //     userId,
+  //     invoiceId,
+  //     categoryId,
+  //     paginationOptions,
+  //     orderBy,
+  //     isMyCourse,
+  //     search,
+  //   } = params;
+
+  //   const queryBuilder = this.courseRepository
+  //     .createQueryBuilder("course")
+  //     .leftJoinAndSelect("course.photo", "photo")
+  //     .leftJoinAndSelect("course.category", "category")
+  //     .leftJoin("course.userCourses", "userCourse")
+  //     .leftJoin("course.invoiceProducts", "invoiceProducts")
+  //     .leftJoin("invoice", "invoice", "invoice.id = invoiceProducts.invoiceId");
+
+  //   // Filter by userId
+  //   if (userId) {
+  //     console.log("UserID tồng tài");
+
+  //     queryBuilder.andWhere(
+  //       "(userCourse.userId = :userId OR invoice.userId = :userId)",
+  //       { userId: Number(userId) },
+  //     );
+  //   }
+
+  //   // Filter by invoiceId
+  //   if (invoiceId && isUUID(invoiceId)) {
+  //     queryBuilder.andWhere("invoice.id = :invoiceId", { invoiceId });
+  //   }
+
+  //   // Filter by categoryId
+  //   if (categoryId && isUUID(categoryId)) {
+  //     queryBuilder.andWhere("category.id = :categoryId", { categoryId });
+  //   }
+
+  //   // Filter by course status
+  //   if (status) {
+  //     queryBuilder.andWhere("course.status = :status", { status });
+  //   }
+
+  //   // Filter by search query
+  //   if (search) {
+  //     queryBuilder.andWhere(
+  //       "(course.name LIKE :search OR course.description LIKE :search)",
+  //       { search: `%${search}%` },
+  //     );
+  //   }
+
+  //   // Filter by isMyCourse
+  //   if (isMyCourse !== undefined && userId) {
+  //     if (isMyCourse) {
+  //       queryBuilder.andWhere("userCourse.userId = :userId", {
+  //         userId: Number(userId),
+  //       });
+  //     } else {
+  //       queryBuilder.andWhere(
+  //         "(userCourse.userId IS NULL OR userCourse.userId != :userId)",
+  //         { userId: Number(userId) },
+  //       );
+  //     }
+  //   }
+
+  //   // Order by specified columns
+  //   const validColumns = [
+  //     "id",
+  //     "name",
+  //     "price",
+  //     "description",
+  //     "status",
+  //     "createdAt",
+  //     "updatedAt",
+  //     "photo",
+  //   ];
+
+  //   if (orderBy && Object.keys(orderBy).length > 0) {
+  //     Object.entries(orderBy).forEach(([key, value]) => {
+  //       if (validColumns.includes(key)) {
+  //         queryBuilder.addOrderBy(`course.${key}`, value);
+  //       }
+  //     });
+  //   } else {
+  //     queryBuilder.orderBy("course.createdAt", "DESC");
+  //   }
+
+  //   queryBuilder.addOrderBy("course.id", "ASC");
+
+  //   // Pagination
+  //   const total = await queryBuilder.getCount();
+
+  //   if (paginationOptions) {
+  //     const { page, limit } = paginationOptions;
+  //     queryBuilder.skip((page - 1) * limit).take(limit);
+  //   }
+
+  //   const courses = await queryBuilder.getMany();
+
+  //   const mappedCourses = await Promise.all(
+  //     courses.map(async (course) => {
+  //       const courseEntity = await this.courseRepository
+  //         .createQueryBuilder("course")
+  //         .leftJoinAndSelect("course.category", "category")
+  //         .leftJoinAndSelect("course.photo", "photo")
+  //         .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
+  //         .leftJoinAndSelect("lessonCourse.lesson", "lesson")
+  //         .leftJoinAndSelect(
+  //           "lesson.userLessons",
+  //           "userLesson",
+  //           "userLesson.userId = :userId",
+  //           { userId: userId ? Number(userId) : null },
+  //         )
+  //         .where("course.id = :id", { id: course.id })
+  //         .getOne();
+
+  //       if (!courseEntity) return null;
+
+  //       const completedLessons = courseEntity.lessonCourses.filter(
+  //         (lc) => lc.lesson.userLessons?.[0]?.isCompleted,
+  //       ).length;
+
+  //       const courseDetail: CourseWithDetailsDTO = {
+  //         id: courseEntity.id,
+  //         title: courseEntity.name,
+  //         price: courseEntity.price,
+  //         description: courseEntity.description,
+  //         photo: courseEntity.photo,
+  //         category: courseEntity.category,
+  //         createdAt: courseEntity.createdAt,
+  //         status: courseEntity.status,
+  //         totalLesson: courseEntity.lessonCourses.length,
+  //         completedLesson: completedLessons,
+  //         lessons: courseEntity.lessonCourses.map((lc) => ({
+  //           ...LessonMapper.toDto(lc.lesson),
+  //           isCompleted: lc.lesson.userLessons?.[0]?.isCompleted || false,
+  //         })),
+  //         isMyCourse: userId
+  //           ? await this.checkIsMyCourse(userId, courseEntity.id)
+  //           : false,
+  //       };
+
+  //       return courseDetail;
+  //     }),
+  //   );
+
+  //   return {
+  //     data: mappedCourses.filter(
+  //       (course) => course !== null,
+  //     ) as CourseWithDetailsDTO[],
+  //     total,
+  //     page: paginationOptions?.page || 1,
+  //     limit: paginationOptions?.limit || total,
+  //     totalPages: paginationOptions
+  //       ? Math.ceil(total / paginationOptions.limit)
+  //       : 1,
+  //   };
+  // }
   async getListCourse(params: {
     status?: StatusEnum;
     userId?: string;
@@ -216,36 +391,34 @@ export class CourseRelationalRepository implements CourseRepository {
       .createQueryBuilder("course")
       .leftJoinAndSelect("course.photo", "photo")
       .leftJoinAndSelect("course.category", "category")
-      .leftJoin("course.userCourses", "userCourse")
-      .leftJoin("course.invoiceProducts", "invoiceProducts")
-      .leftJoin("invoice", "invoice", "invoice.id = invoiceProducts.invoiceId");
-
-    // Filter by userId
-    if (userId) {
-      console.log("UserID tồng tài");
-
-      queryBuilder.andWhere(
-        "(userCourse.userId = :userId OR invoice.userId = :userId)",
-        { userId: Number(userId) },
+      .leftJoin(
+        "course.userCourses",
+        "userCourse",
+        "userCourse.userId = :userId",
+        {
+          userId: userId ? Number(userId) : null,
+        },
       );
-    }
 
-    // Filter by invoiceId
     if (invoiceId && isUUID(invoiceId)) {
-      queryBuilder.andWhere("invoice.id = :invoiceId", { invoiceId });
+      queryBuilder
+        .leftJoin("course.invoiceProducts", "invoiceProducts")
+        .leftJoin(
+          "invoice",
+          "invoice",
+          "invoice.id = invoiceProducts.invoiceId",
+        )
+        .andWhere("invoice.id = :invoiceId", { invoiceId });
     }
 
-    // Filter by categoryId
     if (categoryId && isUUID(categoryId)) {
       queryBuilder.andWhere("category.id = :categoryId", { categoryId });
     }
 
-    // Filter by course status
     if (status) {
       queryBuilder.andWhere("course.status = :status", { status });
     }
 
-    // Filter by search query
     if (search) {
       queryBuilder.andWhere(
         "(course.name LIKE :search OR course.description LIKE :search)",
@@ -253,21 +426,14 @@ export class CourseRelationalRepository implements CourseRepository {
       );
     }
 
-    // Filter by isMyCourse
     if (isMyCourse !== undefined && userId) {
       if (isMyCourse) {
-        queryBuilder.andWhere("userCourse.userId = :userId", {
-          userId: Number(userId),
-        });
+        queryBuilder.andWhere("userCourse.id IS NOT NULL");
       } else {
-        queryBuilder.andWhere(
-          "(userCourse.userId IS NULL OR userCourse.userId != :userId)",
-          { userId: Number(userId) },
-        );
+        queryBuilder.andWhere("userCourse.id IS NULL");
       }
     }
 
-    // Order by specified columns
     const validColumns = [
       "id",
       "name",
@@ -291,7 +457,6 @@ export class CourseRelationalRepository implements CourseRepository {
 
     queryBuilder.addOrderBy("course.id", "ASC");
 
-    // Pagination
     const total = await queryBuilder.getCount();
 
     if (paginationOptions) {
@@ -339,9 +504,7 @@ export class CourseRelationalRepository implements CourseRepository {
             ...LessonMapper.toDto(lc.lesson),
             isCompleted: lc.lesson.userLessons?.[0]?.isCompleted || false,
           })),
-          isMyCourse: userId
-            ? await this.checkIsMyCourse(userId, courseEntity.id)
-            : false,
+          isMyCourse: !!course.userCourses?.[0],
         };
 
         return courseDetail;

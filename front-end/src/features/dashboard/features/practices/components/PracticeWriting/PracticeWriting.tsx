@@ -1,3 +1,5 @@
+import RoleBasedComponent from '@/components/RoleBasedComponent';
+import { ROLE } from '@/utils/constants/constants';
 import { Box, Button, Typography } from '@mui/material';
 import Quill from 'quill';
 import React, { useEffect, useState } from 'react';
@@ -27,36 +29,38 @@ export default function PracticeWriting({ data }) {
   }, [countDown]);
 
   return (
-    <Box>
+    <Box sx={{ paddingTop: '20px' }}>
       <Typography variant="h6">Chủ đề: {data?.content}</Typography>
 
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '0px',
-          marginTop: '20px',
-          flexDirection: 'column',
-        }}
-      >
+      <RoleBasedComponent allowedRoles={[ROLE.USER]}>
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            gap: '0px',
+            marginTop: '20px',
+            flexDirection: 'column',
           }}
         >
-          <Typography variant="body1">Nhập câu trả lời của bạn</Typography>
-          <Button variant="text" sx={{ color: 'black' }}>
-            Thời gian: 00:{Math.floor(countDown / 60)}:{countDown % 60}
-          </Button>
-        </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Typography variant="body1">Nhập câu trả lời của bạn</Typography>
+            {/* <Button variant="text" sx={{ color: 'black' }}>
+              Thời gian: 00:{Math.floor(countDown / 60)}:{countDown % 60}
+            </Button> */}
+          </Box>
 
-        <ReactQuill
-          value={content}
-          onChange={handleChange}
-          style={{ minHeight: '300px' }}
-        />
-      </Box>
+          <ReactQuill
+            value={content}
+            onChange={handleChange}
+            style={{ minHeight: '300px' }}
+          />
+        </Box>
+      </RoleBasedComponent>
     </Box>
   );
 }

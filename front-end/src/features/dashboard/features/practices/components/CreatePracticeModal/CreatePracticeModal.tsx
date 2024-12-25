@@ -70,19 +70,20 @@ export default function CreatePracticeModal({
   });
 
   // Initialize form data if editing an existing course
-  // useEffect(() => {
-  //   if (data?.id) {
-  //     setFormData({
-  //       name: data.name,
-  //       description: data.description,
-  //       price: data.price,
-  //       image: data.photo.path, // No need to load image here
-  //       category_id: data.category.id,
-  //     });
-  //   } else {
-  //     resetForm();
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (data?.id) {
+      setFormData({
+        title: data.title,
+        price: data.price,
+        practiceType: data.practiceType,
+        content: data.content,
+        description: data.description,
+        difficulty: data.difficulty,
+      });
+    } else {
+      resetForm();
+    }
+  }, [data]);
 
   useEffect(() => {
     if (!open) {
@@ -120,14 +121,6 @@ export default function CreatePracticeModal({
     }));
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData((prevState) => ({
-        ...prevState,
-        image: e.target.files[0], // Store file object
-      }));
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -142,15 +135,6 @@ export default function CreatePracticeModal({
       toast.error('Please fill in all required fields.');
       return;
     }
-    // Prepare form data to send via multipart/form-data
-    // const form = new FormData();
-    // form.append('name', formData.name);
-    // form.append('description', formData.description);
-    // form.append('price', formData.price);
-    // form.append('category_id', formData.category_id);
-    // if (formData.image) {
-    //   form.append('file', formData.image); // Append the file if present
-    // }
     try {
       dispatch(setAppLoading(true));
       if (data?.id) {
@@ -177,6 +161,7 @@ export default function CreatePracticeModal({
           navigate(`/dashboard/practices`);
         }
       }
+      dispatch(setAppLoading(false));
       onOk();
       onClose(false);
     } catch (error) {

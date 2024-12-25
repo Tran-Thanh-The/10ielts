@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import MicNoneIcon from '@mui/icons-material/MicNone';
 import MicOffIcon from '@mui/icons-material/MicOff';
 import Countdown from 'react-countdown';
+import RoleBasedComponent from '@/components/RoleBasedComponent';
+import { ROLE } from '@/utils/constants/constants';
 
 export default function PracticeSpeaking({ data }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -45,83 +47,85 @@ export default function PracticeSpeaking({ data }) {
   };
 
   return (
-    <Box>
+    <Box sx={{ paddingTop: '20px' }}>
       <Typography variant="h6">Chủ đề: {data?.content}</Typography>
 
-      <Box
-        sx={{
-          display: 'flex',
-          gap: '20px',
-          marginTop: '20px',
-          flexDirection: 'column',
-          border: '1px solid #ccc',
-          padding: '20px',
-          borderRadius: '12px',
-        }}
-      >
-        <Typography variant="body1">Nhấn để bắt đầu ghi âm</Typography>
+      <RoleBasedComponent allowedRoles={[ROLE.USER]}>
         <Box
           sx={{
             display: 'flex',
             gap: '20px',
-            justifyContent: 'center',
+            marginTop: '20px',
+            flexDirection: 'column',
+            border: '1px solid #ccc',
+            padding: '20px',
+            borderRadius: '12px',
           }}
         >
-          {isRecording ? (
-            <Button variant="text" sx={{ color: 'black' }}>
-              00:{Math.floor(countDown / 60)}:{countDown % 60}
-            </Button>
-          ) : null}
-
-          <Button
-            sx={{
-              borderRadius: '50%',
-            }}
-            variant="contained"
-            onClick={startRecording}
-            disabled={isRecording}
-          >
-            <MicNoneIcon />
-          </Button>
-          <Button
-            sx={{
-              borderRadius: '50%',
-              backgroundColor: 'white',
-              color: 'white',
-            }}
-            onClick={stopRecording}
-            variant="contained"
-            disabled={!isRecording}
-          >
-            <MicOffIcon color="error" />
-          </Button>
-        </Box>
-
-        {audioURL && (
+          <Typography variant="body1">Nhấn để bắt đầu ghi âm</Typography>
           <Box
             sx={{
               display: 'flex',
-              gap: '12px',
-              flexDirection: 'column',
-              marginTop: '20px',
+              gap: '20px',
+              justifyContent: 'center',
             }}
           >
-            <Typography variant="h6">Bản ghi của bạn</Typography>
+            {isRecording ? (
+              <Button variant="text" sx={{ color: 'black' }}>
+                00:{Math.floor(countDown / 60)}:{countDown % 60}
+              </Button>
+            ) : null}
+
+            <Button
+              sx={{
+                borderRadius: '50%',
+              }}
+              variant="contained"
+              onClick={startRecording}
+              disabled={isRecording}
+            >
+              <MicNoneIcon />
+            </Button>
+            <Button
+              sx={{
+                borderRadius: '50%',
+                backgroundColor: 'white',
+                color: 'white',
+              }}
+              onClick={stopRecording}
+              variant="contained"
+              disabled={!isRecording}
+            >
+              <MicOffIcon color="error" />
+            </Button>
+          </Box>
+
+          {audioURL && (
             <Box
               sx={{
                 display: 'flex',
                 gap: '12px',
-                alignItems: 'center',
+                flexDirection: 'column',
+                marginTop: '20px',
               }}
             >
-              <audio controls src={audioURL}></audio>
-              <a href={audioURL} download="recording.wav">
-                Download
-              </a>
+              <Typography variant="h6">Bản ghi của bạn</Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '12px',
+                  alignItems: 'center',
+                }}
+              >
+                <audio controls src={audioURL}></audio>
+                <a href={audioURL} download="recording.wav">
+                  Download
+                </a>
+              </Box>
             </Box>
-          </Box>
-        )}
-      </Box>
+          )}
+        </Box>
+      </RoleBasedComponent>
     </Box>
   );
 }

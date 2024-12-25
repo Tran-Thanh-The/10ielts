@@ -35,7 +35,7 @@ export default function CourseList() {
       limit: 10,
     },
     orderBy: 'created_at:DESC',
-    status: 'ACTIVE',
+    status: undefined,
   });
 
   useEffect(() => {

@@ -7,7 +7,7 @@ import moment from 'moment';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function ViewHistory({ open, onClose, onOk, data = null }) {
+export default function ViewHistory({ open, onClose, onOk, data = null, lessonView = false }) {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const [answerHistories, setAnswerHistories] = React.useState([]);
@@ -16,11 +16,12 @@ export default function ViewHistory({ open, onClose, onOk, data = null }) {
   );
 
   useEffect(() => {
-    getAnswerHistories().then((res) => {
-      const histories = res.data.data.filter((item: any) => {
-        return item.user.id === user.id && item.lesson.id === data?.id;
-      });
-      console.log('res', histories, user, data, res.data.data);
+    getAnswerHistories({
+      userId: user.id,
+      practiceId: lessonView ? undefined : data?.id,
+      lessonId: lessonView ? data?.id : undefined,
+    }).then((res) => {
+      const histories = res.data.data;
       setAnswerHistories(histories);
     });
   }, []);
@@ -127,11 +128,13 @@ export default function ViewHistory({ open, onClose, onOk, data = null }) {
                   answers={selectedAnswerHistory?.answers}
                 />
               ) : (
-                <Box sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
                   <Typography>Vui lòng chọn một</Typography>
                 </Box>
               )}

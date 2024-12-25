@@ -108,7 +108,7 @@ export default function DoLesson({ lesson, course }: any) {
 
       <Box sx={{ padding: '12px 0' }}>
         <Typography variant="h6">Đánh giá</Typography>
-        <Typography>comming soom</Typography>
+        <Typography>coming soon</Typography>
       </Box>
     </>
   );

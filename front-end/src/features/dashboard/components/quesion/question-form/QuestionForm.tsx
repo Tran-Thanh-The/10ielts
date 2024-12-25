@@ -27,7 +27,7 @@ export default function QuestionFormModal({
   onOk,
 }: any) {
   const dispatch = useDispatch();
-  const { idCourse, selectedLessonId } = useParams();
+  const { selectedLessonId, idPractice } = useParams();
 
   const [form, setForm] = React.useState<{
     id?: string;
@@ -58,7 +58,7 @@ export default function QuestionFormModal({
     content: '',
     explain: '',
     category_id: null,
-    practice_id: null,
+    practice_id: idPractice,
     lesson_id: selectedLessonId,
     answers: [],
     id: question?.id,
@@ -85,6 +85,7 @@ export default function QuestionFormModal({
         file: form.file ?? undefined,
         fileType: form.fileType ?? undefined,
         lesson_id: form.lesson_id,
+        practice_id: form.practice_id,
       };
       const question = await createQuestion(questionPayload);
 

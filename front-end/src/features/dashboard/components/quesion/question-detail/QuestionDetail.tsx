@@ -93,7 +93,7 @@ export default function QuestionDetail({
       )}
       {question.file && question.fileType === 'AUDIO' && (
         <Box>
-          <audio src="http://localhost:3002/api/v1/files/QA-01.mp3" controls />{' '}
+          <audio src={question?.file?.path ?? "http://localhost:3002/api/v1/files/QA-01.mp3"} controls />{' '}
         </Box>
       )}
 
@@ -102,7 +102,7 @@ export default function QuestionDetail({
           <img
             width={400}
             height="auto"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkeMrDaQuVKvwExVpOp3wCbugxjzFfkSPYHg&s"
+            src={question?.file?.path ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkeMrDaQuVKvwExVpOp3wCbugxjzFfkSPYHg&s"}
           />{' '}
         </Box>
       )}

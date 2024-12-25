@@ -1,7 +1,7 @@
 import {
   getLessonDetailsById,
   getLessonDetailsByIdV2,
-  submitCourseLesson,
+  submitExercice,
   updateUserCouse,
 } from '@/api/api';
 import courseApi from '@/api/courseApi';
@@ -81,7 +81,7 @@ export default function LessonView() {
 
     const score = Math.round((correctQuestions / exerciseForm.length) * 100);
 
-    submitCourseLesson({
+    submitExercice({
       lesson_id: selectedLessonId,
       totalScore: score,
       startedAt: new Date().toISOString(),
@@ -216,6 +216,7 @@ export default function LessonView() {
           onClose={() => setOpenHistory(false)}
           data={lesson}
           onOk={() => setOpenHistory(false)}
+          lessonView={true}
         />
       ) : null}
     </FeatureLayout>

@@ -106,210 +106,32 @@ export class CourseRelationalRepository implements CourseRepository {
     return course ? CourseMapper.toDomain(course) : null;
   }
 
+  // async checkIsMyCourse(userId: string, courseId: string): Promise<boolean> {
+  //   const userIdNumber = Number(userId);
+
+  //   const checkOwnCourse = await this.userCourseRepository
+  //     .createQueryBuilder("uc")
+  //     .select("uc")
+  //     .innerJoin("uc.course", "c")
+  //     .innerJoin("c.invoiceProducts", "ip")
+  //     .innerJoin("ip.invoice", "i")
+  //     .where("i.userId = :userId", { userId: userIdNumber })
+  //     .andWhere("uc.courseId = :courseId", { courseId })
+  //     .getOne();
+
+  //   return !!checkOwnCourse;
+  // }
   async checkIsMyCourse(userId: string, courseId: string): Promise<boolean> {
     const userIdNumber = Number(userId);
 
-    const checkOwnCourse = await this.userCourseRepository
+    const checkUserCourse = await this.userCourseRepository
       .createQueryBuilder("uc")
-      .select("uc")
-      .innerJoin("uc.course", "c")
-      .innerJoin("c.invoiceProducts", "ip")
-      .innerJoin("ip.invoice", "i")
-      .where("i.userId = :userId", { userId: userIdNumber })
+      .where("uc.userId = :userId", { userId: userIdNumber })
       .andWhere("uc.courseId = :courseId", { courseId })
       .getOne();
 
-    return !!checkOwnCourse;
+    return !!checkUserCourse;
   }
-
-  // async getCourseDetailById(
-  //   id: string,
-  //   userId: string,
-  // ): Promise<CourseWithDetailsDTO | null> {
-  //   const courseEntity = await this.courseRepository
-  //     .createQueryBuilder("course")
-  //     .leftJoinAndSelect("course.category", "category")
-  //     .leftJoinAndSelect("course.photo", "photo")
-  //     .leftJoinAndSelect("course.lessonCourses", "lessonCourse")
-  //     .leftJoinAndSelect("lessonCourse.lesson", "lesson")
-  //     .leftJoinAndSelect(
-  //       "lesson.userLessons",
-  //       "userLesson",
-  //       "userLesson.userId = :userId",
-  //       { userId: Number(userId) },
-  //     )
-  //     .where("course.id = :id", { id })
-  //     .getOne();
-
-  //   if (!courseEntity) {
-  //     return null;
-  //   }
-  //   console.log(courseEntity);
-
-  //   const courseDetail: Omit<CourseWithDetailsDTO, "isMyCourse"> = {
-  //     id: courseEntity.id,
-  //     title: courseEntity.name,
-  //     price: courseEntity.price,
-  //     description: courseEntity.description,
-  //     photo: courseEntity.photo,
-  //     category: courseEntity.category,
-  //     createdAt: courseEntity.createdAt,
-  //     totalLesson: courseEntity.lessonCourses.length,
-  //     lessons: courseEntity.lessonCourses.map((lc) =>
-  //       LessonMapper.toDto(lc.lesson),
-  //     ),
-  //   };
-
-  //   const isMyCourse = userId ? await this.checkIsMyCourse(userId, id) : false;
-  //   const result = {
-  //     ...courseDetail,
-  //     isMyCourse,
-  //   };
-  //   return result;
-  // }
-
-  // async getListCourse(params: {
-  //   status?: StatusEnum;
-  //   userId?: string;
-  //   invoiceId?: string;
-  //   paginationOptions?: IPaginationOptions;
-  //   isMyCourse?: boolean;
-  //   search?: string;
-  //   orderBy?: { [key: string]: "ASC" | "DESC" };
-  // }): Promise<{
-  //   data: Course[];
-  //   total: number;
-  //   page: number;
-  //   limit: number;
-  //   totalPages: number;
-  // }> {
-  //   const {
-  //     status,
-  //     userId,
-  //     invoiceId,
-  //     paginationOptions,
-  //     orderBy,
-  //     isMyCourse,
-  //     search,
-  //   } = params;
-
-  //   const queryBuilder = this.courseRepository
-  //     .createQueryBuilder("course")
-  //     .leftJoinAndSelect("course.photo", "photo")
-  //     .leftJoinAndSelect("course.category", "category");
-
-  //   if (userId) {
-  //     queryBuilder
-  //       .leftJoin(
-  //         "course.userCourses",
-  //         "userCourse",
-  //         "userCourse.userId = :userId",
-  //         {
-  //           userId: Number(userId),
-  //         },
-  //       )
-  //       .leftJoin("course.invoiceProducts", "invoiceProducts")
-  //       // .leftJoin(
-  //       //   "invoiceProducts.invoiceId",
-  //       //   "userInvoice",
-  //       //   "userInvoice.userId = :userId",
-  //       //   { userId: Number(userId) },
-  //       // )
-  //       // .andWhere(
-  //       //   "(userCourse.userId = :userId OR userInvoice.userId = :userId)",
-  //       //   { userId: Number(userId) },
-  //       // );
-  //       .leftJoin(
-  //         "invoiceProducts.invoice",
-  //         "invoice",
-  //         "invoice.id = invoiceProducts.invoiceId AND invoice.userId = :userId",
-  //         { userId: Number(userId) },
-  //       )
-  //       .andWhere(
-  //         "(userCourse.userId = :userId OR invoice.userId = :userId)",
-  //         { userId: Number(userId) },
-  //       );
-  //   }
-
-  //   if (invoiceId && isUUID(invoiceId)) {
-  //     queryBuilder.andWhere("userInvoices.id = :invoiceId", { invoiceId });
-  //   }
-
-  //   if (status) {
-  //     queryBuilder.andWhere("course.status = :status", {
-  //       status,
-  //     });
-  //   }
-
-  //   if (search) {
-  //     queryBuilder.andWhere(
-  //       "(course.name LIKE :search OR course.description LIKE :search)",
-  //       {
-  //         search: `%${search}%`,
-  //       },
-  //     );
-  //   }
-
-  //   if (isMyCourse !== undefined && userId) {
-  //     if (isMyCourse) {
-  //       queryBuilder.andWhere("userInvoice.userId = :userId", {
-  //         userId: Number(userId),
-  //       });
-  //     } else {
-  //       queryBuilder.andWhere(
-  //         "(userInvoice.userId IS NULL OR userInvoice.userId != :userId)",
-  //         { userId: Number(userId) },
-  //       );
-  //     }
-  //   }
-
-  //   const validColumns = [
-  //     "id",
-  //     "name",
-  //     "price",
-  //     "description",
-  //     "status",
-  //     "createdAt",
-  //     "updatedAt",
-  //     "photo",
-  //   ];
-
-  //   if (orderBy && Object.keys(orderBy).length > 0) {
-  //     Object.entries(orderBy).forEach(([key, value]) => {
-  //       if (validColumns.includes(key)) {
-  //         queryBuilder.addOrderBy(`course.${key}`, value);
-  //       }
-  //     });
-  //   } else {
-  //     queryBuilder.orderBy("course.createdAt", "DESC");
-  //   }
-
-  //   queryBuilder.addOrderBy("course.id", "ASC");
-
-  //   const total = await queryBuilder.getCount();
-
-  //   if (paginationOptions) {
-  //     const { page, limit } = paginationOptions;
-  //     queryBuilder.skip((page - 1) * limit).take(limit);
-  //   }
-
-  //   const courses = await queryBuilder.getMany();
-  //   const mappedCourses = courses.map((course) => ({
-  //     ...CourseMapper.toDomain(course),
-  //     createdAt: course.createdAt,
-  //     updatedAt: course.updatedAt,
-  //   }));
-
-  //   return {
-  //     data: mappedCourses,
-  //     total,
-  //     page: paginationOptions?.page || 1,
-  //     limit: paginationOptions?.limit || total,
-  //     totalPages: paginationOptions
-  //       ? Math.ceil(total / paginationOptions.limit)
-  //       : 1,
-  //   };
-  // }
 
   async getCourseDetailById(
     id: string,
@@ -434,12 +256,12 @@ export class CourseRelationalRepository implements CourseRepository {
     // Filter by isMyCourse
     if (isMyCourse !== undefined && userId) {
       if (isMyCourse) {
-        queryBuilder.andWhere("invoice.userId = :userId", {
+        queryBuilder.andWhere("userCourse.userId = :userId", {
           userId: Number(userId),
         });
       } else {
         queryBuilder.andWhere(
-          "(invoice.userId IS NULL OR invoice.userId != :userId)",
+          "(userCourse.userId IS NULL OR userCourse.userId != :userId)",
           { userId: Number(userId) },
         );
       }
@@ -477,36 +299,6 @@ export class CourseRelationalRepository implements CourseRepository {
       queryBuilder.skip((page - 1) * limit).take(limit);
     }
 
-    // // Fetch courses
-    // const courses = await queryBuilder.getMany();
-    // const mappedCourses = courses.map(async (course) => ({
-    //   ...CourseMapper.toDomain(course),
-    //   createdAt: course.createdAt,
-    //   updatedAt: course.updatedAt,
-    //   isMyCourse: userId ? await this.checkIsMyCourse(userId, course.id) : false
-    // }));
-    // // const mappedCourses = await Promise.all(courses.map(async (course) => ({
-    // //   id: course.id,
-    // //   title: course.name,
-    // //   price: course.price,
-    // //   description: course.description,
-    // //   photo: course.photo,
-    // //   category: course.category,
-    // //   status: course.status,
-    // //   createdAt: course.createdAt,
-    // //   isMyCourse: userId ? await this.checkIsMyCourse(userId, course.id) : false
-    // // })));
-
-    // return {
-    //   data: mappedCourses,
-    //   total,
-    //   page: paginationOptions?.page || 1,
-    //   limit: paginationOptions?.limit || total,
-    //   totalPages: paginationOptions
-    //     ? Math.ceil(total / paginationOptions.limit)
-    //     : 1,
-    // };
-    // Fetch courses
     const courses = await queryBuilder.getMany();
 
     const mappedCourses = await Promise.all(

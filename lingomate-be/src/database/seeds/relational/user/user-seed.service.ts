@@ -43,15 +43,12 @@ export class UserSeedService {
       );
     }
 
-    const countStaff = await this.repository.count({
-      where: {
-        role: {
-          id: RoleEnum.staff,
-        },
-      },
-    });
+    const countStaff = await this.repository.query(
+      `SELECT COUNT(*) FROM "user" WHERE "roleId" = $1`,
+      [RoleEnum.staff],
+    );
 
-    if (!countStaff) {
+    if (!countStaff[0].count) {
       const salt = await bcrypt.genSalt();
       const password = await bcrypt.hash("string", salt);
 

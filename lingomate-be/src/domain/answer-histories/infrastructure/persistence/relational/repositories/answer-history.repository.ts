@@ -62,7 +62,8 @@ export class AnswerHistoryRelationalRepository
       .createQueryBuilder("answerHistory")
       .leftJoinAndSelect("answerHistory.practice", "practice")
       .leftJoinAndSelect("answerHistory.lesson", "lesson")
-      .leftJoinAndSelect("answerHistory.user", "user");
+      .leftJoinAndSelect("answerHistory.user", "user")
+      .leftJoinAndSelect("answerHistory.audioAnswer", "file");
 
     if (practiceId) {
       queryBuilder.andWhere("practice.id = :practiceId", { practiceId });

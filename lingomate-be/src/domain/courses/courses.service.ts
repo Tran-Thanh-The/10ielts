@@ -57,11 +57,11 @@ export class CoursesService {
     }
     const course = await this.courseRepository.create(model);
 
-    const userCourse = new UserCourse();
-    userCourse.user = user as UserEntity;
-    userCourse.course = course as CourseEntity;
-    userCourse.status = StatusEnum.ACTIVE;
-    await this.userCourseRepository.create(userCourse);
+    // const userCourse = new UserCourse();
+    // userCourse.user = user as UserEntity;
+    // userCourse.course = course as CourseEntity;
+    // userCourse.status = StatusEnum.ACTIVE;
+    // await this.userCourseRepository.create(userCourse);
 
     return CourseMapper.toDto(course);
   }

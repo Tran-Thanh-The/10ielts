@@ -20,7 +20,7 @@ enum EAppPath {
   COURSES_CATEGORY = '/dashboard/courses/category',
   PRACTICES = '/dashboard/practices',
   PRACTICES_LIST = '/dashboard/practices/list',
-  PRACTICES_CATEGORY = '/dashboard/practices/category',
+  PRACTICES_CATEGORY = '/dashboard/practices/submitions',
   PAYMENTS = '/dashboard/payments',
   INSIGHTS = '/dashboard/insights',
   MAGAGER = '/dashboard/user-management',

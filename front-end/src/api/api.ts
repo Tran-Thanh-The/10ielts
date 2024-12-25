@@ -69,8 +69,10 @@ export const getRoles = async () => {
   return axiosInstance.get<any>('roles');
 };
 
-export const submitExercice = async (data: any) => {
-  return axiosInstance.post<any>('answer-histories', data);
+export const submitExercice = async (data: any, headers?: any) => {
+  return axiosInstance.post<any>('answer-histories', data, {
+    headers: headers,
+  });
 };
 
 export const getAnswerHistories = async (params?: any) => {
@@ -79,7 +81,7 @@ export const getAnswerHistories = async (params?: any) => {
       pages: 1,
       limit: 1000,
       ...(params || {}),
-    },
+    }
   });
 };
 
@@ -91,11 +93,12 @@ export const updatePractice = async (id: string, data: any) => {
   return axiosInstance.patch<any>(`practice-exercises/${id}`, data);
 };
 
-export const getPracticeExercises = async () => {
+export const getPracticeExercises = async (params?: any) => {
   return axiosInstance.get<any>('practice-exercises', {
     params: {
       pages: 1,
       limit: 1000,
+      ...(params || {}),
     },
   });
 };
@@ -118,4 +121,12 @@ export const deleteCourseCategory = async (id: string) => {
 
 export const deletePractice = async (id: string) => {
   return axiosInstance.delete<any>(`practice-exercises/${id}`);
+};
+
+export const getAnswerHistorieById = async (id: string) => {
+  return axiosInstance.get<any>(`answer-histories/${id}`);
+};
+
+export const updateAnswerHistory = async (id: string, data: any) => {
+  return axiosInstance.patch<any>(`answer-histories/${id}`, data);
 };

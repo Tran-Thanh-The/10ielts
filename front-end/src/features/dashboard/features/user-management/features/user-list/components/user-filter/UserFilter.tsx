@@ -6,11 +6,13 @@ type UserFilterProps = {
   buttonLabel?: string;
   onButtonClick?: () => void;
   onSearch?: (search: string) => void;
+  hiddenButton?: boolean;
 };
 export default function UserFilter({
   buttonLabel = 'Tạo học sinh',
   onButtonClick,
   onSearch,
+  hiddenButton = false,
 }: UserFilterProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -34,16 +36,18 @@ export default function UserFilter({
         />
       </Box>
 
-      <Button
-        sx={{
-          height: '48px',
-        }}
-        variant="contained"
-        onClick={() => (onButtonClick ? onButtonClick() : setOpen(true))}
-        size="small"
-      >
-        {buttonLabel}
-      </Button>
+      {hiddenButton ? null : (
+        <Button
+          sx={{
+            height: '48px',
+          }}
+          variant="contained"
+          onClick={() => (onButtonClick ? onButtonClick() : setOpen(true))}
+          size="small"
+        >
+          {buttonLabel}
+        </Button>
+      )}
       <CreateUpdateUserModal
         open={open}
         onClose={() => setOpen(false)}

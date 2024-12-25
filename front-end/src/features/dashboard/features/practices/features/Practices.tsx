@@ -27,8 +27,10 @@ export default function Practices() {
   const fetchPractices = async () => {
     dispatch(setAppLoading(true));
     getPracticeExercises().then((response) => {
-      console.log(response.data);
-      setPractices(response.data.data);
+      setPractices(response.data.data.filter((pratice) => {
+        if (filter === EPracticeFilter.ALL) return true;
+        return pratice.practiceType === filter;
+      }));
       dispatch(setAppLoading(false));
     });
   };
@@ -71,18 +73,6 @@ export default function Practices() {
               <PracticeCard key={practice.id} title={practice.title} data={practice} />
             ))}
           </Box>
-          {/* <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 3,
-            }}
-          >
-            <PracticeGroup />
-            <PracticeGroup />
-            <PracticeGroup />
-            <PracticeGroup />
-          </Box> */}
         </Box>
       </Box>
       <CreatePracticeModal

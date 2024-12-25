@@ -9,6 +9,12 @@ const PracticeTypeMap = {
   SPEAKING: 'Luyện nói',
 };
 
+const PracticeDifficultyMap = {
+  EASY: 'Dễ',
+  MEDIUM: 'Trung bình',
+  HARD: 'Khó',
+};
+
 export default function PracticeCard({ title, data }: any) {
   const naigate = useNavigate();
 
@@ -45,7 +51,7 @@ export default function PracticeCard({ title, data }: any) {
       <Box>
         <Typography variant="h6">{title}</Typography>
         <Typography variant="body1">
-          {PracticeTypeMap[data?.practiceType]}
+          {PracticeTypeMap[data?.practiceType]} - {PracticeDifficultyMap[data?.difficulty]}
         </Typography>
       </Box>
     </Box>

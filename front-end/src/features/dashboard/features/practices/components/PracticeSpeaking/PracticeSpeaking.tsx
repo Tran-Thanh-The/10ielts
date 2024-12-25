@@ -5,16 +5,19 @@ import MicOffIcon from '@mui/icons-material/MicOff';
 import Countdown from 'react-countdown';
 import RoleBasedComponent from '@/components/RoleBasedComponent';
 import { ROLE } from '@/utils/constants/constants';
+import { useDispatch } from 'react-redux';
+import { setDoExerciseForm } from '@/stores/slices/appSlice';
 
 export default function PracticeSpeaking({ data }) {
+  const dispatch = useDispatch();
   const [isRecording, setIsRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
-  const [countDown, setCountDown] = React.useState(60 * 15);
+  const [countDown, setCountDown] = React.useState(0);
 
   const startRecording = async () => {
-    setCountDown(60 * 15);
+    setCountDown(0);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
@@ -43,8 +46,27 @@ export default function PracticeSpeaking({ data }) {
 
   const stopRecording = () => {
     mediaRecorderRef.current?.stop();
+    // convert Blob 
+    const audioBlob = new Blob(audioChunksRef.current, {
+      type: 'audio/wav',
+    });
+    dispatch(setDoExerciseForm({ audioAnswer: audioBlob }));
     setIsRecording(false);
   };
+
+  useEffect(() => {
+      const interval = setInterval(() => {
+        if (countDown >= 15*60) {
+          clearInterval(interval);
+          return;
+        }
+        setCountDown((prev) => prev + 1);
+      }, 1000);
+  
+      return () => {
+        clearInterval(interval);
+      };
+    }, [countDown]);
 
   return (
     <Box sx={{ paddingTop: '20px' }}>
@@ -72,7 +94,7 @@ export default function PracticeSpeaking({ data }) {
           >
             {isRecording ? (
               <Button variant="text" sx={{ color: 'black' }}>
-                00:{Math.floor(countDown / 60)}:{countDown % 60}
+                00:{Math.floor(countDown / 60) ?? "00"}:{countDown % 60}
               </Button>
             ) : null}
 

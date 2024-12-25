@@ -1,13 +1,20 @@
 import { getAnswerHistories } from '@/api/api';
 import QuestionList from '@/features/dashboard/components/quesion/question-list/QuestionList';
 import { RootState } from '@/stores/store';
+import { EPracticeType } from '@/types/enum/practice.enum';
 import { Box, Button, Divider, Modal, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function ViewHistory({ open, onClose, onOk, data = null, lessonView = false }) {
+export default function ViewHistory({
+  open,
+  onClose,
+  onOk,
+  data = null,
+  lessonView = false,
+}) {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const [answerHistories, setAnswerHistories] = React.useState([]);
@@ -110,10 +117,15 @@ export default function ViewHistory({ open, onClose, onOk, data = null, lessonVi
               }}
             >
               <Typography variant="h6">Chi tiết</Typography>
-              <Typography
-                variant="h6"
-                color="success"
-              >{`Điểm: ${selectedAnswerHistory?.totalScore ?? 0}`}</Typography>
+              <Typography variant="h6" color="success">{`Điểm: ${
+                selectedAnswerHistory?.practice?.practiceType ===
+                  EPracticeType.WRITING ||
+                selectedAnswerHistory?.practice?.practiceType ===
+                  EPracticeType.SPEAKING
+                  ? (selectedAnswerHistory?.teacherScore ??
+                    'Chờ giáo viên chấm')
+                  : (selectedAnswerHistory?.totalScore ?? 0)
+              }`}</Typography>
             </Box>
 
             <Box
@@ -122,11 +134,61 @@ export default function ViewHistory({ open, onClose, onOk, data = null, lessonVi
               }}
             >
               {selectedAnswerHistory?.id ? (
-                <QuestionList
-                  questions={data?.questions}
-                  readOnly
-                  answers={selectedAnswerHistory?.answers}
-                />
+                <>
+                  {lessonView ||
+                  selectedAnswerHistory?.practice?.practiceType ===
+                    EPracticeType.READING ||
+                  selectedAnswerHistory?.practice?.practiceType ===
+                    EPracticeType.LISTENING ? (
+                    <QuestionList
+                      questions={data?.questions}
+                      readOnly
+                      answers={selectedAnswerHistory?.answers}
+                    />
+                  ) : (
+                    <Box>
+                      <Typography variant="h6" sx={{ mt: 2 }}>
+                        Nội dung bài làm
+                      </Typography>
+                      {selectedAnswerHistory?.practice?.practiceType ===
+                      EPracticeType.WRITING ? (
+                        <Box
+                          sx={{
+                            p: 2, // padding
+                            border: '1px solid #ccc', // khung bao quanh
+                            borderRadius: '8px',
+                          }}
+                          dangerouslySetInnerHTML={{
+                            __html: selectedAnswerHistory?.writingAnswer,
+                          }}
+                        ></Box>
+                      ) : (
+                        <Box>
+                          <audio
+                            src={selectedAnswerHistory?.audioAnswer?.path}
+                            controls
+                          />
+                        </Box>
+                      )}
+                      <Typography variant="h6" sx={{ mt: 2 }}>
+                        Nhận xét từ giáo viên
+                      </Typography>
+
+                      <Box
+                        sx={{
+                          p: 2, // padding
+                          border: '1px solid #ccc', // khung bao quanh
+                          borderRadius: '8px',
+                        }}
+                        dangerouslySetInnerHTML={{
+                          __html: selectedAnswerHistory?.teacherFeedback
+                            ? selectedAnswerHistory?.teacherFeedback
+                            : 'Chưa có nhận xét',
+                        }}
+                      ></Box>
+                    </Box>
+                  )}
+                </>
               ) : (
                 <Box
                   sx={{

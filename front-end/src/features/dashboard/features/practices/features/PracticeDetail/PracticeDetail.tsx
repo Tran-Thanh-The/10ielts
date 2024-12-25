@@ -56,6 +56,19 @@ export default function PracticeDetail() {
       practiceDetail?.practiceType === EPracticeType.READING
     ) {
       dispatch(setDoExerciseForm(practiceDetail?.questions));
+    } else if (
+      practiceDetail?.practiceType === EPracticeType.WRITING ||
+      practiceDetail?.practiceType === EPracticeType.SPEAKING
+    ) {
+      dispatch(
+        setDoExerciseForm({
+          audioAnswer: undefined,
+          startedAt: new Date().toISOString(),
+          totalScore: 0,
+          practice_id: practiceDetail?.id,
+          writingAnswer: '',
+        }),
+      );
     }
 
     return () => {
@@ -113,34 +126,85 @@ export default function PracticeDetail() {
   };
 
   const handleSubmit = () => {
-    const correctQuestions = exerciseForm.reduce((acc: number, item: any) => {
-      const correctAnswer =
-        item.questionType === 'INPUT'
-          ? item.answers[0].content
-          : item.answers.find((answer: any) => answer.isCorrect)?.id;
-      return item.userAnswer === correctAnswer ? acc + 1 : acc;
-    }, 0);
+    switch (practiceDetail?.practiceType) {
+      case EPracticeType.LISTENING:
+      case EPracticeType.READING:
+        const correctQuestions = exerciseForm.reduce(
+          (acc: number, item: any) => {
+            const correctAnswer =
+              item.questionType === 'INPUT'
+                ? item.answers[0].content
+                : item.answers.find((answer: any) => answer.isCorrect)?.id;
+            return item.userAnswer === correctAnswer ? acc + 1 : acc;
+          },
+          0,
+        );
 
-    const score = Math.round((correctQuestions / exerciseForm.length) * 100);
+        const score = Math.round(
+          (correctQuestions / exerciseForm.length) * 100,
+        );
 
-    submitExercice({
-      practice_id: idPractice,
-      totalScore: score,
-      startedAt: new Date().toISOString(),
-      answers: exerciseForm.map((item: any) => ({
-        questionId: item.id,
-        answerPick: item.userAnswer,
-      })),
-    }).then((res) => {
-      Swal.fire({
-        icon: 'success',
-        title: 'Nộp bài thành công',
-        text: `Bạn đã đạt được ${score} điểm`,
-      }).then(() => {
-        setDoing(false);
-        setReload((prev) => !prev);
-      });
-    });
+        submitExercice({
+          practice_id: idPractice,
+          totalScore: score,
+          startedAt: new Date().toISOString(),
+          answers: exerciseForm.map((item: any) => ({
+            questionId: item.id,
+            answerPick: item.userAnswer,
+          })),
+        }).then((res) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Nộp bài thành công',
+            text: `Bạn đã đạt được ${score} điểm`,
+          }).then(() => {
+            setDoing(false);
+            setReload((prev) => !prev);
+          });
+        });
+        break;
+      case EPracticeType.WRITING:
+        submitExercice({
+          practice_id: idPractice,
+          totalScore: 0,
+          startedAt: new Date().toISOString(),
+          answers: [],
+          writingAnswer: exerciseForm.writingAnswer,
+        }).then((res) => {
+          setDoing(false);
+          setReload((prev) => !prev);
+          Swal.fire({
+            icon: 'success',
+            title: 'Nộp bài thành công',
+            text: `Bạn đã nộp bài viết, Hãy chờ giáo viên kiểm tra`,
+          });
+        });
+        break;
+      case EPracticeType.SPEAKING:
+        submitExercice(
+          {
+            practice_id: idPractice,
+            totalScore: 0,
+            startedAt: new Date().toISOString(),
+            answers: [],
+            audioAnswer: exerciseForm.audioAnswer,
+          },
+          {
+            'Content-Type': 'multipart/form-data',
+          },
+        ).then((res) => {
+          setDoing(false);
+          setReload((prev) => !prev);
+          Swal.fire({
+            icon: 'success',
+            title: 'Nộp bài thành công',
+            text: `Bạn đã nộp bài nói, Hãy chờ giáo viên kiểm tra`,
+          });
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   const handleViewHistory = () => {

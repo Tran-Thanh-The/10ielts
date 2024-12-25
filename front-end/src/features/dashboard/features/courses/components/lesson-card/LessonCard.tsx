@@ -75,7 +75,7 @@ const LessonCard: React.FC<LessonCardProps> = ({
               overflow: 'hidden',
               wordWrap: 'break-word',
               textWrap: 'nowrap',
-              maxWidth: '150px',
+              maxWidth: '120px',
             }}
             onClick={() => handRouterLessonDetail(lesson.id)}
           >
@@ -91,7 +91,7 @@ const LessonCard: React.FC<LessonCardProps> = ({
               overflow: 'hidden',
               wordWrap: 'break-word',
               textWrap: 'nowrap',
-              maxWidth: '150px',
+              maxWidth: '120px',
             }}
           >
             {lesson.content}

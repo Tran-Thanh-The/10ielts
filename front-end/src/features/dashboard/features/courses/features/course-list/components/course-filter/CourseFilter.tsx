@@ -7,12 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 interface CourseFilterProps {
-  refreshPage: () => void;
   onFilterChange: (params: any) => void;
 }
 
 export default function CourseFilter({
-  refreshPage,
   onFilterChange,
 }: CourseFilterProps) {
   const navigate = useNavigate();

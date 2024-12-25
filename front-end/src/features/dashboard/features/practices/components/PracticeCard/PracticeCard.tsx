@@ -9,7 +9,7 @@ const PracticeTypeMap = {
   SPEAKING: 'Luyện nói',
 };
 
-export default function PracticeCard({ title, data }) {
+export default function PracticeCard({ title, data }: any) {
   const naigate = useNavigate();
 
   const handleNavigateToPracticeDetail = () => {

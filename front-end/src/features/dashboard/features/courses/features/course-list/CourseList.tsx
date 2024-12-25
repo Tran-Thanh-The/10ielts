@@ -47,7 +47,7 @@ export default function CourseList() {
       dispatch(setAppLoading(true));
 
       const response = await courseApi.getCourses({
-        userId: isStudentDashboard ? user?.id : undefined,
+        userId: isStudentDashboard ? user?.id + '' : undefined,
         invoiceId: params.invoiceId,
         categoryId: params.categoryId,
         search: params.search,
@@ -56,7 +56,7 @@ export default function CourseList() {
         page: params.paginationOptions.page,
         limit: params.paginationOptions.limit,
         orderBy: params.orderBy,
-      });
+      } as any);
 
       setCourses(response.data.data);
       dispatch(setAppLoading(false));
@@ -93,7 +93,6 @@ export default function CourseList() {
           }}
         >
           <CourseFilter
-            refreshPage={setReload}
             onFilterChange={(newParams) => {
               setParams((prev) => ({
                 ...prev,

@@ -49,4 +49,6 @@ export interface CourseParams {
   isMyCourse?: string;
   orderBy?: { [key: string]: 'ASC' | 'DESC' };
   categoryId?: string;
+  page: any;
+  limit: any;
 }

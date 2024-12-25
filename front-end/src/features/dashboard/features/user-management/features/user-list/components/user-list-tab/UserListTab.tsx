@@ -120,7 +120,9 @@ export default function UserListTab({ userList }: any) {
     try {
       if (!roles?.length) return;
       const roleFilter = roles
-        .filter((role) => userList ? role.name === 'User' : role.name !== 'User')
+        .filter((role) =>
+          userList ? role.name === 'User' : role.name !== 'User',
+        )
         .map((role) => ({
           id: role.id,
         }));
@@ -135,6 +137,7 @@ export default function UserListTab({ userList }: any) {
       setUsers(response?.data?.data ?? []);
       dispatch(setAppLoading(false));
     } catch (error) {
+      dispatch(setAppLoading(false));
       console.log('Failed to fetch users');
     }
   };

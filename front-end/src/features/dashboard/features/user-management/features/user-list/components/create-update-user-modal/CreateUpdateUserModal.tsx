@@ -94,12 +94,12 @@ export default function CreateUpdateUserModal({
     e.preventDefault();
 
     // Validate required fields
-    console.log(formData);
+    // console.log(formData);
     if (
       !formData.fullName.trim() ||
       !formData.email.trim() ||
       !formData.dob ||
-      (!data.id && !formData.password) ||
+      (!data?.id && (!formData.password || formData.password.trim() === '')) ||
       !formData.role
     ) {
       toast.error('Please fill in all required fields.');
@@ -118,16 +118,23 @@ export default function CreateUpdateUserModal({
     try {
       dispatch(setAppLoading(true));
       if (data?.id) {
+        console.log('tajo kho hoc', data.id);
+        // Nếu có `id`, thực hiện cập nhật người dùng
         await updateUser(data.id, body);
-        toast.success('Course updated successfully!');
+        toast.success('User updated successfully!');
       } else {
+        // Nếu không có `id`, tạo người dùng mới
+        console.log('tajo kho hoc', body);
         await createUser(body);
-        toast.success('Course created successfully!');
+        toast.success('User created successfully!');
       }
       onOk();
       onClose(false);
     } catch (error) {
-      toast.error('Failed to save the course.', error);
+      toast.error('Failed to save the user.');
+      console.error('Error:', error); // Log lỗi để dễ dàng debug
+    } finally {
+      dispatch(setAppLoading(false)); // Dừng trạng thái loading
     }
   };
 
@@ -240,7 +247,7 @@ export default function CreateUpdateUserModal({
             Hủy
           </Button>
           <Button onClick={handleSubmit} variant="contained">
-            Lưu user
+            {data?.id ? 'Cập nhập user' : 'Tạo user'}
           </Button>
         </Box>
       </Box>

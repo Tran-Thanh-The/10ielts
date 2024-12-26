@@ -1,11 +1,12 @@
 import { CreateInvoiceDto } from "@/domain/invoices/dto/create-invoice.dto";
 import { Invoice } from "../../../../domain/invoice";
 import { InvoiceEntity } from "../entities/invoice.entity";
+import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 
 export class InvoiceMapper {
   static toDomain(raw: InvoiceEntity): Invoice {
     const domainEntity = new Invoice();
-    domainEntity.userId = raw.userId;
+    domainEntity.user = raw.user;
     domainEntity.paymentStatus = raw.paymentStatus;
     domainEntity.orderCode = raw.orderCode;
     domainEntity.id = raw.id;
@@ -22,7 +23,7 @@ export class InvoiceMapper {
 
   static toPersistence(domainEntity: Invoice): InvoiceEntity {
     const persistenceEntity = new InvoiceEntity();
-    persistenceEntity.userId = domainEntity.userId;
+    persistenceEntity.user = domainEntity.user;
     persistenceEntity.paymentStatus = domainEntity.paymentStatus;
     persistenceEntity.orderCode = domainEntity.orderCode;
     persistenceEntity.status = domainEntity.status;
@@ -47,7 +48,10 @@ export class InvoiceMapper {
     model.status = dto.status;
     model.paymentStatus = dto.paymentStatus;
     model.orderCode = dto.orderCode;
-    model.userId = dto.userId;
+    if (dto.userId) {
+      model.user = new UserEntity();
+      model.user.id = Number(dto.userId);
+    }
     return model;
   }
 }

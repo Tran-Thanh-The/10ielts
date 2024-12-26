@@ -170,7 +170,7 @@ export class UserEntity extends EntityRelationalHelper {
   )
   userConversations: UserConversationEntity[];
 
-  @OneToMany(() => InvoiceEntity, (invoice) => invoice.userId, {
+  @OneToMany(() => InvoiceEntity, (invoice) => invoice.user, {
     cascade: true,
   })
   invoices: InvoiceEntity[];

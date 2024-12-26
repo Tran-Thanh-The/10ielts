@@ -1,9 +1,12 @@
 import { StatusEnum } from "@/common/enums/status.enum";
+import { UserEntity } from "@/domain/users/infrastructure/persistence/relational/entities/user.entity";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class Invoice {
-  @ApiProperty()
-  userId: string;
+  @ApiProperty({
+    type: () => UserEntity,
+  })
+  user?: UserEntity;
 
   @ApiProperty()
   paymentStatus: boolean;

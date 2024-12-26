@@ -1,5 +1,5 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsBoolean,
   IsEnum,
@@ -46,10 +46,9 @@ export class CreateInvoiceDto {
   @IsOptional()
   status: StatusEnum;
 
-  @ApiProperty({ type: String })
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  userId?: string;
 
   @ApiProperty({ type: String })
   @IsString()

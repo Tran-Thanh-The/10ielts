@@ -35,6 +35,7 @@ import { Request, Response } from "express";
 import { PermissionGuard } from "@/guards/permission.guard";
 import { Roles } from "@/utils/decorators/roles.decorator";
 import { RoleEnum } from "@/common/enums/roles.enum";
+import { PaginationOptionsDto } from "../answer-histories/dto/find-all-answer-histories.dto";
 
 @ApiTags("Invoices")
 @ApiBearerAuth()
@@ -47,18 +48,22 @@ export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
   @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.teacher)
-  @Get("")
+  @Get()
   async getAllInvoices(
     @Query() query: FindAllInvoicesDto,
-    @Req() req: Request,
-    @Res() res: Response,
-  ) {
-    try {
-      const invoices = await this.invoicesService.getAllInvoices(query);
-      return res.status(200).json(invoices);
-    } catch (e) {
-      res.status(500).json({ message: `Error: ${e}` });
+    @Query() pagination: PaginationOptionsDto,
+  ): Promise<InfinityPaginationResponseDto<Invoice>> {
+    const page = pagination?.page ?? 1;
+    let limit = pagination?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
     }
+
+    const invoices = await this.invoicesService.findAllWithPagination({
+      paginationOptions: { page, limit },
+    });
+
+    return infinityPagination(invoices, { page, limit });
   }
 
   @Get("current-user")

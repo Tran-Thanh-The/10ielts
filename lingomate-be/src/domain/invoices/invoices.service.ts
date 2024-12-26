@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateInvoiceDto } from "./dto/create-invoice.dto";
 import { UpdateInvoiceDto } from "./dto/update-invoice.dto";
 import { InvoiceRepository } from "./infrastructure/persistence/invoice.repository";
@@ -34,7 +34,11 @@ export class InvoicesService {
     return this.invoiceRepository.findById(id);
   }
 
-  update(id: Invoice["id"], updateInvoiceDto: UpdateInvoiceDto) {
+  async update(id: Invoice["id"], updateInvoiceDto: UpdateInvoiceDto) {
+    const existingInvoice = await this.invoiceRepository.findById(id);
+    if (!existingInvoice) {
+      throw new NotFoundException(`Invoice with id "${id}" not found.`);
+    }
     return this.invoiceRepository.update(id, updateInvoiceDto);
   }
 

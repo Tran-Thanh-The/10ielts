@@ -77,9 +77,9 @@ export class InvoicesController {
         req,
         query,
       );
-      return res.status(200).json(invoices);
+      res.status(200).json(invoices);
     } catch (e) {
-      return res.status(500).json({ message: `Error: ${e}` });
+      res.status(500).json({ message: `Error: ${e}` });
     }
   }
 
@@ -92,9 +92,9 @@ export class InvoicesController {
     try {
       console.log("id", id);
       const invoice = await this.invoicesService.getInvoiceDetail(id);
-      return res.status(200).json(invoice);
+     res.status(200).json(invoice);
     } catch (e) {
-      return res.status(500).json({ message: `Error: ${e}` });
+      res.status(500).json({ message: `Error: ${e}` });
     }
   }
 }

@@ -304,8 +304,8 @@ export default function PracticeDetail() {
 
         <Box
           sx={{
-            filter: !doing ? 'blur(5px)' : 'none',
-            pointerEvents: !doing ? 'none' : 'auto',
+            filter: !doing && isStudentDashboard  ? 'blur(5px)' : 'none',
+            pointerEvents: !doing && isStudentDashboard ? 'none' : 'auto',
           }}
         >
           {practiceDetail?.practiceType === EPracticeType.READING ||

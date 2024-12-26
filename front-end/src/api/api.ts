@@ -157,3 +157,7 @@ export const updateInvoiceStatus = async (
 export const InvoiceDetails = async (id: string) => {
   return await axiosInstance.get<any>(`/invoices/${id}`);
 };
+
+export const createUserCourse = async (data: any) => {
+  return axiosInstance.post<any>('user-courses', data);
+};

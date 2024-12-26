@@ -30,8 +30,9 @@ export default function PracticeSpeaking({ data }) {
       };
 
       mediaRecorder.onstop = () => {
+        // mp3
         const audioBlob = new Blob(audioChunksRef.current, {
-          type: 'audio/wav',
+          type: 'audio/mp3',
         });
         setAudioURL(URL.createObjectURL(audioBlob));
         audioChunksRef.current = [];
@@ -48,7 +49,7 @@ export default function PracticeSpeaking({ data }) {
     mediaRecorderRef.current?.stop();
     // convert Blob 
     const audioBlob = new Blob(audioChunksRef.current, {
-      type: 'audio/wav',
+      type: 'audio/mp3',
     });
     dispatch(setDoExerciseForm({ audioAnswer: audioBlob }));
     setIsRecording(false);

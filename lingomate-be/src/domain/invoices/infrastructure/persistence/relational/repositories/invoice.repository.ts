@@ -117,6 +117,7 @@ export class InvoiceRelationalRepository implements InvoiceRepository {
       .createQueryBuilder("invoice")
       .leftJoinAndSelect("invoice.invoiceProducts", "invoiceProducts")
       .leftJoinAndSelect("invoiceProducts.course", "course")
+      .leftJoinAndSelect("invoice.user", "user")
       .limit(limit)
       .offset((page - 1) * limit);
 
@@ -132,6 +133,7 @@ export class InvoiceRelationalRepository implements InvoiceRepository {
       ...InvoiceMapper.toDomain(invoice),
       courseName: invoice.invoiceProducts[0]?.course.name,
       coursePrice: invoice.invoiceProducts[0]?.course.price,
+      // userName: invoice.user.name,
     }));
 
     return {

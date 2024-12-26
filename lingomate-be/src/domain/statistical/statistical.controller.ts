@@ -11,7 +11,10 @@ import { StatisticalService } from "./statistical.service";
 @ApiTags("Statistical")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, PermissionGuard)
-@Controller("v1/statistical")
+@Controller({
+  path: "statistical",
+  version: "1",
+})
 export class StatisticalController {
   constructor(private readonly statisticalService: StatisticalService) {}
 

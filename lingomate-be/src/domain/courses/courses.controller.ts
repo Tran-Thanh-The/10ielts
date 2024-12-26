@@ -15,6 +15,7 @@ import {
   Post,
   Query,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -40,6 +41,7 @@ import { CourseListResponseDto } from "./dto/courses-response-dto";
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
 import { CourseWithDetailsDTO } from "./dto/course-details-dto";
+import { Request, Response } from "express";
 
 @ApiTags("Courses")
 @ApiBearerAuth()
@@ -104,9 +106,11 @@ export class CoursesController {
   })
   async getListCourse(
     @Query() query: CourseQueryDto,
+    @Req() req: Request,
   ): Promise<CourseListResponseDto<CourseWithDetailsDTO>> {
     const orderBy = parseOrderBy(query.orderBy);
     return this.coursesService.getListCourse(
+      req,
       query.status,
       query.userId,
       query.invoiceId,

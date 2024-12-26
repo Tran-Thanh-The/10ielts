@@ -85,4 +85,73 @@ export class InvoiceRelationalRepository implements InvoiceRepository {
 
     return entity ? InvoiceMapper.toDomain(entity) : null;
   }
+
+  async getCurrentUserInvoices(userId: string, limit: number, page: number) {
+    const queryBuilder = this.invoiceRepository
+      .createQueryBuilder("invoice")
+      .leftJoinAndSelect("invoice.invoiceProducts", "invoiceProducts")
+      .leftJoinAndSelect("invoiceProducts.course", "course")
+      .where("invoice.userId = :userId", { userId })
+      .limit(limit)
+      .offset((page - 1) * limit);
+
+    const [invoices, total] = await queryBuilder.getManyAndCount();
+
+    const result = invoices.map((invoice) => ({
+      ...InvoiceMapper.toDomain(invoice),
+      courseName: invoice.invoiceProducts[0]?.course.name,
+      coursePrice: invoice.invoiceProducts[0]?.course.price,
+    }));
+
+    return {
+      data: result,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async getAllInvoices(limit: number, page: number, search?: string) {
+    const queryBuilder = this.invoiceRepository
+      .createQueryBuilder("invoice")
+      .leftJoinAndSelect("invoice.invoiceProducts", "invoiceProducts")
+      .leftJoinAndSelect("invoiceProducts.course", "course")
+      .limit(limit)
+      .offset((page - 1) * limit);
+
+    if (search) {
+      queryBuilder.where("course.name ILIKE :search", {
+        search: `%${search}%`,
+      });
+    }
+
+    const [invoices, total] = await queryBuilder.getManyAndCount();
+
+    const result = invoices.map((invoice) => ({
+      ...InvoiceMapper.toDomain(invoice),
+      courseName: invoice.invoiceProducts[0]?.course.name,
+      coursePrice: invoice.invoiceProducts[0]?.course.price,
+    }));
+
+    return {
+      data: result,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async getInvoiceDetail(id: string) {
+    const queryBuilder = await this.invoiceRepository
+      .createQueryBuilder("invoice")
+      .leftJoinAndSelect("invoice.invoiceProducts", "invoiceProducts")
+      .leftJoinAndSelect("invoiceProducts.course", "course")
+      .where("invoice.id = :id", { id });
+
+    const result = await queryBuilder.getOne();
+
+    return result;
+  }
 }

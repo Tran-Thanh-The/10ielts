@@ -1,17 +1,24 @@
-import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNumber, IsOptional } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 import { Transform } from "class-transformer";
 
 export class FindAllInvoicesDto {
-  @ApiPropertyOptional()
+  @ApiProperty({
+    default: 1,
+  })
   @Transform(({ value }) => (value ? Number(value) : 1))
   @IsNumber()
-  @IsOptional()
-  page?: number;
+  page: number;
 
-  @ApiPropertyOptional()
+  @ApiProperty({
+    default: 10,
+  })
   @Transform(({ value }) => (value ? Number(value) : 10))
   @IsNumber()
+  limit: number;
+
+  @ApiPropertyOptional()
+  @IsString()
   @IsOptional()
-  limit?: number;
+  search?: string;
 }

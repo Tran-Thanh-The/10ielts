@@ -5,6 +5,8 @@ import { InvoiceRepository } from "./infrastructure/persistence/invoice.reposito
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import { Invoice } from "./domain/invoice";
 import { InvoiceMapper } from "./infrastructure/persistence/relational/mappers/invoice.mapper";
+import { Request } from "express";
+import { FindAllInvoicesDto } from "./dto/find-all-invoices.dto";
 
 @Injectable()
 export class InvoicesService {
@@ -46,5 +48,28 @@ export class InvoicesService {
 
   findByOrderCode(orderCode: number | string) {
     return this.invoiceRepository.findByOrderCode(orderCode);
+  }
+
+  async getCurrentUserInvoices(req: Request, query: FindAllInvoicesDto) {
+    const currentUserId = req.user?.["id"];
+    const result = this.invoiceRepository.getCurrentUserInvoices(
+      currentUserId,
+      query.limit,
+      query.page,
+    );
+    return result;
+  }
+
+  async getInvoiceDetail(id: Invoice["id"]) {
+    return await this.invoiceRepository.getInvoiceDetail(id);
+  }
+
+  async getAllInvoices(query: FindAllInvoicesDto) {
+    const result = this.invoiceRepository.getAllInvoices(
+      query.limit,
+      query.page,
+      query.search,
+    );
+    return result;
   }
 }

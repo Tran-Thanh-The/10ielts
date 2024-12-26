@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Query,
+  Req,
+  Res,
 } from "@nestjs/common";
 import { InvoicesService } from "./invoices.service";
 import { CreateInvoiceDto } from "./dto/create-invoice.dto";
@@ -27,10 +29,16 @@ import {
 } from "@/utils/dto/infinity-pagination-response.dto";
 import { infinityPagination } from "@/utils/infinity-pagination";
 import { FindAllInvoicesDto } from "./dto/find-all-invoices.dto";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+import { Public } from "@/utils/decorators/public.decorator";
+import { Request, Response } from "express";
+import { PermissionGuard } from "@/guards/permission.guard";
+import { Roles } from "@/utils/decorators/roles.decorator";
+import { RoleEnum } from "@/common/enums/roles.enum";
 
 @ApiTags("Invoices")
 @ApiBearerAuth()
-@UseGuards(AuthGuard("jwt"))
+@UseGuards(JwtAuthGuard, AuthGuard("jwt"), PermissionGuard)
 @Controller({
   path: "invoices",
   version: "1",
@@ -38,71 +46,50 @@ import { FindAllInvoicesDto } from "./dto/find-all-invoices.dto";
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
-  @Post()
-  @ApiCreatedResponse({
-    type: Invoice,
-  })
-  create(@Body() createInvoiceDto: CreateInvoiceDto) {
-    return this.invoicesService.create(createInvoiceDto);
+  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.teacher)
+  @Get("")
+  async getAllInvoices(
+    @Query() query: FindAllInvoicesDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const invoices = await this.invoicesService.getAllInvoices(query);
+      return res.status(200).json(invoices);
+    } catch (e) {
+      res.status(500).json({ message: `Error: ${e}` });
+    }
   }
 
-  @Get()
-  @ApiOkResponse({
-    type: InfinityPaginationResponse(Invoice),
-  })
-  async findAll(
+  @Get("current-user")
+  async getCurrentUserInvoices(
     @Query() query: FindAllInvoicesDto,
-  ): Promise<InfinityPaginationResponseDto<Invoice>> {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const invoices = await this.invoicesService.getCurrentUserInvoices(
+        req,
+        query,
+      );
+      return res.status(200).json(invoices);
+    } catch (e) {
+      return res.status(500).json({ message: `Error: ${e}` });
     }
-
-    return infinityPagination(
-      await this.invoicesService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-      }),
-      { page, limit },
-    );
   }
 
   @Get(":id")
-  @ApiParam({
-    name: "id",
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: Invoice,
-  })
-  findOne(@Param("id") id: string) {
-    return this.invoicesService.findOne(id);
-  }
-
-  @Patch(":id")
-  @ApiParam({
-    name: "id",
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: Invoice,
-  })
-  update(@Param("id") id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
-    return this.invoicesService.update(id, updateInvoiceDto);
-  }
-
-  @Delete(":id")
-  @ApiParam({
-    name: "id",
-    type: String,
-    required: true,
-  })
-  remove(@Param("id") id: string) {
-    return this.invoicesService.remove(id);
+  async invoiceDetail(
+    @Param("id") id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      console.log("id", id);
+      const invoice = await this.invoicesService.getInvoiceDetail(id);
+      return res.status(200).json(invoice);
+    } catch (e) {
+      return res.status(500).json({ message: `Error: ${e}` });
+    }
   }
 }

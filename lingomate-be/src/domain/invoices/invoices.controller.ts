@@ -92,7 +92,7 @@ export class InvoicesController {
     try {
       console.log("id", id);
       const invoice = await this.invoicesService.getInvoiceDetail(id);
-     res.status(200).json(invoice);
+      res.status(200).json(invoice);
     } catch (e) {
       res.status(500).json({ message: `Error: ${e}` });
     }

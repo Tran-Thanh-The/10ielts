@@ -1,6 +1,4 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { CourseEntity } from "@/domain/courses/infrastructure/persistence/relational/entities/course.entity";
-import { UserCourse } from "@/domain/user-courses/domain/user-course";
 import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import {
@@ -10,17 +8,14 @@ import {
 } from "@nestjs/common";
 import { LessonCourseRepository } from "../lesson-courses/infrastructure/persistence/lesson-course.repository";
 import { UserCourseRepository } from "../user-courses/infrastructure/persistence/user-course.repository";
-import { UserEntity } from "../users/infrastructure/persistence/relational/entities/user.entity";
 import { UserRepository } from "../users/infrastructure/persistence/user.repository";
 import { Course } from "./domain/course";
 import { CourseWithDetailsDTO } from "./dto/course-details-dto";
-import { CourseResponseDto } from "./dto/course-response-dto";
 import { CourseListResponseDto } from "./dto/courses-response-dto";
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
 import { CourseRepository } from "./infrastructure/persistence/course.repository";
 import { CourseMapper } from "./infrastructure/persistence/relational/mappers/course.mapper";
-import { Request } from "express";
 
 @Injectable()
 export class CoursesService {
@@ -99,7 +94,6 @@ export class CoursesService {
   }
 
   async getListCourse(
-    req: Request,
     status?: StatusEnum,
     userId?: string,
     invoiceId?: string,
@@ -110,10 +104,10 @@ export class CoursesService {
     isMyCourse?: string,
     orderBy: { [key: string]: "ASC" | "DESC" } = { created_at: "DESC" },
   ): Promise<CourseListResponseDto<CourseWithDetailsDTO>> {
-    const currentUserId = req.user?.["id"];
+    // const currentUserId = req.user?.["id"];
     const params = {
       status,
-      userId: userId ? userId : currentUserId,
+      userId: userId,
       invoiceId,
       categoryId,
       paginationOptions: {

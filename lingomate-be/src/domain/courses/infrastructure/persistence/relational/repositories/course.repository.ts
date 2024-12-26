@@ -391,7 +391,7 @@ export class CourseRelationalRepository implements CourseRepository {
       .createQueryBuilder("course")
       .leftJoinAndSelect("course.photo", "photo")
       .leftJoinAndSelect("course.category", "category")
-      .leftJoin(
+      .leftJoinAndSelect(
         "course.userCourses",
         "userCourse",
         "userCourse.userId = :userId",

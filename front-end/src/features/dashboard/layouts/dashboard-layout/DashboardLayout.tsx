@@ -2,6 +2,7 @@ import RoleBasedComponent from '@/components/RoleBasedComponent';
 import Header from '@/features/dashboard/layouts/dashboard-layout/components/header/Header';
 import AdminSidebar from '@/features/dashboard/layouts/dashboard-layout/components/Sidebar/AdminSidebar';
 import Sidebar from '@/features/dashboard/layouts/dashboard-layout/components/Sidebar/Sidebar';
+import ChatPopup from '@/features/public-pages/components/chat-popup/ChatPopup';
 import { ROLE } from '@/utils/constants/constants';
 import { Box } from '@mui/material';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -45,10 +46,9 @@ export default function DashboardLayout({ children }) {
             <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
               <AdminSidebar />
             </RoleBasedComponent>
-            <RoleBasedComponent
-              allowedRoles={[ROLE.USER]}
-            >
+            <RoleBasedComponent allowedRoles={[ROLE.USER]}>
               <Sidebar />
+              <ChatPopup />
             </RoleBasedComponent>
           </>
         )}

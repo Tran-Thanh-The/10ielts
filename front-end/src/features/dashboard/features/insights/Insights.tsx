@@ -39,6 +39,8 @@ import {
 import FeatureLayout from '../../layouts/feature-layout/FeatureLayout';
 import FeatureHeader from '../../layouts/feature-layout/components/feature-header/FeatureHeader';
 import generatePDFReport from './generatePDFReport';
+import ExportMenu from './ExportMenu';
+import { generateCSVReport } from './exportCsv';
 
 // Register ChartJS components
 ChartJS.register(
@@ -433,7 +435,7 @@ export default function Insights() {
                   </Select>
                 </FormControl>
               </Box>
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              {/* <Box sx={{ display: 'flex', gap: 1 }}>
                 <Tooltip title="Làm mới dữ liệu">
                   <IconButton
                     onClick={fetchData}
@@ -454,6 +456,41 @@ export default function Insights() {
                 >
                   Xuất báo cáo
                 </Button>
+              </Box> */}
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Tooltip title="Làm mới dữ liệu">
+                  <IconButton
+                    onClick={fetchData}
+                    disabled={isLoading}
+                    color="primary"
+                  >
+                    {isLoading ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      <RefreshIcon />
+                    )}
+                  </IconButton>
+                </Tooltip>
+                <ExportMenu
+                  onExportPDF={() =>
+                    generatePDFReport({
+                      revenueData,
+                      registrationData,
+                      courseRegistrationData,
+                      year,
+                      month,
+                    })
+                  }
+                  onExportCSV={() =>
+                    generateCSVReport({
+                      revenueData,
+                      registrationData,
+                      courseRegistrationData,
+                      year,
+                      month,
+                    })
+                  }
+                />
               </Box>
             </Box>
           </Grid>

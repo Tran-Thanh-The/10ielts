@@ -2,7 +2,8 @@ import axios from 'axios';
 import { API_ENDPOINT } from '@/utils/constants/constants';
 
 const baseUrl =
-  localStorage.getItem('apiUrl') || 'http://localhost:3002/api/v1';
+  localStorage.getItem('apiUrl') ||
+  'https://44ea-117-1-194-127.ngrok-free.app/api/v1';
 
 const axiosInstance = axios.create({
   baseURL: baseUrl,

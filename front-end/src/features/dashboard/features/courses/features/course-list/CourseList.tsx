@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Box, Button, Typography, Grid } from '@mui/material';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 
 import courseApi from '@/api/courseApi';
 import RoleBasedComponent from '@/components/RoleBasedComponent';
@@ -51,7 +51,9 @@ export default function CourseList() {
         invoiceId: params.invoiceId,
         categoryId: params.categoryId,
         search: params.search,
-        isMyCourse: isStudentDashboard ? params.isMyCourse ?? true : undefined,
+        isMyCourse: isStudentDashboard
+          ? (params.isMyCourse ?? true)
+          : undefined,
         status: params.status,
         page: params.paginationOptions.page,
         limit: params.paginationOptions.limit,

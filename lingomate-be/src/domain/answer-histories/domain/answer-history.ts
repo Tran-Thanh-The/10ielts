@@ -15,6 +15,9 @@ export class AnswerHistory {
   @ApiProperty()
   answers?: Record<string, any>;
 
+  @ApiProperty()
+  aiReview?: Record<string, any>;
+
   @ApiProperty({
     type: () => UserEntity,
   })

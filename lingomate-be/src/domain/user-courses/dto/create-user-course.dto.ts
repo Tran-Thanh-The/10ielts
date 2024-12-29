@@ -3,9 +3,9 @@ import { IsNotEmpty, IsOptional } from "class-validator";
 
 export class CreateUserCourseDto {
   @ApiProperty({
-    type: () => String,
+    type: () => Number,
   })
-  user_id: string;
+  user_id: number;
 
   @ApiProperty({
     type: () => String,

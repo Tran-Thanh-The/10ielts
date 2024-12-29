@@ -70,11 +70,12 @@ export class InvoiceRelationalRepository implements InvoiceRepository {
   }
 
   async updateByOrderCode(orderCode: number, data: Partial<Invoice>) {
-    await this.invoiceRepository.update(
-      { orderCode },
-      {
-        paymentStatus: data.paymentStatus,
-      },
+    console.log(orderCode, data);
+    await this.invoiceRepository.query(
+      `UPDATE invoice
+      SET "paymentStatus" = $1
+      WHERE "orderCode" = $2`,
+      [data.paymentStatus, orderCode],
     );
   }
 

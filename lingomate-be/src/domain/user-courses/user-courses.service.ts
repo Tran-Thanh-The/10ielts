@@ -12,7 +12,7 @@ import { UserCourseRepository } from "./infrastructure/persistence/user-course.r
 export class UserCoursesService {
   constructor(private readonly userCourseRepository: UserCourseRepository) {}
 
-  async create(createUserCourseDto: CreateUserCourseDto, userId: string) {
+  async create(createUserCourseDto: CreateUserCourseDto, userId: number) {
     createUserCourseDto.user_id = userId;
     const model = UserCourseMapper.toModel(createUserCourseDto);
     model.status = StatusEnum.ACTIVE;

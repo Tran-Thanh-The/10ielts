@@ -13,6 +13,7 @@ export class AnswerHistoryMapper {
     const domainEntity = new AnswerHistory();
     domainEntity.id = raw.id;
     domainEntity.answers = raw.answers;
+    domainEntity.aiReview = raw.aiReview;
     domainEntity.user = raw.user;
     domainEntity.practice = raw.practice;
     domainEntity.lesson = raw.lesson;
@@ -40,6 +41,7 @@ export class AnswerHistoryMapper {
     persistenceEntity.practice = domainEntity.practice;
     persistenceEntity.lesson = domainEntity.lesson;
     persistenceEntity.answers = domainEntity.answers;
+    persistenceEntity.aiReview = domainEntity.aiReview;
     persistenceEntity.user = domainEntity.user;
     persistenceEntity.totalScore = domainEntity.totalScore;
     persistenceEntity.startedAt = domainEntity.startedAt;
@@ -77,6 +79,7 @@ export class AnswerHistoryMapper {
       model.lesson.id = dto.lesson_id;
     }
     model.answers = dto.answers;
+    model.aiReview = dto.aiReview;
     model.totalScore = dto.totalScore;
     model.startedAt = dto.startedAt;
     model.completedAt = new Date();
@@ -95,6 +98,7 @@ export class AnswerHistoryMapper {
     const dto = new ResponseAnswerHistoryDto();
     dto.id = model.id;
     dto.answers = model.answers;
+    dto.aiReview = model.aiReview;
     if (model.user) {
       dto.user_id = model.user?.id;
     }

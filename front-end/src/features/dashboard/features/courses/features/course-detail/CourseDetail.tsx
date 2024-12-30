@@ -31,6 +31,7 @@ import Swal from 'sweetalert2';
 import LessonCard from '../../components/lesson-card/LessonCard';
 import { setAppLoading } from '@/stores/slices/appSlice';
 import { useDispatch } from 'react-redux';
+import { createUserCourse } from '@/api/api';
 
 export default function CourseDetail() {
   const dispatch = useDispatch();
@@ -158,7 +159,24 @@ export default function CourseDetail() {
   };
 
   const handlePayment = () => {
-    navigate(`/payment?id=${idCourse}&type=course`);
+    if (course?.price as unknown as string === "0.00") {
+      Swal.fire({
+        title: 'Bạn có chắc chắn muốn đăng ký khóa học này?',
+        showDenyButton: true,
+        confirmButtonText: `Đăng ký`,
+        denyButtonText: `Hủy`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          dispatch(setAppLoading(true));
+          await createUserCourse({ 
+            course_id: idCourse,
+          })
+          navigate('/dashboard/courses');
+        }
+      });
+    } else {
+      navigate(`/payment?id=${idCourse}&type=course`);
+    }
   };
 
   const handleDeleteCourse = () => {

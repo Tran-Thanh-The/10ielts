@@ -2,11 +2,10 @@ import RoleBasedComponent from '@/components/RoleBasedComponent';
 import { setDoExerciseForm } from '@/stores/slices/appSlice';
 import { ROLE } from '@/utils/constants/constants';
 import { Box, Button, Typography } from '@mui/material';
-import Quill from 'quill';
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import { useDispatch } from 'react-redux';
+import 'react-quill/dist/quill.snow.css';
 
 export default function PracticeWriting({ data }) {
   const dispatch = useDispatch();

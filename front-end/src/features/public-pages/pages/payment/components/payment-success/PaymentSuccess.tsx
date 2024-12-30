@@ -7,7 +7,7 @@ const PaymentSuccess = () => {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
-    navigate('/dashboard/course');
+    navigate('/dashboard/courses/list');
   };
 
   return (

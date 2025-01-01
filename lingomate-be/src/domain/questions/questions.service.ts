@@ -93,7 +93,8 @@ export class QuestionsService {
     model.status = StatusEnum.ACTIVE;
 
     if (fileQuestion) {
-      const uploadedFile = await this.filesGoogleDrivelService.create(fileQuestion);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(fileQuestion);
       model.file = uploadedFile.file;
     }
 
@@ -135,7 +136,8 @@ export class QuestionsService {
         await this.filesGoogleDrivelService.delete(existingQuestion.file);
       }
 
-      const uploadedFile = await this.filesGoogleDrivelService.create(fileQuestion);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(fileQuestion);
       updateQuestionDto.file = uploadedFile.file;
     }
     const updatedData = {
@@ -172,8 +174,12 @@ export class QuestionsService {
       try {
         await this.filesGoogleDrivelService.delete(question.file);
       } catch (error) {
-        console.error(`Failed to delete file on Google Drive: ${error.message}`);
-        console.warn("File deletion failed but lesson was removed successfully");
+        console.error(
+          `Failed to delete file on Google Drive: ${error.message}`,
+        );
+        console.warn(
+          "File deletion failed but lesson was removed successfully",
+        );
       }
     }
     return true;

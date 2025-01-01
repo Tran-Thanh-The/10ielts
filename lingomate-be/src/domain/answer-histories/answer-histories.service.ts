@@ -19,7 +19,7 @@ export class AnswerHistoriesService {
   constructor(
     private readonly answerHistoryRepository: AnswerHistoryRepository,
     private readonly practiceExerciseRepository: PracticeExerciseRepository,
-     private readonly filesGoogleDrivelService: FilesGoogleDriveService,
+    private readonly filesGoogleDrivelService: FilesGoogleDriveService,
     private readonly lessonRepository: LessonRepository,
     private readonly userRepository: UserRepository,
   ) {}
@@ -55,7 +55,8 @@ export class AnswerHistoriesService {
     }
 
     if (audioAnswer) {
-      const uploadedFile = await this.filesGoogleDrivelService.create(audioAnswer);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(audioAnswer);
       model.audioAnswer = uploadedFile.file;
     }
 
@@ -103,9 +104,12 @@ export class AnswerHistoriesService {
     if (audioAnswer) {
       if (existingAnswerHistory.audioAnswer) {
         await this.answerHistoryRepository.update(id, { audioAnswer: null });
-        await this.filesGoogleDrivelService.delete(existingAnswerHistory.audioAnswer);
+        await this.filesGoogleDrivelService.delete(
+          existingAnswerHistory.audioAnswer,
+        );
       }
-      const uploadedFile = await this.filesGoogleDrivelService.create(audioAnswer);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(audioAnswer);
       updateAnswerHistoryDto.audioAnswer = uploadedFile.file;
     }
 
@@ -124,8 +128,12 @@ export class AnswerHistoriesService {
       try {
         await this.filesGoogleDrivelService.delete(answerHistory.audioAnswer);
       } catch (error) {
-        console.error(`Failed to delete file on Google Drive: ${error.message}`);
-        console.warn("File deletion failed but answerHistory was removed successfully");
+        console.error(
+          `Failed to delete file on Google Drive: ${error.message}`,
+        );
+        console.warn(
+          "File deletion failed but answerHistory was removed successfully",
+        );
       }
     }
 

@@ -14,10 +14,10 @@ const infrastructureUploaderModule =
   (fileConfig() as FileConfig).driver === FileDriver.LOCAL
     ? FilesLocalModule
     : (fileConfig() as FileConfig).driver === FileDriver.S3
-    ? FilesS3Module
-    : (fileConfig() as FileConfig).driver === FileDriver.GOOGLE_DRIVE
-    ? FilesGoogleDriveModule
-    : FilesS3PresignedModule;
+      ? FilesS3Module
+      : (fileConfig() as FileConfig).driver === FileDriver.GOOGLE_DRIVE
+        ? FilesGoogleDriveModule
+        : FilesS3PresignedModule;
 
 @Module({
   imports: [infrastructurePersistenceModule, infrastructureUploaderModule],

@@ -1,4 +1,3 @@
-import { FilesModule } from "@/files/files.module";
 import { FilesGoogleDriveModule } from "@/files/infrastructure/uploader/google-driver/files.module";
 import { Module } from "@nestjs/common";
 import { LessonCoursesModule } from "../lesson-courses/lesson-courses.module";

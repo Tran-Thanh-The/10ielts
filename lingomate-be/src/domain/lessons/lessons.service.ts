@@ -1,5 +1,5 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
+import { FilesGoogleDriveService } from "@/files/infrastructure/uploader/google-driver/files.service";
 import { NullableType } from "@/utils/types/nullable.type";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import {
@@ -15,7 +15,6 @@ import { CreateLessonDto } from "./dto/create-lesson.dto";
 import { UpdateLessonDto } from "./dto/update-lesson.dto";
 import { LessonRepository } from "./infrastructure/persistence/lesson.repository";
 import { LessonMapper } from "./infrastructure/persistence/relational/mappers/lesson.mapper";
-import { FilesGoogleDriveService } from "@/files/infrastructure/uploader/google-driver/files.service";
 
 @Injectable()
 export class LessonsService {
@@ -48,7 +47,8 @@ export class LessonsService {
     const model = LessonMapper.toModel(createLessonDto);
     model.status = StatusEnum.ACTIVE;
     if (fileLesson) {
-      const uploadedFile = await this.filesGoogleDrivelService.create(fileLesson);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(fileLesson);
       model.file = uploadedFile.file;
     }
     const savedLesson = await this.lessonRepository.create(model);
@@ -133,7 +133,8 @@ export class LessonsService {
         await this.filesGoogleDrivelService.delete(existingLesson.file);
       }
 
-      const uploadedFile = await this.filesGoogleDrivelService.create(fileLesson);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(fileLesson);
       updateLessonDto.file = uploadedFile.file;
     }
 
@@ -160,8 +161,12 @@ export class LessonsService {
       try {
         await this.filesGoogleDrivelService.delete(lesson.file);
       } catch (error) {
-        console.error(`Failed to delete file on Google Drive: ${error.message}`);
-        console.warn("File deletion failed but lesson was removed successfully");
+        console.error(
+          `Failed to delete file on Google Drive: ${error.message}`,
+        );
+        console.warn(
+          "File deletion failed but lesson was removed successfully",
+        );
       }
     }
 

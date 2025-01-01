@@ -36,7 +36,8 @@ export class AnswersService {
     model.status = StatusEnum.ACTIVE;
     model.question = QuestionMapper.toPersistence(question);
     if (fileAnswer) {
-      const uploadedFile = await this.filesGoogleDrivelService.create(fileAnswer);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(fileAnswer);
       model.file = uploadedFile.file;
     }
     return await this.answerRepository.create(model);
@@ -77,7 +78,8 @@ export class AnswersService {
         await this.filesGoogleDrivelService.delete(existingAnswer.file);
       }
 
-      const uploadedFile = await this.filesGoogleDrivelService.create(fileAnswer);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(fileAnswer);
       updateAnswerDto.file = uploadedFile.file;
     }
     const updatedData = {
@@ -97,8 +99,12 @@ export class AnswersService {
       try {
         await this.filesGoogleDrivelService.delete(answer.file);
       } catch (error) {
-        console.error(`Failed to delete file on Google Drive: ${error.message}`);
-        console.warn("File deletion failed but answer was removed successfully");
+        console.error(
+          `Failed to delete file on Google Drive: ${error.message}`,
+        );
+        console.warn(
+          "File deletion failed but answer was removed successfully",
+        );
       }
     }
     return true;

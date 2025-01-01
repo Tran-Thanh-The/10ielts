@@ -70,7 +70,7 @@ export class CourseEntity extends EntityRelationalHelper {
   })
   @JoinColumn()
   photo?: FileEntity | null;
-  
+
   @OneToMany(
     () => InvoiceProductEntity,
     (invoiceProducts) => invoiceProducts.course,
@@ -80,13 +80,13 @@ export class CourseEntity extends EntityRelationalHelper {
     },
   )
   invoiceProducts: InvoiceProductEntity[];
-  
+
   @OneToMany(() => UserCourseEntity, (userCourses) => userCourses.course, {
     cascade: true,
     onDelete: "CASCADE",
   })
   userCourses: UserCourseEntity[];
-  
+
   @OneToMany(
     () => LessonCourseEntity,
     (lessonCourses) => lessonCourses.course,
@@ -96,7 +96,6 @@ export class CourseEntity extends EntityRelationalHelper {
     },
   )
   lessonCourses: LessonCourseEntity[];
-  
 
   @ApiProperty({
     enum: StatusEnum,

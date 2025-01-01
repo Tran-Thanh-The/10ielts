@@ -48,7 +48,8 @@ export class CoursesService {
     const model = CourseMapper.toModel(createCourseDto);
 
     if (photoFile) {
-      const uploadedFile = await this.filesGoogleDrivelService.create(photoFile);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(photoFile);
       model.photo = uploadedFile.file;
     }
     const course = await this.courseRepository.create(model);
@@ -151,7 +152,8 @@ export class CoursesService {
         await this.filesGoogleDrivelService.delete(existingCourse.photo);
       }
 
-      const uploadedFile = await this.filesGoogleDrivelService.create(photoFile);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(photoFile);
       updateCourseDto.photo = uploadedFile.file;
     }
 
@@ -168,7 +170,9 @@ export class CoursesService {
       try {
         await this.filesGoogleDrivelService.delete(course.photo);
       } catch (error) {
-        console.error(`Failed to delete file on Google Drive: ${error.message}`);
+        console.error(
+          `Failed to delete file on Google Drive: ${error.message}`,
+        );
         throw new ConflictException("Could not delete associated file");
       }
     }
@@ -190,7 +194,7 @@ export class CoursesService {
         ),
       );
     }
-    
+
     await this.courseRepository.save(course);
     return this.courseRepository.remove(id);
   }

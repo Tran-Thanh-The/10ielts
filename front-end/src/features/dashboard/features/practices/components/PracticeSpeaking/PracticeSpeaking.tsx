@@ -7,6 +7,7 @@ import RoleBasedComponent from '@/components/RoleBasedComponent';
 import { ROLE } from '@/utils/constants/constants';
 import { useDispatch } from 'react-redux';
 import { setDoExerciseForm } from '@/stores/slices/appSlice';
+import lamejs from 'lamejs';
 
 export default function PracticeSpeaking({ data }) {
   const dispatch = useDispatch();
@@ -29,11 +30,42 @@ export default function PracticeSpeaking({ data }) {
         }
       };
 
-      mediaRecorder.onstop = () => {
-        // mp3
+      mediaRecorder.onstop = async () => {
         const audioBlob = new Blob(audioChunksRef.current, {
-          type: 'audio/mp3',
+          type: 'audio/wav',
         });
+        console.log('audioBlob', audioBlob);
+
+        const arrayBuffer = await audioBlob.arrayBuffer();
+        const audioContext = new (window.AudioContext ||
+          (window as any)?.webkitAudioContext)();
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+        const channelData = audioBuffer.getChannelData(0);
+
+        const mp3Encoder = new lamejs.Mp3Encoder(
+          1,
+          audioBuffer.sampleRate,
+          128,
+        );
+        const mp3Data = [];
+        let samplesPerFrame = 1152;
+        for (let i = 0; i < channelData.length; i += samplesPerFrame) {
+          const sampleChunk = channelData.subarray(i, i + samplesPerFrame);
+          const mp3Chunk = mp3Encoder.encodeBuffer(sampleChunk);
+          if (mp3Chunk.length > 0) {
+            mp3Data.push(mp3Chunk);
+          }
+        }
+        const mp3End = mp3Encoder.flush();
+        if (mp3End.length > 0) {
+          mp3Data.push(mp3End);
+        }
+
+        const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+        const file = new File([mp3Blob], `${new Date().getTime()}.mp3`, { type: 'audio/mp3' });
+
+        dispatch(setDoExerciseForm({ audioAnswer: file }));
         setAudioURL(URL.createObjectURL(audioBlob));
         audioChunksRef.current = [];
       };
@@ -45,29 +77,64 @@ export default function PracticeSpeaking({ data }) {
     }
   };
 
-  const stopRecording = () => {
-    mediaRecorderRef.current?.stop();
-    // convert Blob 
-    const audioBlob = new Blob(audioChunksRef.current, {
-      type: 'audio/mp3',
-    });
-    dispatch(setDoExerciseForm({ audioAnswer: audioBlob }));
+  const stopRecording = async () => {
     setIsRecording(false);
+    mediaRecorderRef.current?.stop();
+    // convert Blob
+    // const audioBlob = new Blob(audioChunksRef.current, {
+    //   type: 'audio/mp3',
+    // });
+    // dispatch(setDoExerciseForm({ audioAnswer: audioBlob }));
+
+    // const audioBlob = new Blob(audioChunksRef.current, {
+    //   type: 'audio/wav', // Default browser encoding is likely wav
+    // });
+    // console.log('audioBlob2', audioBlob);
+
+    // const arrayBuffer = await audioBlob.arrayBuffer();
+    // const audioContext = new (window.AudioContext ||
+    //   (window as any)?.webkitAudioContext)();
+    // const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+    // const channelData = audioBuffer.getChannelData(0);
+
+    // const mp3Encoder = new lamejs.Mp3Encoder(1, audioBuffer.sampleRate, 128);
+    // const mp3Data = [];
+    // let samplesPerFrame = 1152;
+    // for (let i = 0; i < channelData.length; i += samplesPerFrame) {
+    //   const sampleChunk = channelData.subarray(i, i + samplesPerFrame);
+    //   const mp3Chunk = mp3Encoder.encodeBuffer(sampleChunk);
+    //   if (mp3Chunk.length > 0) {
+    //     mp3Data.push(mp3Chunk);
+    //   }
+    // }
+    // const mp3End = mp3Encoder.flush();
+    // if (mp3End.length > 0) {
+    //   mp3Data.push(mp3End);
+    // }
+
+    // const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+
+    // setAudioURL(URL.createObjectURL(mp3Blob));
+    // audioChunksRef.current = [];
+
+    // dispatch(setDoExerciseForm({ audioAnswer: mp3Blob }));
+    // setIsRecording(false);
   };
 
   useEffect(() => {
-      const interval = setInterval(() => {
-        if (countDown >= 15*60) {
-          clearInterval(interval);
-          return;
-        }
-        setCountDown((prev) => prev + 1);
-      }, 1000);
-  
-      return () => {
+    const interval = setInterval(() => {
+      if (countDown >= 15 * 60) {
         clearInterval(interval);
-      };
-    }, [countDown]);
+        return;
+      }
+      setCountDown((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [countDown]);
 
   return (
     <Box sx={{ paddingTop: '20px' }}>
@@ -95,7 +162,7 @@ export default function PracticeSpeaking({ data }) {
           >
             {isRecording ? (
               <Button variant="text" sx={{ color: 'black' }}>
-                00:{Math.floor(countDown / 60) ?? "00"}:{countDown % 60}
+                00:{Math.floor(countDown / 60) ?? '00'}:{countDown % 60}
               </Button>
             ) : null}
 
@@ -141,7 +208,7 @@ export default function PracticeSpeaking({ data }) {
                 }}
               >
                 <audio controls src={audioURL}></audio>
-                <a href={audioURL} download="recording.wav">
+                <a href={audioURL} download="recording.mp3">
                   Download
                 </a>
               </Box>

@@ -1,12 +1,14 @@
-import { getAnswerHistories } from '@/api/api';
+import { getAnswerHistories, updateAnswerHistory } from '@/api/api';
 import QuestionList from '@/features/dashboard/components/quesion/question-list/QuestionList';
 import { RootState } from '@/stores/store';
 import { EPracticeType } from '@/types/enum/practice.enum';
 import { Box, Button, Divider, Modal, Typography } from '@mui/material';
+import axios from 'axios';
 import dayjs from 'dayjs';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Loading from '@/assets/ai-loading.gif';
 
 export default function ViewHistory({
   open,
@@ -21,6 +23,8 @@ export default function ViewHistory({
   const [selectedAnswerHistory, setSelectedAnswerHistory] = React.useState<any>(
     {},
   );
+  const [loading, setLoading] = React.useState(false);
+  const [reload, setReload] = React.useState(false);
 
   useEffect(() => {
     getAnswerHistories({
@@ -28,10 +32,38 @@ export default function ViewHistory({
       practiceId: lessonView ? undefined : data?.id,
       lessonId: lessonView ? data?.id : undefined,
     }).then((res) => {
-      const histories = res.data.data;
+      const histories = res.data.data.reverse();
       setAnswerHistories(histories);
     });
-  }, []);
+  }, [reload]);
+
+  const handleGenerateFeedback = async () => {
+    try {
+      setLoading(true);
+      axios
+        .post('http://localhost:3003/evaluate-writing', {
+          topic: 'In 15 minutes, write an article with a topic: Describe your favorite childhood memory',
+          writingAssignmentSubmission:
+            "When I was young, I very like to went to my grandmother house in countryside. Every summer holiday, my parent took me there and I playing with many friend. The air was fresh and we catching fish in small river behind house. Grandmother always cook delicious foods for me likes sweet soup and spring roll.\nOne day, me and friends decided exploring the old temple near village. We walking through bamboo forest and see many interesting thing. Although my grandmother tell us don't go there alone, but we very exciting about adventure. Finally, we finding beautiful temple and take lot of picture.\nThat memory still make me happy when think about it. I missing my childhood time very much.",
+        })
+        .then((res) => {
+          console.log(res);
+          setSelectedAnswerHistory({
+            ...selectedAnswerHistory,
+            aiReview: res.data,
+          });
+          updateAnswerHistory(selectedAnswerHistory.id, {
+            aiReview: res.data,
+          }).then(() => {
+            setReload(!reload);
+            setLoading(false);
+          });
+        });
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
 
   return (
     <Modal
@@ -76,6 +108,7 @@ export default function ViewHistory({
               paddingRight: '12px',
               borderRight: '1px solid #e0e0e0',
               gap: '8px',
+              overflowY: 'auto'
             }}
           >
             {answerHistories.map((item: any, index) => (
@@ -90,7 +123,7 @@ export default function ViewHistory({
                   cursor: 'pointer',
                   backgroundColor:
                     item.id === selectedAnswerHistory?.id ? '#f3f7ff' : 'unset',
-                  borderRadius: '12px',
+                  borderRadius: '12px'
                 }}
                 onClick={() => setSelectedAnswerHistory(item)}
               >
@@ -170,6 +203,7 @@ export default function ViewHistory({
                           />
                         </Box>
                       )}
+
                       <Typography variant="h6" sx={{ mt: 2 }}>
                         Nhận xét từ giáo viên
                       </Typography>
@@ -186,6 +220,58 @@ export default function ViewHistory({
                             : 'Chưa có nhận xét',
                         }}
                       ></Box>
+
+                      <Typography variant="h6" sx={{ mt: 2 }}>
+                        Chấm điểm từ AI
+                      </Typography>
+
+                      {selectedAnswerHistory?.aiReview ? (
+                        <Box
+                          sx={{
+                            p: 2, // padding
+                            border: '1px solid #ccc', // khung bao quanh
+                            borderRadius: '8px',
+                          }}
+                        >
+                          <Box>
+                            <Typography>
+                              Điểm từ AI:{' '}
+                              {selectedAnswerHistory?.aiReview?.score ?? 0}
+                            </Typography>
+                          </Box>
+                          <Box>
+                            <Typography
+                              sx={{
+                                whiteSpace: 'pre-line',
+                              }}
+                            >
+                              Nhân xét từ AI:{'\n'}
+                              {selectedAnswerHistory?.aiReview?.feedback
+                                ? selectedAnswerHistory?.aiReview?.feedback
+                                : 'Chưa có điểm'}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      ) : (
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={handleGenerateFeedback}
+                          startIcon={
+                            loading ? (
+                              <img
+                                width={24}
+                                height={24}
+                                src={Loading}
+                                alt=""
+                              />
+                            ) : null
+                          }
+                          disabled={loading}
+                        >
+                          Lấy nhận xét từ AI
+                        </Button>
+                      )}
                     </Box>
                   )}
                 </>

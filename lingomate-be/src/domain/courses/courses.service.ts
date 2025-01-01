@@ -1,5 +1,5 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
+import { FilesGoogleDriveService } from "@/files/infrastructure/uploader/google-driver/files.service";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import {
   ConflictException,
@@ -24,7 +24,7 @@ export class CoursesService {
     private readonly lessonCourseRepository: LessonCourseRepository,
     private readonly userCourseRepository: UserCourseRepository,
     private readonly userRepository: UserRepository,
-    private readonly filesLocalService: FilesLocalService,
+    private readonly filesGoogleDrivelService: FilesGoogleDriveService,
   ) {}
 
   async create(
@@ -48,7 +48,8 @@ export class CoursesService {
     const model = CourseMapper.toModel(createCourseDto);
 
     if (photoFile) {
-      const uploadedFile = await this.filesLocalService.create(photoFile);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(photoFile);
       model.photo = uploadedFile.file;
     }
     const course = await this.courseRepository.create(model);
@@ -148,10 +149,11 @@ export class CoursesService {
       if (existingCourse.photo) {
         // Tách rời file khỏi course trước khi xóa
         await this.courseRepository.update(id, { photo: null });
-        await this.filesLocalService.delete(existingCourse.photo);
+        await this.filesGoogleDrivelService.delete(existingCourse.photo);
       }
 
-      const uploadedFile = await this.filesLocalService.create(photoFile);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(photoFile);
       updateCourseDto.photo = uploadedFile.file;
     }
 
@@ -164,7 +166,16 @@ export class CoursesService {
       throw new NotFoundException("Course not found");
     }
 
-    course.status = StatusEnum.IN_ACTIVE;
+    if (course.photo) {
+      try {
+        await this.filesGoogleDrivelService.delete(course.photo);
+      } catch (error) {
+        console.error(
+          `Failed to delete file on Google Drive: ${error.message}`,
+        );
+        throw new ConflictException("Could not delete associated file");
+      }
+    }
 
     const userCourses = await this.userCourseRepository.findByCourseId(id);
     if (userCourses) {
@@ -183,6 +194,7 @@ export class CoursesService {
         ),
       );
     }
+
     await this.courseRepository.save(course);
     return this.courseRepository.remove(id);
   }

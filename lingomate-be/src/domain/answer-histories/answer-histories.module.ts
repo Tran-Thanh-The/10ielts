@@ -1,4 +1,4 @@
-import { FilesLocalModule } from "@/files/infrastructure/uploader/local/files.module";
+import { FilesGoogleDriveModule } from "@/files/infrastructure/uploader/google-driver/files.module";
 import { Module } from "@nestjs/common";
 import { AnswersModule } from "../answers/answers.module";
 import { LessonsModule } from "../lessons/lessons.module";
@@ -15,7 +15,7 @@ import { RelationalAnswerHistoryPersistenceModule } from "./infrastructure/persi
     LessonsModule,
     AnswersModule,
     UsersModule,
-    FilesLocalModule,
+    FilesGoogleDriveModule,
   ],
   controllers: [AnswerHistoriesController],
   providers: [AnswerHistoriesService],

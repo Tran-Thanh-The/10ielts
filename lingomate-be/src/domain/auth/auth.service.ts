@@ -485,6 +485,7 @@ export class AuthService {
       role: {
         id: user.role.id,
       },
+      permissions: user.role?.permissions || [],
       sessionId: session.id,
       hash,
     });

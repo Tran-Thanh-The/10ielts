@@ -54,37 +54,49 @@ export class CourseEntity extends EntityRelationalHelper {
   @Column({ type: String, nullable: true })
   description?: string | null;
 
-  @ApiProperty({
-    type: () => FileEntity,
-  })
+  // @ApiProperty({
+  //   type: () => FileEntity,
+  // })
+  // @OneToOne(() => FileEntity, {
+  //   eager: true,
+  // })
+  // @JoinColumn()
+  // photo?: FileEntity | null;
+
   @OneToOne(() => FileEntity, {
     eager: true,
+    cascade: true,
+    onDelete: "CASCADE",
   })
   @JoinColumn()
   photo?: FileEntity | null;
-
+  
   @OneToMany(
     () => InvoiceProductEntity,
     (invoiceProducts) => invoiceProducts.course,
     {
       cascade: true,
+      onDelete: "CASCADE",
     },
   )
   invoiceProducts: InvoiceProductEntity[];
-
+  
   @OneToMany(() => UserCourseEntity, (userCourses) => userCourses.course, {
     cascade: true,
+    onDelete: "CASCADE",
   })
   userCourses: UserCourseEntity[];
-
+  
   @OneToMany(
     () => LessonCourseEntity,
     (lessonCourses) => lessonCourses.course,
     {
       cascade: true,
+      onDelete: "CASCADE",
     },
   )
   lessonCourses: LessonCourseEntity[];
+  
 
   @ApiProperty({
     enum: StatusEnum,

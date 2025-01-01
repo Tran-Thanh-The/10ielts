@@ -15,6 +15,7 @@ import { CreateLessonDto } from "./dto/create-lesson.dto";
 import { UpdateLessonDto } from "./dto/update-lesson.dto";
 import { LessonRepository } from "./infrastructure/persistence/lesson.repository";
 import { LessonMapper } from "./infrastructure/persistence/relational/mappers/lesson.mapper";
+import { FilesGoogleDriveService } from "@/files/infrastructure/uploader/google-driver/files.service";
 
 @Injectable()
 export class LessonsService {
@@ -22,7 +23,7 @@ export class LessonsService {
     private readonly lessonRepository: LessonRepository,
     private readonly lessonCourseRepository: LessonCourseRepository,
     private readonly courseRepository: CourseRepository,
-    private readonly filesLocalService: FilesLocalService,
+    private readonly filesGoogleDrivelService: FilesGoogleDriveService,
   ) {}
 
   async create(
@@ -47,7 +48,7 @@ export class LessonsService {
     const model = LessonMapper.toModel(createLessonDto);
     model.status = StatusEnum.ACTIVE;
     if (fileLesson) {
-      const uploadedFile = await this.filesLocalService.create(fileLesson);
+      const uploadedFile = await this.filesGoogleDrivelService.create(fileLesson);
       model.file = uploadedFile.file;
     }
     const savedLesson = await this.lessonRepository.create(model);
@@ -129,10 +130,10 @@ export class LessonsService {
       if (existingLesson.file) {
         // Tách rời file khỏi Lesson trước khi xóa
         await this.lessonRepository.update(id, { file: null });
-        await this.filesLocalService.delete(existingLesson.file);
+        await this.filesGoogleDrivelService.delete(existingLesson.file);
       }
 
-      const uploadedFile = await this.filesLocalService.create(fileLesson);
+      const uploadedFile = await this.filesGoogleDrivelService.create(fileLesson);
       updateLessonDto.file = uploadedFile.file;
     }
 
@@ -140,6 +141,11 @@ export class LessonsService {
   }
 
   async remove(id: Lesson["id"]) {
+    const lesson = await this.lessonRepository.findById(id);
+    if (!lesson) {
+      throw new NotFoundException("Lesson not found");
+    }
+
     const lessonCourse = await this.lessonCourseRepository.findByLessonId(id);
     if (!lessonCourse) {
       throw new NotFoundException(
@@ -147,26 +153,18 @@ export class LessonsService {
       );
     }
     await this.lessonCourseRepository.remove(lessonCourse.id);
-    // lessonCourse.status = StatusEnum.IN_ACTIVE;
-    // const lesson = await this.lessonRepository.findById(id);
-    // if (!lesson) {
-    //   throw new NotFoundException(
-    //     `No lesson found for lesson with id "${id}".`,
-    //   );
-    // }
-    // lesson.status = StatusEnum.IN_ACTIVE;
-    // await this.lessonRepository.save(lesson);
-    // await this.lessonCourseRepository.save(lessonCourse);
 
-    // const remainingLessons =
-    //   await this.lessonCourseRepository.findActiveLessonsByCourseId(
-    //     lessonCourse.course.id,
-    //   );
+    await this.lessonRepository.remove(id);
 
-    // for (let index = 0; index < remainingLessons.length; index++) {
-    //   remainingLessons[index].position = index + 1;
-    //   await this.lessonCourseRepository.save(remainingLessons[index]);
-    // }
-    return this.lessonRepository.remove(id);
+    if (lesson.file) {
+      try {
+        await this.filesGoogleDrivelService.delete(lesson.file);
+      } catch (error) {
+        console.error(`Failed to delete file on Google Drive: ${error.message}`);
+        console.warn("File deletion failed but lesson was removed successfully");
+      }
+    }
+
+    return true;
   }
 }

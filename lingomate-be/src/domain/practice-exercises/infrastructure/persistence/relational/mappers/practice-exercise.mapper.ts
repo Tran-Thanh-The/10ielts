@@ -93,7 +93,7 @@ export class PracticeExerciseMapper {
     model.price = dto.price;
     model.practiceType = dto.practiceType;
     model.difficulty = dto.difficulty;
-    model.status = dto.status ?? StatusEnum.IN_ACTIVE;
+    model.status = dto.status ?? StatusEnum.ACTIVE;
     return model;
   }
 

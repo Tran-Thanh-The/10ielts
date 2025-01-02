@@ -97,7 +97,7 @@ export class PracticeExerciseEntity extends EntityRelationalHelper {
   @Column({
     type: "enum",
     enum: StatusEnum,
-    default: StatusEnum.IN_ACTIVE,
+    default: StatusEnum.ACTIVE,
   })
   status: StatusEnum;
 

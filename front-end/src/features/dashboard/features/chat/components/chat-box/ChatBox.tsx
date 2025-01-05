@@ -20,6 +20,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import CloseIcon from '@mui/icons-material/Close';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import { useSocket } from '@/context/SocketContext';
 
 interface Message {
   id: number;
@@ -94,6 +95,7 @@ const FileIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
+  const { socket, sendChatMessage, onChatMessage } = useSocket();
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageText, setMessageText] = useState<string>('');
   const [isSending, setIsSending] = useState<boolean>(false);
@@ -118,6 +120,7 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
         timestamp: new Date(),
       };
       setMessages(prevMessages => [...prevMessages, newMessage]);
+      sendChatMessage(messageText.trim());
       setMessageText('');
       setIsSending(false);
     }
@@ -184,7 +187,21 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
       }
     }
   }, [messages]);
-  
+
+  // useEffect(() => {
+  //   if (conversation) {
+  //     onChatMessage((message) => {
+  //       const newMessage: Message = {
+  //         id: messages.length + 1,
+  //         sender: 'admin',
+  //         content: message,
+  //         type: 'text',
+  //         timestamp: new Date(),
+  //       };
+  //       setMessages((prevMessages) => [...prevMessages, newMessage]);
+  //     });
+  //   }
+  // }, [conversation, onChatMessage, messages.length]);
 
   if (!conversation) {
     return (

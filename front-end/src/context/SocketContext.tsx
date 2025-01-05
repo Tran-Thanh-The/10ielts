@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
 interface SocketContextType {
@@ -11,26 +11,41 @@ interface SocketContextType {
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-const SOCKET_URL = 'http://localhost:3008';
+const SOCKET_URL = 'http://localhost:3001';
+const clientId = "newMessage";
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [authStorage, setAuthStorage] = useState<string | null>(localStorage.getItem('auth'));
+  const [userId, token] = useMemo(() => {
+    const authData = authStorage ? JSON.parse(authStorage) : null;
+    return [authData?.user?.id, authData?.token];
+  }, [authStorage]);
 
   useEffect(() => {
-    // Tạo kết nối WebSocket
-    const newSocket = io(SOCKET_URL, {
-      transports: ['websocket'],
-      reconnection: true,
-    });
-    setSocket(newSocket);
+    if (!socket) {
+      const newSocket = io(SOCKET_URL, {
+        transports: ['websocket'],
+        reconnection: true,
+        path: '/ws',
+      });
 
-    // Dọn dẹp khi component bị unmount
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
+      newSocket.on('connect', () => {
+        setSocket(newSocket);
+        newSocket.emit('register', { clientId, userId, jwtToken: token });
+      });
+
+      newSocket.on("registered", () => {
+        console.log("Registered");
+      })
+
+      return () => {
+        newSocket.disconnect();
+      };
+    }
+  }, [socket]);
 
   // Hàm gửi tin nhắn Chat
   const sendChatMessage = (message: string) => {
@@ -45,7 +60,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   // Lắng nghe tin nhắn Chat
   const onChatMessage = (callback: (message: string) => void) => {
     if (socket) {
-      socket.on('chat_message', callback);
+      socket.on('newMessage', callback);
     }
   };
 

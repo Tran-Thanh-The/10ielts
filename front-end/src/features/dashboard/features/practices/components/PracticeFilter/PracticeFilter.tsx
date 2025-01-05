@@ -20,14 +20,15 @@ export default function PracticeFilter({ value, onChange }: Props) {
         '& .filter-item:last-child': {
           borderRight: 'none',
         },
-        '& .filter-item:first-child img': {
+        '& .filter-item:first-of-type img': {
           width: 27,
           height: 27,
         },
       }}
     >
-      {PRACTICE_FILTER.map((filter) => (
+      {PRACTICE_FILTER.map((filter, index) => (
         <Box
+          key={filter.value || index} 
           sx={{
             display: 'flex',
             alignItems: 'center',

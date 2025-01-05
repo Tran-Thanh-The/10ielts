@@ -482,10 +482,8 @@ export class AuthService {
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: session.user.id,
-      role: {
-        id: user.role.id,
-      },
-      permissions: user.role?.permissions || [],
+      role: user.role,
+      permissions: user.role?.permissions ?? [],
       sessionId: session.id,
       hash,
     });
@@ -537,6 +535,7 @@ export class AuthService {
           id: data.id,
           role: data.role,
           sessionId: data.sessionId,
+          permissions: data.role?.permissions ?? [],
         },
         {
           secret: this.configService.getOrThrow("auth.secret", { infer: true }),

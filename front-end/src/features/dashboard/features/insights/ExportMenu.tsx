@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Download, DownloadIcon } from 'lucide-react';
-import { Box, Typography, MenuItem, Button, Menu } from '@mui/material';
+import { Button, Menu, MenuItem } from '@mui/material';
+import { useState } from 'react';
+import DownloadIcon from '@mui/icons-material/Download';
 
 const ExportMenu = ({ onExportPDF, onExportCSV }) => {
   const [anchorEl, setAnchorEl] = useState(null);

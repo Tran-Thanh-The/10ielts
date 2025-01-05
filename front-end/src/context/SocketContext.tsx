@@ -11,7 +11,7 @@ interface SocketContextType {
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-const SOCKET_URL = 'http://localhost:3001';
+const SOCKET_URL = 'http://localhost:3002';
 const clientId = "newMessage";
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({

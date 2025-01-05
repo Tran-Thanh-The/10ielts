@@ -1,25 +1,21 @@
-import React, { useState, useEffect, useRef, ChangeEvent, KeyboardEvent } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import ImageIcon from '@mui/icons-material/Image';
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import SendIcon from '@mui/icons-material/Send';
 import {
-  Box,
-  Paper,
-  Typography,
-  IconButton,
-  styled,
   Avatar,
-  InputBase,
-  Input,
-  Link,
+  Box,
   Dialog,
   DialogContent,
+  IconButton,
+  InputBase,
+  Paper,
+  styled,
   Tooltip,
+  Typography
 } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import EmojiIcon from '@mui/icons-material/EmojiEmotions';
-import AddIcon from '@mui/icons-material/Add';
-import ImageIcon from '@mui/icons-material/Image';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import CloseIcon from '@mui/icons-material/Close';
-import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 
 interface Message {
   id: number;

@@ -1,18 +1,18 @@
 import courseApi from '@/api/courseApi';
 import { selectIsStudentDashboard } from '@/features/auth/slices/authSlice';
 import { Box, MenuItem, Select, TextField } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import debounce from 'lodash/debounce';
+import { DebouncedFunc } from 'lodash';
 
 interface CourseFilterProps {
   onFilterChange: (params: any) => void;
 }
 
-export default function CourseFilter({
-  onFilterChange,
-}: CourseFilterProps) {
+export default function CourseFilter({ onFilterChange }: CourseFilterProps) {
   const navigate = useNavigate();
   const studentDashboard = useSelector(selectIsStudentDashboard);
   const [categories, setCategories] = React.useState<any[]>([]);
@@ -21,6 +21,25 @@ export default function CourseFilter({
     React.useState<string>('1');
   const [selectedStatus, setSelectedStatus] = React.useState<string>('0');
   const [searchTerm, setSearchTerm] = React.useState<string>('');
+
+  const debouncedRef = useRef<DebouncedFunc<(value: string) => void>>();
+
+  useEffect(() => {
+    debouncedRef.current = debounce((value: string) => {
+      onFilterChange({
+        paginationOptions: {
+          page: 1,
+          limit: 10,
+        },
+        search: value,
+        orderBy: 'created_at:DESC',
+      });
+    }, 2000);
+
+    return () => {
+      debouncedRef.current?.cancel();
+    };
+  }, [onFilterChange]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -41,18 +60,11 @@ export default function CourseFilter({
       currentParams.set('courseType', selectedCourseType);
       navigate(`?${currentParams.toString()}`, { replace: true });
     }
-  }, [studentDashboard, selectCategory, selectedCourseType]);
+  }, [studentDashboard, selectCategory, selectedCourseType, navigate]);
 
   const handleSearch = (value: string) => {
     setSearchTerm(value);
-    onFilterChange({
-      paginationOptions: {
-        page: 1,
-        limit: 10,
-      },
-      search: value,
-      orderBy: 'created_at:DESC',
-    });
+    debouncedRef.current?.(value);
   };
 
   const handleCategoryChange = (value: string) => {
@@ -107,6 +119,7 @@ export default function CourseFilter({
           variant="outlined"
           fullWidth
           margin="normal"
+          value={searchTerm}
           onChange={(e) => handleSearch(e.target.value)}
           sx={{
             '& input': {

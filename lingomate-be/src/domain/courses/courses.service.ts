@@ -1,7 +1,5 @@
 import { StatusEnum } from "@/common/enums/status.enum";
-import { CourseEntity } from "@/domain/courses/infrastructure/persistence/relational/entities/course.entity";
-import { UserCourse } from "@/domain/user-courses/domain/user-course";
-import { FilesLocalService } from "@/files/infrastructure/uploader/local/files.service";
+import { FilesGoogleDriveService } from "@/files/infrastructure/uploader/google-driver/files.service";
 import { IPaginationOptions } from "@/utils/types/pagination-options";
 import {
   ConflictException,
@@ -10,17 +8,14 @@ import {
 } from "@nestjs/common";
 import { LessonCourseRepository } from "../lesson-courses/infrastructure/persistence/lesson-course.repository";
 import { UserCourseRepository } from "../user-courses/infrastructure/persistence/user-course.repository";
-import { UserEntity } from "../users/infrastructure/persistence/relational/entities/user.entity";
 import { UserRepository } from "../users/infrastructure/persistence/user.repository";
 import { Course } from "./domain/course";
 import { CourseWithDetailsDTO } from "./dto/course-details-dto";
-import { CourseResponseDto } from "./dto/course-response-dto";
 import { CourseListResponseDto } from "./dto/courses-response-dto";
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
 import { CourseRepository } from "./infrastructure/persistence/course.repository";
 import { CourseMapper } from "./infrastructure/persistence/relational/mappers/course.mapper";
-import { Request } from "express";
 
 @Injectable()
 export class CoursesService {
@@ -29,7 +24,7 @@ export class CoursesService {
     private readonly lessonCourseRepository: LessonCourseRepository,
     private readonly userCourseRepository: UserCourseRepository,
     private readonly userRepository: UserRepository,
-    private readonly filesLocalService: FilesLocalService,
+    private readonly filesGoogleDrivelService: FilesGoogleDriveService,
   ) {}
 
   async create(
@@ -53,7 +48,8 @@ export class CoursesService {
     const model = CourseMapper.toModel(createCourseDto);
 
     if (photoFile) {
-      const uploadedFile = await this.filesLocalService.create(photoFile);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(photoFile);
       model.photo = uploadedFile.file;
     }
     const course = await this.courseRepository.create(model);
@@ -99,7 +95,6 @@ export class CoursesService {
   }
 
   async getListCourse(
-    req: Request,
     status?: StatusEnum,
     userId?: string,
     invoiceId?: string,
@@ -110,10 +105,10 @@ export class CoursesService {
     isMyCourse?: string,
     orderBy: { [key: string]: "ASC" | "DESC" } = { created_at: "DESC" },
   ): Promise<CourseListResponseDto<CourseWithDetailsDTO>> {
-    const currentUserId = req.user?.["id"];
+    // const currentUserId = req.user?.["id"];
     const params = {
       status,
-      userId: userId ? userId : currentUserId,
+      userId: userId,
       invoiceId,
       categoryId,
       paginationOptions: {
@@ -154,10 +149,11 @@ export class CoursesService {
       if (existingCourse.photo) {
         // Tách rời file khỏi course trước khi xóa
         await this.courseRepository.update(id, { photo: null });
-        await this.filesLocalService.delete(existingCourse.photo);
+        await this.filesGoogleDrivelService.delete(existingCourse.photo);
       }
 
-      const uploadedFile = await this.filesLocalService.create(photoFile);
+      const uploadedFile =
+        await this.filesGoogleDrivelService.create(photoFile);
       updateCourseDto.photo = uploadedFile.file;
     }
 
@@ -170,7 +166,16 @@ export class CoursesService {
       throw new NotFoundException("Course not found");
     }
 
-    course.status = StatusEnum.IN_ACTIVE;
+    if (course.photo) {
+      try {
+        await this.filesGoogleDrivelService.delete(course.photo);
+      } catch (error) {
+        console.error(
+          `Failed to delete file on Google Drive: ${error.message}`,
+        );
+        throw new ConflictException("Could not delete associated file");
+      }
+    }
 
     const userCourses = await this.userCourseRepository.findByCourseId(id);
     if (userCourses) {
@@ -189,6 +194,7 @@ export class CoursesService {
         ),
       );
     }
+
     await this.courseRepository.save(course);
     return this.courseRepository.remove(id);
   }

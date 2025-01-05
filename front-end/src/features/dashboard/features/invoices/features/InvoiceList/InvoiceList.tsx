@@ -1,3 +1,4 @@
+import { getInvoiceList, updateInvoiceStatus } from '@/api/api';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
 import FeatureLayout from '@/features/dashboard/layouts/feature-layout/FeatureLayout';
 import { setAppLoading } from '@/stores/slices/appSlice';
@@ -15,99 +16,87 @@ import {
   TextField,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
-const mockData = [
-  {
-    id: 1,
-    sender: 'Nguyễn Văn A',
-    amount: 1000000,
-    status: 'APPROVED',
-    createdAt: '2021-10-10',
-  },
-  {
-    id: 2,
-    sender: 'Nguyễn Văn B',
-    amount: 2000000,
-    status: 'PENDING',
-    createdAt: '2021-10-10',
-  },
-  {
-    id: 3,
-    sender: 'Nguyễn Văn C',
-    amount: 3000000,
-    status: 'PENDING',
-    createdAt: '2021-10-10',
-  },
-  {
-    id: 4,
-    sender: 'Nguyễn Văn D',
-    amount: 4000000,
-    status: 'APPROVED',
-    createdAt: '2021-10-10',
-  },
-  {
-    id: 5,
-    sender: 'Nguyễn Văn E',
-    amount: 5000000,
-    status: 'APPROVED',
-    createdAt: '2021-10-10',
-  },
-  {
-    id: 6,
-    sender: 'Nguyễn Văn F',
-    amount: 6000000,
-    status: 'PENDING',
-    createdAt: '2021-10-10',
-  },
-  {
-    id: 7,
-    sender: 'Nguyễn Văn G',
-    amount: 7000000,
-    status: 'PENDING',
-    createdAt: '2021-10-10',
-  },
-  {
-    id: 8,
-    sender: 'Nguyễn Văn H',
-    amount: 8000000,
-    status: 'APPROVED',
-    createdAt: '2021-10-10',
-  },
-  {
-    id: 9,
-    sender: 'Nguyễn Văn I',
-    amount: 9000000,
-    status: 'APPROVED',
-    createdAt: '2021-10-10',
-  },
-  {
-    id: 10,
-    sender: 'Nguyễn Văn K',
-    amount: 10000000,
-    status: 'PENDING',
-    createdAt: '2021-10-10',
-  },
-];
+import { debounce } from 'lodash';
 
 export default function InvoiceList() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [dataInvoices, setDataInvoices] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [page] = useState(1);
+  const [limit] = useState(10);
 
-  const handleGoToInvoiceDetail = () => {
-    navigate('/dashboard/payments/1');
+  const fetchInvoices = async (search: string) => {
+    dispatch(setAppLoading(true));
+    try {
+      const data = await getInvoiceList(page, limit, search);
+      setDataInvoices(data.data);
+    } catch (err) {
+      console.error('Error fetching invoices:', err);
+    } finally {
+      dispatch(setAppLoading(false));
+    }
   };
 
-  
-  useEffect(() => {
-    dispatch(setAppLoading(true));
+  // Create debounced search function with 3 second delay
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((term: string) => {
+        fetchInvoices(term);
+      }, 3000),
+    [],
+  );
 
-    setTimeout(() => {
-      dispatch(setAppLoading(false));
-    }, 500);
+  useEffect(() => {
+    fetchInvoices('');
+
+    return () => {
+      debouncedSearch.cancel();
+    };
   }, []);
+
+  useEffect(() => {
+    debouncedSearch(searchTerm);
+
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [searchTerm, debouncedSearch]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleApproveInvoice = async (id: number, paymentStatus: boolean) => {
+    if (paymentStatus) {
+      alert('Hóa đơn này đã được duyệt trước đó!');
+      return;
+    }
+
+    try {
+      await updateInvoiceStatus(id, {
+        paymentStatus: true,
+      });
+      setDataInvoices((prev) =>
+        prev.map((invoice) =>
+          invoice.id === id
+            ? { ...invoice, paymentStatus: true, status: 'APPROVED' }
+            : invoice,
+        ),
+      );
+      alert('Duyệt hóa đơn thành công!');
+    } catch (err) {
+      console.error('Error updating invoice status:', err);
+      alert('Duyệt hóa đơn thất bại!');
+    }
+  };
+
+  const handleGoToInvoiceDetail = (id: string) => {
+    navigate(`/dashboard/payments/${id}`);
+  };
 
   return (
     <FeatureLayout>
@@ -126,6 +115,9 @@ export default function InvoiceList() {
               label="Tìm kiếm"
               variant="outlined"
               fullWidth
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder="Tìm kiếm theo mã hóa đơn, tên người dùng..."
               margin="normal"
               sx={{
                 minWidth: 400,
@@ -138,7 +130,7 @@ export default function InvoiceList() {
           </Box>
         </Box>
         <Box sx={{ marginTop: '20px' }}>
-          <TableContainer component={Paper} sx={{}}>
+          <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead>
                 <TableRow sx={{ background: '#f4f4f4' }}>
@@ -151,7 +143,7 @@ export default function InvoiceList() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {mockData.map((row) => (
+                {dataInvoices.map((row, index) => (
                   <TableRow
                     key={row.id}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -160,18 +152,20 @@ export default function InvoiceList() {
                       component="th"
                       scope="row"
                       sx={{ textDecoration: 'underline', cursor: 'pointer' }}
-                      onClick={handleGoToInvoiceDetail}
+                      onClick={() => handleGoToInvoiceDetail(row.id)}
                     >
-                      {row.id}
+                      {row.orderCode || index + 1}
                     </TableCell>
-                    <TableCell align="left">{row.sender}</TableCell>
+                    <TableCell align="left">{row.user?.fullName}</TableCell>
                     <TableCell align="left">{row.amount}</TableCell>
                     <TableCell align="left">
                       <Chip
                         label={
-                          row.status === 'APPROVED' ? 'Đã duyệt' : 'Chờ duyệt'
+                          row.paymentStatus === true
+                            ? 'Đã duyệt'
+                            : 'Đang chờ duyệt'
                         }
-                        color={row.status === 'APPROVED' ? 'success' : 'error'}
+                        color={row.paymentStatus === true ? 'success' : 'error'}
                       />
                     </TableCell>
                     <TableCell align="left">
@@ -182,20 +176,22 @@ export default function InvoiceList() {
                         <Button
                           variant="contained"
                           size="small"
-                          onClick={handleGoToInvoiceDetail}
+                          onClick={() => handleGoToInvoiceDetail(row.id)}
                         >
                           Xem chi tiết
                         </Button>
-                        <Button
-                          variant="contained"
-                          size="small"
-                          color="success"
-                        >
-                          Duyệt
-                        </Button>
-                        <Button variant="contained" size="small" color="error">
-                          Hủy bỏ
-                        </Button>
+                        {row.paymentStatus === false && (
+                          <Button
+                            variant="contained"
+                            size="small"
+                            color="success"
+                            onClick={() =>
+                              handleApproveInvoice(row.id, row.paymentStatus)
+                            }
+                          >
+                            Duyệt
+                          </Button>
+                        )}
                       </Box>
                     </TableCell>
                   </TableRow>

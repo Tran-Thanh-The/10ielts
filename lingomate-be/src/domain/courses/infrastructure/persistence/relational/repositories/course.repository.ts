@@ -391,7 +391,7 @@ export class CourseRelationalRepository implements CourseRepository {
       .createQueryBuilder("course")
       .leftJoinAndSelect("course.photo", "photo")
       .leftJoinAndSelect("course.category", "category")
-      .leftJoin(
+      .leftJoinAndSelect(
         "course.userCourses",
         "userCourse",
         "userCourse.userId = :userId",
@@ -426,8 +426,12 @@ export class CourseRelationalRepository implements CourseRepository {
     //   );
     // }
     if (search) {
+      // queryBuilder.andWhere(
+      //   "CONVERT(course.name USING utf8) COLLATE utf8_general_ci LIKE :search OR CONVERT(course.description USING utf8) COLLATE utf8_general_ci LIKE :search",
+      //   { search: `%${search}%` },
+      // );
       queryBuilder.andWhere(
-        "CONVERT(course.name USING utf8) COLLATE utf8_general_ci LIKE :search OR CONVERT(course.description USING utf8) COLLATE utf8_general_ci LIKE :search",
+        "course.name ILIKE :search OR course.description ILIKE :search",
         { search: `%${search}%` },
       );
     }

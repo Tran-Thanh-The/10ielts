@@ -17,6 +17,7 @@ import PracticeRouter from '@/features/dashboard/features/practices/PracticeRout
 import Insights from '@/features/dashboard/features/insights/Insights';
 import InvoiceList from '@/features/dashboard/features/invoices/features/InvoiceList/InvoiceList';
 import InvoiceDetails from '@/features/dashboard/features/invoices/features/InvoiceDetails/InvoiceDetails';
+import Achievements from '@/features/dashboard/features/achievements/Achievements';
 
 const Home = lazy(() => import('@/features/public-pages/pages/home/Home'));
 const Login = lazy(() => import('@/features/auth/pages/login/Login'));
@@ -87,6 +88,7 @@ function AppRoutes() {
           <Route path="insights/*" element={<Insights />} />
           <Route path="payments" element={<InvoiceList />} />
           <Route path="payments/:id" element={<InvoiceDetails />} />
+          <Route path="achievements" element={<Achievements />} />
           <Route path="*" />
         </Route>
       </Routes>

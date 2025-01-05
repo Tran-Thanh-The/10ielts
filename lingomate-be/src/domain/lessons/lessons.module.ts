@@ -1,4 +1,4 @@
-import { FilesLocalModule } from "@/files/infrastructure/uploader/local/files.module";
+import { FilesGoogleDriveModule } from "@/files/infrastructure/uploader/google-driver/files.module";
 import { Module } from "@nestjs/common";
 import { CoursesModule } from "../courses/courses.module";
 import { LessonCoursesModule } from "../lesson-courses/lesson-courses.module";
@@ -11,7 +11,7 @@ import { LessonsService } from "./lessons.service";
     RelationalLessonPersistenceModule,
     LessonCoursesModule,
     CoursesModule,
-    FilesLocalModule,
+    FilesGoogleDriveModule,
   ],
   controllers: [LessonsController],
   providers: [LessonsService],

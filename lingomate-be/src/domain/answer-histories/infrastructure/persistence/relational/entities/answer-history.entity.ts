@@ -31,6 +31,13 @@ export class AnswerHistoryEntity extends EntityRelationalHelper {
   })
   answers?: Record<string, any>;
 
+  @ApiProperty()
+  @Column({
+    type: "jsonb",
+    nullable: true,
+  })
+  aiReview?: Record<string, any>;
+
   @ApiProperty({
     type: () => UserEntity,
   })

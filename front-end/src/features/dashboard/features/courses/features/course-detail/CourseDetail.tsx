@@ -31,6 +31,8 @@ import Swal from 'sweetalert2';
 import LessonCard from '../../components/lesson-card/LessonCard';
 import { setAppLoading } from '@/stores/slices/appSlice';
 import { useDispatch } from 'react-redux';
+import { createUserCourse } from '@/api/api';
+import CourseOutcomes from '@/features/dashboard/features/courses/components/course-outcomes/CourseOutcomes';
 
 export default function CourseDetail() {
   const dispatch = useDispatch();
@@ -46,6 +48,7 @@ export default function CourseDetail() {
   const { idCourse } = useParams();
   const [openCourseForm, setOpenCourseForm] = useState(false);
   const [reload, setReload] = useState(false);
+  const [openCourseOutcomes, setOpenCourseOutcomes] = useState(false);
 
   useEffect(() => {
     handleFetchCourse();
@@ -62,6 +65,7 @@ export default function CourseDetail() {
     setCourse({
       ...courseResponse.data,
       lessons: courseDetailsResponse.data.lessons,
+      isMyCourse: courseDetailsResponse.data.isMyCourse,
     });
     dispatch(setAppLoading(false));
   };
@@ -158,7 +162,24 @@ export default function CourseDetail() {
   };
 
   const handlePayment = () => {
-    navigate(`/payment?id=${idCourse}&type=course`);
+    if ((course?.price as unknown as string) === '0.00') {
+      Swal.fire({
+        title: 'Bạn có chắc chắn muốn đăng ký khóa học này?',
+        showDenyButton: true,
+        confirmButtonText: `Đăng ký`,
+        denyButtonText: `Hủy`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          dispatch(setAppLoading(true));
+          await createUserCourse({
+            course_id: idCourse,
+          });
+          navigate('/dashboard/courses');
+        }
+      });
+    } else {
+      navigate(`/payment?id=${idCourse}&type=course`);
+    }
   };
 
   const handleDeleteCourse = () => {
@@ -302,14 +323,30 @@ export default function CourseDetail() {
                         marginTop: '12px',
                       }}
                     >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={handlePayment}
-                      >
-                        Đăng ký khóa học
-                      </Button>
+                      {course?.isMyCourse ? (
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          size="small"
+                          onClick={() => setOpenCourseOutcomes(true)}
+                        >
+                          Xem kết quá học tập
+                          <CourseOutcomes
+                            courseId={course.id}
+                            open={openCourseOutcomes}
+                            onClose={() => setOpenCourseOutcomes(false)}
+                          />
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={handlePayment}
+                        >
+                          Đăng ký khóa học
+                        </Button>
+                      )}
                     </Box>
                   </RoleBasedComponent>
                 </Box>
@@ -405,7 +442,7 @@ export default function CourseDetail() {
               sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: '20px'
+                gap: '20px',
               }}
             >
               {paginatedFilteredLessons.map((lesson, index) => (

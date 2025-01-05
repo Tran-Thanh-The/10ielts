@@ -131,16 +131,10 @@ export class PaymentService {
   public async webhookHandler(req: Request) {
     try {
       const webhookData = req.body.data;
-      const updateInvoice = await this.invoicesService.updateByOrderCode(
-        webhookData.orderCode,
-        {
-          paymentStatus: true,
-          updatedAt: new Date(),
-        },
-      );
-      if (!updateInvoice) {
-        throw new Error("Invoice not found");
-      }
+      this.invoicesService.updateByOrderCode(webhookData.orderCode, {
+        paymentStatus: true,
+        updatedAt: new Date(),
+      });
       const updatedInvoice = await this.invoicesService.findByOrderCode(
         webhookData.orderCode,
       );
@@ -154,13 +148,14 @@ export class PaymentService {
         throw new Error("Product invoice not found");
       }
       if (productInvoice[0].courseId) {
-        await this.userCourseService.create(
+        const newUser = await this.userCourseService.create(
           {
             course_id: productInvoice[0].courseId,
-            user_id: req.user?.["id"],
+            user_id: updatedInvoice.user?.id || 0,
           },
-          req.user?.["id"],
+          updatedInvoice.user?.id || 0,
         );
+        console.log(newUser);
       }
       return {
         statusCode: 200,

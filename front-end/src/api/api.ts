@@ -21,7 +21,7 @@ export const getCourseRegisterStatistic = async (
 
 export const getUsers = async (params: any) => {
   return axiosInstance.get<any>('users', {
-    params: params
+    params: params,
   });
 };
 
@@ -81,7 +81,7 @@ export const getAnswerHistories = async (params?: any) => {
       pages: 1,
       limit: 1000,
       ...(params || {}),
-    }
+    },
   });
 };
 
@@ -129,4 +129,35 @@ export const getAnswerHistorieById = async (id: string) => {
 
 export const updateAnswerHistory = async (id: string, data: any) => {
   return axiosInstance.patch<any>(`answer-histories/${id}`, data);
+};
+
+export const getInvoiceList = async (
+  page: number,
+  limit: number,
+  search: string = '',
+) => {
+  try {
+    const response = await axiosInstance.get(`/invoices`, {
+      params: { page, limit, search },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching invoice list:', error);
+    throw error;
+  }
+};
+
+export const updateInvoiceStatus = async (
+  id: number,
+  data: { paymentStatus: boolean },
+) => {
+  return await axiosInstance.patch(`/invoices/${id}`, data);
+};
+
+export const InvoiceDetails = async (id: string) => {
+  return await axiosInstance.get<any>(`/invoices/${id}`);
+};
+
+export const createUserCourse = async (data: any) => {
+  return axiosInstance.post<any>('user-courses', data);
 };

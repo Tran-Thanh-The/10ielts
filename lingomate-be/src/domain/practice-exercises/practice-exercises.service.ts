@@ -60,7 +60,7 @@ export class PracticeExercisesService {
     return this.practiceExerciseRepository.update(id, updatedData);
   }
 
-  remove(id: PracticeExercise["id"]) {
+  async remove(id: PracticeExercise["id"]) {
     return this.practiceExerciseRepository.remove(id);
   }
 }

@@ -14,6 +14,10 @@ export class ResponseAnswerHistoryDto {
   @IsOptional()
   answers?: Record<string, any>;
 
+  @ApiPropertyOptional({ type: "jsonb" })
+  @IsOptional()
+  aiReview?: Record<string, any>;
+
   @ApiPropertyOptional({ type: String })
   @IsString()
   @IsOptional()

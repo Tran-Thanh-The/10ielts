@@ -37,7 +37,35 @@ export default function CreateUpdateUserModal({
     role: 0,
   });
 
-  // Initialize form data if editing an existing course
+  // Extract role based on URL
+  const getRoleFromUrl = () => {
+    if (typeof window !== 'undefined') {
+      const pathname = window.location.pathname;
+      if (pathname.includes('student')) return 'User';
+      if (pathname.includes('staff')) return 'Staff';
+    }
+    return null;
+  };
+
+  // Lấy role từ URL
+  // Lấy role từ URL và gán trực tiếp khi modal mở
+  useEffect(() => {
+    const pathRole = window.location.pathname.includes('student')
+      ? 'User'
+      : 'Staff';
+    const defaultRole = ROLES.find((role) => role.name === pathRole)?.id ?? 0;
+
+    setFormData((prevState) => ({
+      ...prevState,
+      role: defaultRole,
+    }));
+  }, [open]);
+
+  const currentRole = getRoleFromUrl();
+
+  // Filter roles based on current URL
+  const filteredRoles = ROLES.filter((role) => role.name === currentRole);
+
   useEffect(() => {
     if (data?.id) {
       setFormData({
@@ -52,7 +80,6 @@ export default function CreateUpdateUserModal({
     }
   }, [data]);
 
-  // Reset form when modal is closed
   useEffect(() => {
     if (!open) {
       if (data?.id) {
@@ -69,7 +96,6 @@ export default function CreateUpdateUserModal({
     }
   }, [open]);
 
-  // Helper function to reset form fields
   const resetForm = () => {
     setFormData({
       email: '',
@@ -80,7 +106,6 @@ export default function CreateUpdateUserModal({
     });
   };
 
-  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -89,12 +114,9 @@ export default function CreateUpdateUserModal({
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate required fields
-    // console.log(formData);
     if (
       !formData.fullName.trim() ||
       !formData.email.trim() ||
@@ -106,7 +128,6 @@ export default function CreateUpdateUserModal({
       return;
     }
 
-    // Prepare form data to send via multipart/form-data
     const body = {
       email: formData.email,
       password: formData.password ?? undefined,
@@ -118,13 +139,9 @@ export default function CreateUpdateUserModal({
     try {
       dispatch(setAppLoading(true));
       if (data?.id) {
-        console.log('tajo kho hoc', data.id);
-        // Nếu có `id`, thực hiện cập nhật người dùng
         await updateUser(data.id, body);
         toast.success('User updated successfully!');
       } else {
-        // Nếu không có `id`, tạo người dùng mới
-        console.log('tajo kho hoc', body);
         await createUser(body);
         toast.success('User created successfully!');
       }
@@ -132,9 +149,9 @@ export default function CreateUpdateUserModal({
       onClose(false);
     } catch (error) {
       toast.error('Failed to save the user.');
-      console.error('Error:', error); // Log lỗi để dễ dàng debug
+      console.error('Error:', error);
     } finally {
-      dispatch(setAppLoading(false)); // Dừng trạng thái loading
+      dispatch(setAppLoading(false));
     }
   };
 
@@ -214,8 +231,9 @@ export default function CreateUpdateUserModal({
                   onChange={handleChange}
                   required
                   fullWidth
+                  disabled // Ngăn người dùng chỉnh sửa
                 >
-                  {ROLES.map((category) => (
+                  {filteredRoles.map((category) => (
                     <MenuItem key={category.id} value={category.id}>
                       {category.name}
                     </MenuItem>

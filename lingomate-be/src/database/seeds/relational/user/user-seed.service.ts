@@ -48,7 +48,7 @@ export class UserSeedService {
       [RoleEnum.staff],
     );
 
-    if (!countStaff[0].count) {
+    if (Number(countStaff[0].count) === 0) {
       const salt = await bcrypt.genSalt();
       const password = await bcrypt.hash("string", salt);
 

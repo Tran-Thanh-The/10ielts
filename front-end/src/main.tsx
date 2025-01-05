@@ -13,12 +13,12 @@ createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <ThemeProvider theme={theme}>
-        <SocketProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <SocketProvider key={store.getState().auth.token}>
             <CssBaseline />
             <App />
-          </AuthProvider>
-        </SocketProvider>
+          </SocketProvider>
+        </AuthProvider>
       </ThemeProvider>
     </PersistGate>
   </Provider>,

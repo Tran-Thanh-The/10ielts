@@ -2,7 +2,8 @@ import axios from 'axios';
 import { API_ENDPOINT } from '@/utils/constants/constants';
 
 const baseUrl =
-  localStorage.getItem('apiUrl') || 'http://localhost:3002/api/v1';
+  localStorage.getItem('apiUrl') ||
+  'http://localhost:3002/api/v1';
 
 const axiosInstance = axios.create({
   baseURL: baseUrl,

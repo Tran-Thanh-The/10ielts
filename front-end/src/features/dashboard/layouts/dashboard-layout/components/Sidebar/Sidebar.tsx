@@ -17,6 +17,7 @@ import { ROLE } from '@/utils/constants/constants';
 import { useAuth } from '@/context/AuthContext';
 import { checkRole } from '@/utils/checkRole';
 import InsightsIcon from '@mui/icons-material/Insights';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const DASHBOARD_SIDEBAR = [
   {
@@ -36,6 +37,12 @@ const DASHBOARD_SIDEBAR = [
     icon: <SchoolIcon />,
     href: '/dashboard/practices',
     permission: [ROLE.ADMIN, ROLE.STAFF, ROLE.USER],
+  },
+  {
+    title: 'Thành tích',
+    icon: <EmojiEventsIcon />,
+    href: '/dashboard/achievements',
+    permission: [ROLE.USER],
   },
   {
     title: 'Hóa đơn',

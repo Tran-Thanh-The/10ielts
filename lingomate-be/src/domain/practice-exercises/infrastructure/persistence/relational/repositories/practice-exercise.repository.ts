@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { PracticeExerciseEntity } from "../entities/practice-exercise.entity";
@@ -32,6 +32,7 @@ export class PracticeExerciseRelationalRepository
     paginationOptions: IPaginationOptions;
   }): Promise<PracticeExercise[]> {
     const entities = await this.practiceExerciseRepository.find({
+      where: { status: StatusEnum.ACTIVE },
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
       relations: [
@@ -81,6 +82,9 @@ export class PracticeExerciseRelationalRepository
       .leftJoinAndSelect("practiceExercise.questions", "question")
       .leftJoinAndSelect("question.answers", "answer")
       .where("practiceExercise.id = :id", { id })
+      .andWhere("practiceExercise.status = :status", {
+        status: StatusEnum.ACTIVE,
+      })
       .orderBy("question.position", order)
       .skip((page - 1) * limit)
       .take(limit);
@@ -122,6 +126,13 @@ export class PracticeExerciseRelationalRepository
   }
 
   async remove(id: PracticeExercise["id"]): Promise<void> {
-    await this.practiceExerciseRepository.delete(id);
+    const existingPractice = await this.findById(id);
+    if (!existingPractice) {
+      throw new NotFoundException(`Practice with id "${id}" not found.`);
+    }
+    await this.practiceExerciseRepository.update(id, {
+      status: StatusEnum.IN_ACTIVE,
+    });
+    await this.practiceExerciseRepository.softDelete(id);
   }
 }

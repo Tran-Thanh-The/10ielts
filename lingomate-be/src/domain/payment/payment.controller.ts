@@ -55,11 +55,9 @@ export class PaymentController {
 
   @Public()
   @Post("/payment-webhook")
-  async webhookHandler(
-    @Req() req: Request,
-    @Res() res: Response,
-  ): Promise<void> {
-    const result = await this.paymentService.webhookHandler(req);
-    res.status(result.statusCode).send(result.message);
+  webhookHandler(@Req() req: Request, @Res() res: Response) {
+    // const result = await this.paymentService.webhookHandler(req);
+    // res.status(result.statusCode).send(result.message);
+    res.status(200).send(true);
   }
 }

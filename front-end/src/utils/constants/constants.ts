@@ -96,6 +96,22 @@ export const DEFAULT_PERMISSIONS = [
   PermissionEnum.DELETE_CATEGORY
 ];
 
+const ALL_PERMISSIONS = [
+  PermissionEnum.CREATE_USER,
+  PermissionEnum.READ_USER,
+  PermissionEnum.UPDATE_USER,
+  PermissionEnum.DELETE_USER,
+  PermissionEnum.CREATE_COURSE,
+  PermissionEnum.READ_COURSE,
+  PermissionEnum.UPDATE_COURSE,
+  PermissionEnum.DELETE_COURSE,
+  PermissionEnum.CREATE_PRACTICE,
+  PermissionEnum.READ_PRACTICE,
+  PermissionEnum.UPDATE_PRACTICE,
+  PermissionEnum.DELETE_PRACTICE,
+  PermissionEnum.ACCESS_CHAT,
+];
+
 export const ROLE_FORM = [
   {
     label: 'Quyền quản lý học sinh',

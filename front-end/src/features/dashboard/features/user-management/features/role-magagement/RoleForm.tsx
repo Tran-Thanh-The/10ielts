@@ -9,8 +9,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useState } from 'react';
 
 export default function RoleForm() {
+  const [form, setForm] = useState({
+    name: '',
+    functions: [
+    ],
+  });
+
   return (
     <FeatureLayout>
       <FeatureHeader title="Thêm mới vai trò" />
@@ -24,7 +31,12 @@ export default function RoleForm() {
         }}
       >
         <Typography variant="body1">Tên vai trò</Typography>
-        <TextField label="Tên vai trò" fullWidth />
+        <TextField
+          label="Tên vai trò"
+          fullWidth
+          value={form.name}
+          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        />
 
         <Typography variant="body1">Chức năng</Typography>
         <Box

@@ -368,16 +368,6 @@ export default function Insights() {
     },
   };
 
-  const handleExport = () => {
-    generatePDFReport({
-      revenueData,
-      registrationData,
-      courseRegistrationData,
-      year,
-      month,
-    });
-  };
-
   const handleYearChange = (event: any) => {
     setYear(Number(event.target.value));
   };

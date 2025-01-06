@@ -23,6 +23,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom'],
+    exclude: ['pdfkit'],
   },
   resolve: {
     alias: {

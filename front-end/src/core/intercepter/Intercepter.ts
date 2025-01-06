@@ -3,7 +3,7 @@ import { API_ENDPOINT } from '@/utils/constants/constants';
 
 export const baseUrl =
   localStorage.getItem('apiUrl') ||
-  'http://localhost:3002/api/v1';
+  'https://lingomate-backend.onrender.com/api/v1';
 
 const axiosInstance = axios.create({
   baseURL: baseUrl,

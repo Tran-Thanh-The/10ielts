@@ -23,7 +23,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom'],
-    exclude: ['pdfkit'],
+    exclude: ['pdfkit', 'jspdf-autotable', 'jspdf'],
   },
   resolve: {
     alias: {

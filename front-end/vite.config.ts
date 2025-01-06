@@ -22,8 +22,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
   },
   optimizeDeps: {
-    include: ['react', 'react-dom'],
-    exclude: ['pdfkit', 'jspdf-autotable', 'jspdf'],
+    include: ['react', 'react-dom']
   },
   resolve: {
     alias: {

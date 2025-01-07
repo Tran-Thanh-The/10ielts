@@ -93,7 +93,7 @@ export default function QuestionDetail({
       )}
       {question.file && question.fileType === 'AUDIO' && (
         <Box>
-          <audio src={question?.file?.path ?? "http://localhost:3002/api/v1/files/QA-01.mp3"} controls />{' '}
+          <audio src={question?.file?.path} controls />{' '}
         </Box>
       )}
 

@@ -60,6 +60,8 @@ import { UserConversationsModule } from "@/domain/user-conversations/user-conver
 import { RolesModule } from "./domain/roles/roles.module";
 import { SocketGatewayModule } from "./socket-gateway/socket-gateway.module";
 import { StatisticalModule } from "./domain/statistical/statistical.module";
+import { AiModule } from "./domain/ai/ai.module";
+import { GoogleGeminiModule } from "./common/google-gemini/google-gemini.module";
 
 @Module({
   imports: [
@@ -141,6 +143,8 @@ import { StatisticalModule } from "./domain/statistical/statistical.module";
     HomeModule,
     RedisModule,
     PayOSModule,
+    GoogleGeminiModule,
+    AiModule,
     PaymentModule,
     StatisticalModule,
     ServeStaticModule.forRoot({

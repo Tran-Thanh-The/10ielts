@@ -5,10 +5,10 @@ import { EPracticeType } from '@/types/enum/practice.enum';
 import { Box, Button, Divider, Modal, Typography } from '@mui/material';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import moment from 'moment';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '@/assets/ai-loading.gif';
+import { baseUrl } from '@/core/intercepter/Intercepter';
 
 export default function ViewHistory({
   open,
@@ -41,7 +41,7 @@ export default function ViewHistory({
     try {
       setLoading(true);
       axios
-        .post('http://localhost:3003/evaluate-writing', {
+        .post(baseUrl + '/evaluate-writing', {
           topic: 'In 15 minutes, write an article with a topic: Describe your favorite childhood memory',
           writingAssignmentSubmission:
             "When I was young, I very like to went to my grandmother house in countryside. Every summer holiday, my parent took me there and I playing with many friend. The air was fresh and we catching fish in small river behind house. Grandmother always cook delicious foods for me likes sweet soup and spring roll.\nOne day, me and friends decided exploring the old temple near village. We walking through bamboo forest and see many interesting thing. Although my grandmother tell us don't go there alone, but we very exciting about adventure. Finally, we finding beautiful temple and take lot of picture.\nThat memory still make me happy when think about it. I missing my childhood time very much.",

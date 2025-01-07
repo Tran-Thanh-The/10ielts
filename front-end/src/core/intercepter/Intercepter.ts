@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { API_ENDPOINT } from '@/utils/constants/constants';
 
-const baseUrl =
+export const baseUrl =
   localStorage.getItem('apiUrl') ||
-  'http://localhost:3002/api/v1';
+  'https://lingomate-backend.onrender.com/api/v1';
 
 const axiosInstance = axios.create({
   baseURL: baseUrl,
-  timeout: 10000,
+  timeout: 100000,
   headers: {
     'ngrok-skip-browser-warning': '69420',
     'Content-Type': 'application/json',

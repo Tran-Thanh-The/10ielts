@@ -8,7 +8,7 @@ function StaffMagagement() {
   return (
     <FeatureLayout>
       <FeatureHeader title="Quản lý nhân viên">
-        <UserFilter />
+        <UserFilter buttonLabel='Tạo nhân viên' />
       </FeatureHeader>
 
       <Box sx={{ width: '100%' }}>

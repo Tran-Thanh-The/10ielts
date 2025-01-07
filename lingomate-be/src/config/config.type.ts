@@ -4,6 +4,7 @@ import { DatabaseConfig } from "../database/config/database-config.type";
 import { FileConfig } from "../files/config/file-config.type";
 import { MailConfig } from "../mail/config/mail-config.type";
 import { PayOSConfig } from "@/common/payos/config/payos-config.type";
+import { GoogleGeminiConfig } from "@/common/google-gemini/config/google-gemini-config.type";
 
 export type AllConfigType = {
   app: AppConfig;
@@ -12,4 +13,5 @@ export type AllConfigType = {
   file: FileConfig;
   mail: MailConfig;
   payos: PayOSConfig;
+  googleGemini: GoogleGeminiConfig;
 };

@@ -14,10 +14,15 @@ export default function ProtectByPremissions({
   needAll?: boolean;
 }) {
   const token = useSelector((state: RootState) => state.auth.token);
+  const user = useSelector((state: RootState) => state.auth.user);
   const [access, setAccess] = React.useState<boolean>(false);
 
   useEffect(() => {
     try {
+      if (user?.role?.name === "Admin") {
+        setAccess(true);
+        return;
+      }
       const decoded: any = jwtDecode(token);
       if (needAll) {
         const hasAll = permissions.every((permisson) =>
@@ -34,6 +39,6 @@ export default function ProtectByPremissions({
       setAccess(false);
       console.error('Error decoding token:', error);
     }
-  }, [token, needAll]);
+  }, [token, needAll, user?.role?.name]);
   return access ? <>{children}</> : null;
 }

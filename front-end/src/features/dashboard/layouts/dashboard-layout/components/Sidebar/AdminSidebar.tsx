@@ -86,13 +86,18 @@ export default function AdminSidebar() {
             },
           }}
         >
-          <MenuItem
-            icon={<AllInboxIcon />}
-            active={location.pathname.startsWith(EAppPath.CHAT)}
-            onClick={() => navigate(EAppPath.CHAT)}
+          <ProtectByPremissions
+            permissions={[PermissionEnum.ACCESS_CHAT]}
+            needAll={true}
           >
-            Tin nhắn
-          </MenuItem>
+            <MenuItem
+              icon={<AllInboxIcon />}
+              active={location.pathname.startsWith(EAppPath.CHAT)}
+              onClick={() => navigate(EAppPath.CHAT)}
+            >
+              Tin nhắn
+            </MenuItem>
+          </ProtectByPremissions>
 
           <ProtectByPremissions
             permissions={[

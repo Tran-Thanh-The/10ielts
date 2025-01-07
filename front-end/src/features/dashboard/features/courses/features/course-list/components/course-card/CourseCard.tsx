@@ -18,6 +18,8 @@ import courseApi from '@/api/courseApi';
 import dayjs from 'dayjs';
 import RoleBasedComponent from '@/components/RoleBasedComponent';
 import { ROLE } from '@/utils/constants/constants';
+import ProtectByPremissions from '@/components/ProtectByPremissions';
+import { PermissionEnum } from '@/types/enum/account.enum';
 
 interface CourseCardProps {
   id: string;
@@ -185,20 +187,35 @@ const CourseCard = ({
                 Ngày tạo: {dayjs(createdAt).format('DD/MM/YYYY')}
               </Typography>
             </Box>
-            <Box sx={{ alignSelf: 'flex-end' }}>
-              <IconButton onClick={handleMenuOpen}>
-                <MoreVertIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleMenuClose}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <MenuItem onClick={handleEdit}>Chỉnh sửa</MenuItem>
-                <MenuItem onClick={handleDelete}>Xóa</MenuItem>
-              </Menu>
-            </Box>
+
+            <ProtectByPremissions
+              permissions={[PermissionEnum.UPDATE_COURSE, PermissionEnum.DELETE_COURSE]}
+              needAll={false}
+            >
+              <Box sx={{ alignSelf: 'flex-end' }}>
+                <IconButton onClick={handleMenuOpen}>
+                  <MoreVertIcon />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleMenuClose}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ProtectByPremissions
+                    permissions={[PermissionEnum.UPDATE_COURSE]}
+                  >
+                    <MenuItem onClick={handleEdit}>Chỉnh sửa</MenuItem>
+                  </ProtectByPremissions>
+
+                  <ProtectByPremissions
+                    permissions={[PermissionEnum.DELETE_COURSE]}
+                  >
+                    <MenuItem onClick={handleDelete}>Xóa</MenuItem>
+                  </ProtectByPremissions>
+                </Menu>
+              </Box>
+            </ProtectByPremissions>
           </RoleBasedComponent>
         </Box>
       </CardContent>

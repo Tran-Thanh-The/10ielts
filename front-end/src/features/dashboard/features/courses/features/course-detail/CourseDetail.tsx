@@ -34,6 +34,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createUserCourse } from '@/api/api';
 import CourseOutcomes from '@/features/dashboard/features/courses/components/course-outcomes/CourseOutcomes';
 import { selectIsStudentDashboard } from '@/features/auth/slices/authSlice';
+import ProtectByPremissions from '@/components/ProtectByPremissions';
+import { PermissionEnum } from '@/types/enum/account.enum';
 
 export default function CourseDetail() {
   const dispatch = useDispatch();
@@ -105,8 +107,8 @@ export default function CourseDetail() {
 
   const handleDelete = async () => {
     if (selectedLessonId) {
-      console.log('Delete lesson ID:', selectedLessonId);
       await lessonApi.deleteLesson(selectedLessonId);
+      setReload(!reload);
     }
     handleMenuClose();
   };
@@ -372,31 +374,48 @@ export default function CourseDetail() {
                 }}
               >
                 {course?.status != 'ACTIVE' && (
+                  <ProtectByPremissions
+                    permissions={[PermissionEnum.UPDATE_COURSE]}
+                    needAll={false}
+                  >
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      size="small"
+                      onClick={handleEditCourse}
+                    >
+                      Xuất bản khóa học
+                    </Button>
+                  </ProtectByPremissions>
+                )}
+
+                <ProtectByPremissions
+                  permissions={[PermissionEnum.DELETE_COURSE]}
+                  needAll={false}
+                >
                   <Button
                     variant="outlined"
-                    color="success"
+                    color="error"
                     size="small"
-                    onClick={handleEditCourse}
+                    onClick={handleDeleteCourse}
                   >
-                    Xuất bản khóa học
+                    Xóa khóa học
                   </Button>
-                )}
-                <Button
-                  variant="outlined"
-                  color="error"
-                  size="small"
-                  onClick={handleDeleteCourse}
+                </ProtectByPremissions>
+
+                <ProtectByPremissions
+                  permissions={[PermissionEnum.UPDATE_COURSE]}
+                  needAll={false}
                 >
-                  Xóa khóa học
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onClick={handleUpdateCourse}
-                >
-                  Sửa khóa học
-                </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    onClick={handleUpdateCourse}
+                  >
+                    Sửa khóa học
+                  </Button>
+                </ProtectByPremissions>
               </Box>
             </RoleBasedComponent>
           </Card>
@@ -421,17 +440,22 @@ export default function CourseDetail() {
             >
               <Typography variant="h5">Danh sách bài học</Typography>
 
-              <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
-                <IconButton
-                  color="primary"
-                  sx={{
-                    bgcolor: '#f3f7ff',
-                  }}
-                  onClick={handleAddLesson}
-                >
-                  <AddIcon />
-                </IconButton>
-              </RoleBasedComponent>
+              <ProtectByPremissions
+                permissions={[PermissionEnum.UPDATE_COURSE]}
+                needAll={false}
+              >
+                <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+                  <IconButton
+                    color="primary"
+                    sx={{
+                      bgcolor: '#f3f7ff',
+                    }}
+                    onClick={handleAddLesson}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </RoleBasedComponent>
+              </ProtectByPremissions>
             </Box>
 
             <Box sx={{ width: '100%', marginBottom: 4 }}>
@@ -487,7 +511,7 @@ export default function CourseDetail() {
           </Box>
 
           <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
-            <MenuItem onClick={handleEdit}>Edit</MenuItem>
+            <MenuItem onClick={() => handRouterLessonDetail(selectedLessonId)}>Edit</MenuItem>
             <MenuItem onClick={handleDelete}>Delete</MenuItem>
           </Menu>
         </Box>

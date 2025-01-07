@@ -25,6 +25,9 @@ import CreateUpdateLessonForm from '@/features/dashboard/features/courses/compon
 import { LessonTypes } from '@/types/enum/LessonType';
 import Swal from 'sweetalert2';
 import ViewHistory from '@/features/dashboard/components/view-history/ViewHistory';
+import ProtectByPremissions from '@/components/ProtectByPremissions';
+import { PermissionEnum } from '@/types/enum/account.enum';
+import lessonApi from '@/api/lessonApi';
 
 export default function LessonView() {
   const { idCourse, selectedLessonId } = useParams();
@@ -36,6 +39,7 @@ export default function LessonView() {
   const [lesson, setLesson] = useState<any>(null);
   const [viewMode, setViewMode] = useState<'VIEW' | 'EDIT'>('VIEW');
   const [openHistory, setOpenHistory] = useState(false);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     if (
@@ -58,7 +62,7 @@ export default function LessonView() {
 
   useEffect(() => {
     handleFetchData();
-  }, [selectedLessonId, viewMode]);
+  }, [selectedLessonId, viewMode, reload]);
 
   const handleFetchData = async () => {
     dispatch(setAppLoading(true));
@@ -99,7 +103,7 @@ export default function LessonView() {
           isCompleted: true,
           user_id: user.id + '',
           lesson_id: selectedLessonId as string,
-        })
+        });
         const index = course?.lessons.findIndex(
           (item: any) => item.id === selectedLessonId,
         );
@@ -115,6 +119,12 @@ export default function LessonView() {
 
   const handleViewHistory = () => {
     setOpenHistory(true);
+  };
+
+  const handleDeleteLesson = async () => {
+    await lessonApi.deleteLesson(selectedLessonId);
+    navigate(`/dashboard/courses/${idCourse}`);
+    setReload(!reload);
   };
 
   return (
@@ -139,37 +149,47 @@ export default function LessonView() {
         title={`${viewMode === 'EDIT' ? 'Chỉnh sửa ' : ''}${lesson?.title}`}
       >
         <>
-          <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '12px',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {viewMode === 'VIEW' ? (
+          <ProtectByPremissions
+            permissions={[PermissionEnum.UPDATE_COURSE]}
+            needAll={false}
+          >
+            <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: '12px',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {viewMode === 'VIEW' ? (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => setViewMode('EDIT')}
+                  >
+                    Chỉnh sửa
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => setViewMode('VIEW')}
+                  >
+                    Quay về
+                  </Button>
+                )}
                 <Button
                   variant="outlined"
                   size="small"
-                  onClick={() => setViewMode('EDIT')}
+                  color="error"
+                  onClick={handleDeleteLesson}
                 >
-                  Chỉnh sửa
+                  Xóa
                 </Button>
-              ) : (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={() => setViewMode('VIEW')}
-                >
-                  Quay về
-                </Button>
-              )}
-              <Button variant="outlined" size="small" color="error">
-                Xóa
-              </Button>
-            </Box>
-          </RoleBasedComponent>
+              </Box>
+            </RoleBasedComponent>
+          </ProtectByPremissions>
 
           <RoleBasedComponent allowedRoles={[ROLE.USER]}>
             <Box

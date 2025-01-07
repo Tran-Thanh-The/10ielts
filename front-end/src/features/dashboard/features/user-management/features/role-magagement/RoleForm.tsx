@@ -2,7 +2,7 @@ import { createRole, getRoleDetail, updateRole } from '@/api/api';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
 import FeatureLayout from '@/features/dashboard/layouts/feature-layout/FeatureLayout';
 import { PermissionEnum } from '@/types/enum/account.enum';
-import { ROLE_FORM } from '@/utils/constants/constants';
+import { DEFAULT_PERMISSIONS, ROLE_FORM } from '@/utils/constants/constants';
 import {
   Box,
   Button,
@@ -57,10 +57,16 @@ export default function RoleForm() {
     }
 
     if (roleId) {
-      await updateRole(parseInt(roleId), form);
+      await updateRole(parseInt(roleId), {
+        name: form.name,
+        permissions: Array.from(new Set([...form.permissions, ...DEFAULT_PERMISSIONS])),
+      });
       toast.success('Cập nhật vai trò thành công');
     } else {
-      await createRole(form);
+      await createRole({
+        name: form.name,
+        permissions: Array.from(new Set([...form.permissions, ...DEFAULT_PERMISSIONS])),
+      });
       toast.success('Tạo mới vai trò thành công');
     }
 

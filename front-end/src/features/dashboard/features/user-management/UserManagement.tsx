@@ -31,7 +31,7 @@ export default function UserManagement() {
       <Route path="/staff" element={<StaffMagagement />} />
       <Route path="/role" element={<RoleMagagement />} />
       <Route path="/role/create" element={<RoleForm />} />
-      <Route path="/role/update/:id" element={<RoleForm />} />
+      <Route path="/role/update/:roleId" element={<RoleForm />} />
     </Routes>
   )
 }

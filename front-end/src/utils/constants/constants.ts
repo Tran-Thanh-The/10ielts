@@ -188,10 +188,10 @@ export const ROLE_FORM = [
   },
   {
     label: 'Quyền xem thống kê',
-    permissons: [],
+    permissons: [PermissionEnum.ACCESS_STATISTIC],
   },
   {
     label: 'Quyền quản lý hóa đơn',
-    permissons: [],
+    permissons: [PermissionEnum.ACCESS_PAYMENT],
   }
 ];

@@ -24,6 +24,7 @@ export enum StatusCourse {
 export interface Course {
   id: string;
   name: string;
+  title: string;
   description: string;
   price: number;
   createAt: Date | string;

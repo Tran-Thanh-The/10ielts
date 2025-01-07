@@ -1,13 +1,11 @@
-import CreateUpdateUserModal from '@/features/dashboard/features/user-management/features/user-list/components/create-update-user-modal/CreateUpdateUserModal';
+import { deleteRole, getRoles } from '@/api/api';
 import UserFilter from '@/features/dashboard/features/user-management/features/user-list/components/user-filter/UserFilter';
-import UserListTab from '@/features/dashboard/features/user-management/features/user-list/components/user-list-tab/UserListTab';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
 import FeatureLayout from '@/features/dashboard/layouts/feature-layout/FeatureLayout';
-import { selectRoles } from '@/stores/slices/appSlice';
+import { selectRoles, setRoles } from '@/stores/slices/appSlice';
 import {
   Box,
   Button,
-  Chip,
   Paper,
   Table,
   TableBody,
@@ -16,13 +14,41 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import dayjs from 'dayjs';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 function RoleMagagement() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const roles = useSelector(selectRoles);
+  const [reload, setReload] = React.useState(false);
+
+  useEffect(() => {
+      getRoles().then((res) => {
+        dispatch(setRoles(res.data.data));
+      })
+    }, [reload]);
+
+  const handleDeleteRole = (id: number) => {
+    Swal.fire({
+      title: 'Xác nhận xóa vài trò?',
+      showCancelButton: true,
+      showDenyButton: true,
+      showConfirmButton: false,
+      cancelButtonText: 'Hủy',
+      denyButtonText: 'Xóa',
+    }).then(async (result) => {
+      if (result.isDenied) {
+        deleteRole(id).then(() => {
+          setReload(!reload);
+          toast.success('Xóa vai trò thành công');
+        })
+      }
+    });
+  };
 
   return (
     <FeatureLayout>
@@ -85,7 +111,7 @@ function RoleMagagement() {
                             variant="contained"
                             size="small"
                             color="error"
-                            // onClick={() => handleDeleteUser(row.id)}
+                            onClick={() => handleDeleteRole(row.id)}
                           >
                             Xóa
                           </Button>

@@ -134,7 +134,7 @@ export default function CourseList() {
             <Grid item xs={12} sm={6} md={4} lg={3} key={course.id}>
               <CourseCard
                 id={course.id}
-                title={course.name}
+                title={course.title}
                 description={course.description}
                 price={course.price}
                 createdAt={course.createAt}

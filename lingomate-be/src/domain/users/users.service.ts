@@ -68,17 +68,17 @@ export class UsersService {
     }
 
     if (clonedPayload.role) {
-      const isRoleValid = Object.values(RoleEnum).includes(
-        clonedPayload.role.id,
-      );
-      if (!isRoleValid) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            role: "roleNotExists",
-          },
-        });
-      }
+      // const isRoleValid = Object.values(RoleEnum).includes(
+      //   clonedPayload.role.id,
+      // );
+      // if (!isRoleValid) {
+      //   throw new UnprocessableEntityException({
+      //     status: HttpStatus.UNPROCESSABLE_ENTITY,
+      //     errors: {
+      //       role: "roleNotExists",
+      //     },
+      //   });
+      // }
     } else {
       clonedPayload.role = { id: RoleEnum.user };
     }

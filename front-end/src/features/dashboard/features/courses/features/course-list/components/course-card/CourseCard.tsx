@@ -113,7 +113,16 @@ const CourseCard = ({
         alt={title}
       />
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="h6" sx={{ mb: 1 }}>
+        <Typography
+          variant="h6"
+          sx={{
+            mb: 1,
+            display: '-webkit-box',
+            WebkitLineClamp: 1,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
           {title}
         </Typography>
 
@@ -133,7 +142,11 @@ const CourseCard = ({
         <RoleBasedComponent allowedRoles={[ROLE.USER]}>
           <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
             <Chip
-              label={price as unknown as string === '0.00' ? 'Miễn phí' : `Giá: ${price} VND`}
+              label={
+                (price as unknown as string) === '0.00'
+                  ? 'Miễn phí'
+                  : `Giá: ${price} VND`
+              }
               size="small"
             ></Chip>
             {isMyCourse && (
@@ -142,17 +155,36 @@ const CourseCard = ({
           </Box>
         </RoleBasedComponent>
         <Box sx={{ display: 'flex', gap: '8px' }}>
-          <Box sx={{ mb: 1, flex: 1 }}>
-            <Typography variant="caption">
-              Tiến độ: {completedLesson}/{totalLesson} bài học
-            </Typography>
-            <LinearProgress
-              variant="determinate"
-              value={(completedLesson / totalLesson) * 100}
-              sx={{ mt: 1, height: 8, borderRadius: 5 }}
-            />
-          </Box>
+          <RoleBasedComponent allowedRoles={[ROLE.USER]}>
+            {isMyCourse ? (
+              <Box sx={{ mb: 1, flex: 1 }}>
+                <Typography variant="caption">
+                  Tiến độ: {completedLesson}/{totalLesson} bài học
+                </Typography>
+                <LinearProgress
+                  variant="determinate"
+                  value={(completedLesson / totalLesson) * 100}
+                  sx={{ mt: 1, height: 8, borderRadius: 5 }}
+                />
+              </Box>
+            ) : null}
+          </RoleBasedComponent>
           <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+            <Box sx={{ mb: 1, flex: 1 }}>
+              <Box>
+                <Chip
+                  label={
+                    (price as unknown as string) === '0.00'
+                      ? 'Miễn phí'
+                      : `Giá: ${price} VND`
+                  }
+                  size="small"
+                ></Chip>
+              </Box>
+              <Typography variant="caption">
+                Ngày tạo: {dayjs(createdAt).format('DD/MM/YYYY')}
+              </Typography>
+            </Box>
             <Box sx={{ alignSelf: 'flex-end' }}>
               <IconButton onClick={handleMenuOpen}>
                 <MoreVertIcon />
@@ -169,7 +201,6 @@ const CourseCard = ({
             </Box>
           </RoleBasedComponent>
         </Box>
-        {isMyCourse && <Chip label="Đã mua" color="success" size="small" />}
       </CardContent>
     </Card>
   );

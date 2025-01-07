@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { API_ENDPOINT } from '@/utils/constants/constants';
+import { store } from '@/stores/store';
+import { setAppLoading } from '@/stores/slices/appSlice';
 
 export const baseUrl =
   localStorage.getItem('apiUrl') ||
@@ -24,6 +26,7 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    store.dispatch(setAppLoading(false));
     return Promise.reject(error);
   },
 );
@@ -70,6 +73,7 @@ axiosInstance.interceptors.response.use(
       }
     }
 
+    store.dispatch(setAppLoading(false));
     return Promise.reject(error);
   },
 );

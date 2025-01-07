@@ -17,7 +17,7 @@ const Home = () => {
       <ScrollToTopButton />
       <Chat />
       <Partner />
-      <ChatPopup />
+      {/* <ChatPopup /> */}
     </>
   );
 };

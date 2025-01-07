@@ -22,7 +22,7 @@ const conversationApis = {
     return axiosInstance.post<any>(`/conversation/join/${id}`);
   },
   createConversation: async () => {
-    return axiosInstance.post<any>("/conversation");
+    return axiosInstance.post<any>("/conversations");
   }
 }
 

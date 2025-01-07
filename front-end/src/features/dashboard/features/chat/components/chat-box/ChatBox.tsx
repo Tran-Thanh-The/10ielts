@@ -1,38 +1,46 @@
-import React, { useState, useEffect, useRef, ChangeEvent, KeyboardEvent } from 'react';
+import { getOneUser } from '@/api/api';
+import chatApi from '@/api/chatApi';
+import conversationApis from '@/api/conversationApi';
+import { useSocket } from '@/context/SocketContext';
+import { RootState } from '@/stores/store';
+import AddIcon from '@mui/icons-material/Add';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import ImageIcon from '@mui/icons-material/Image';
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
+import SendIcon from '@mui/icons-material/Send';
 import {
-  Box,
-  Paper,
-  Typography,
-  IconButton,
-  styled,
   Avatar,
-  InputBase,
-  Input,
-  Link,
+  Box,
   Dialog,
   DialogContent,
+  IconButton,
+  InputBase,
+  Paper,
+  styled,
   Tooltip,
+  Typography,
 } from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import EmojiIcon from '@mui/icons-material/EmojiEmotions';
-import AddIcon from '@mui/icons-material/Add';
-import ImageIcon from '@mui/icons-material/Image';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import CloseIcon from '@mui/icons-material/Close';
-import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
-import { useSocket } from '@/context/SocketContext';
+import React, {
+  ChangeEvent,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useSelector } from 'react-redux';
 
-interface Message {
-  id: number;
-  sender: 'user' | 'admin';
+export interface Message {
+  id?: number;
+  sender: 'currentUser' | 'student' | 'admin';
   content: string;
   type: 'text' | 'image' | 'file' | 'video';
   timestamp: Date;
   fileUrl?: string;
+  senderId: string;
 }
 
 interface Conversation {
-  id: number;
+  id: string;
   customer: string;
   avatar?: string;
 }
@@ -57,6 +65,10 @@ const MessageBubble = styled(Paper)(({ theme }) => ({
   '&:hover': {
     boxShadow: theme.shadows[4],
     transform: 'scale(1.02)',
+  },
+  '&.admin': {
+    backgroundColor: '#FFE0B2',
+    borderLeft: '3px solid #FF9800',
   },
 }));
 
@@ -95,7 +107,9 @@ const FileIconButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
-  const { socket, sendChatMessage, onChatMessage } = useSocket();
+  const { socket, sendChatMessage } = useSocket();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const currentUserId = user.id.toString();
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageText, setMessageText] = useState<string>('');
   const [isSending, setIsSending] = useState<boolean>(false);
@@ -103,25 +117,129 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
   const [openVideo, setOpenVideo] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null); 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const determineMessageSender = async (senderId: string) => {
+    try {
+      const userResponse = await getOneUser(senderId);
+      console.log(userResponse);
+      if (senderId === currentUserId) {
+        return 'currentUser';
+      } else if (userResponse?.data?.role?.name.toLowerCase() !== 'user') {
+        return 'admin';
+      }
+      return 'student';
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+      return senderId === currentUserId ? 'currentUser' : 'student';
+    }
+  };
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!conversation) return;
+
+      try {
+        const response = await conversationApis.getConversationMessages(
+          conversation.id,
+          { page: 1, limit: 50 },
+        );
+
+        if (!response.data?.data) return;
+
+        const formattedMessages = await Promise.all(
+          response.data.data.map(async (msg: any) => {
+            const userResponse = await getOneUser(msg.userId);
+            let senderType = 'student';
+            if (msg.userId == currentUserId) {
+              senderType = 'currentUser';
+            } else if (
+              userResponse?.data?.role?.name.toLowerCase() !== 'user'
+            ) {
+              senderType = 'admin';
+            }
+
+            return {
+              id: msg.id,
+              sender: senderType,
+              content: msg.message,
+              type: msg.type || 'text',
+              timestamp: new Date(msg.createdAt).getTime(),
+              fileUrl: msg.fileUrl,
+              senderId: msg.userId,
+            };
+          }),
+        );
+
+        const sortedMessages = formattedMessages.sort(
+          (a, b) => a.timestamp - b.timestamp,
+        );
+
+        setMessages(sortedMessages);
+      } catch (error) {
+        console.error('Lỗi tải tin nhắn:', error);
+      }
+    };
+
+    fetchMessages();
+  }, [conversation, currentUserId]);
+
+  useEffect(() => {
+    if (!socket || !conversation) return;
+
+    const handleNewMessage = async (data: {
+      conversationId: string;
+      senderId: string;
+      message: {
+        content: string;
+        createdAt: string;
+      };
+    }) => {
+      if (data.conversationId === conversation.id) {
+        const senderType = await determineMessageSender(data.senderId);
+        const newMessage: Message = {
+          id: Date.now(),
+          sender: senderType,
+          content: data.message.content,
+          type: 'text',
+          timestamp: new Date(data.message.createdAt),
+          senderId: data.senderId,
+        };
+        setMessages((prev) => [...prev, newMessage]);
+      }
+    };
+
+    socket.on('newMessage', handleNewMessage);
+
+    return () => {
+      socket.off('newMessage', handleNewMessage);
+    };
+  }, [socket, conversation, currentUserId]);
 
   const handleMessageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMessageText(e.target.value);
   };
+  const handleSendMessage = async () => {
+    if (!conversation || !messageText.trim() || isSending) return;
 
-  const handleSendMessage = () => {
-    if (messageText.trim() && !isSending) {
-      setIsSending(true);
-      const newMessage: Message = {
-        id: messages.length + 1,
-        sender: 'user',
-        content: messageText.trim(),
-        type: 'text',
-        timestamp: new Date(),
+    setIsSending(true);
+    try {
+      const messageData = {
+        conversationId: conversation.id,
+        message: messageText.trim()
       };
-      setMessages(prevMessages => [...prevMessages, newMessage]);
-      sendChatMessage(messageText.trim());
-      setMessageText('');
+
+      const response = await chatApi.sendMessage(messageData);
+
+      if (response.status === 201) {
+        sendChatMessage(conversation.id, messageText.trim(), currentUserId);
+        setMessageText('');
+      } else {
+        console.error('Lỗi khi gửi tin nhắn:', response);
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi tin nhắn:', error);
+    } finally {
       setIsSending(false);
     }
   };
@@ -133,21 +251,72 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
     }
   };
 
-  const handleFileUpload = (e: ChangeEvent<HTMLInputElement>, type: 'image' | 'file' | 'video') => {
+  const handleFileUpload = (
+    e: ChangeEvent<HTMLInputElement>,
+    type: 'image' | 'file' | 'video',
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       const fileUrl = URL.createObjectURL(file);
       const newMessage: Message = {
         id: messages.length + 1,
-        sender: 'user',
+        sender: 'currentUser',
         content: file.name,
         type: type,
         fileUrl,
         timestamp: new Date(),
+        senderId: currentUserId,
       };
-      setMessages(prevMessages => [...prevMessages, newMessage]);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
     }
   };
+
+  // const handleFileUpload = async (
+  //   e: ChangeEvent<HTMLInputElement>,
+  //   type: 'image' | 'file' | 'video'
+  // ) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file || !conversation) return;
+
+  //   setIsSending(true);
+  //   try {
+  //     // Tạo message data theo interface
+  //     const messageData = {
+  //       conversationId: conversation.id,
+  //       message: file.name,
+  //       attachment: file
+  //     };
+
+  //     const response = await chatApi.sendMessage(messageData);
+
+  //     if (response.status === 201) {
+  //       // Tạo URL tạm thời để hiển thị file ngay lập tức
+  //       const tempFileUrl = URL.createObjectURL(file);
+        
+  //       // Gửi thông báo qua socket
+  //       sendChatMessage(conversation.id, file.name, currentUserId);
+
+  //       // Thêm tin nhắn mới vào state
+  //       const newMessage: Message = {
+  //         id: Date.now(),
+  //         sender: 'currentUser',
+  //         content: file.name,
+  //         type: type,
+  //         fileUrl: response.data.fileUrl || tempFileUrl,
+  //         timestamp: new Date(),
+  //         senderId: currentUserId,
+  //       };
+  //       setMessages(prevMessages => [...prevMessages, newMessage]);
+  //     }
+  //   } catch (error) {
+  //     console.error('Lỗi khi gửi file:', error);
+  //   } finally {
+  //     setIsSending(false);
+  //     if (fileInputRef.current) {
+  //       fileInputRef.current.value = '';
+  //     }
+  //   }
+  // };
 
   const handleOpenImage = (imageUrl: string) => {
     setOpenImage(imageUrl);
@@ -168,8 +337,8 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
 
   const handleFileIconClick = (type: 'image' | 'file' | 'video') => {
     if (fileInputRef.current) {
-      fileInputRef.current.accept = type === 'image' ? 'image/*' : 
-                                     type === 'video' ? 'video/*' : '*';
+      fileInputRef.current.accept =
+        type === 'image' ? 'image/*' : type === 'video' ? 'video/*' : '*';
       fileInputRef.current.click();
     }
   };
@@ -178,30 +347,16 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
     if (messagesEndRef.current) {
       const scrollContainer = messagesEndRef.current.closest('.MuiBox-root');
       if (scrollContainer) {
-        const offset = 64; 
-        const scrollPosition = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+        const offset = 64;
+        const scrollPosition =
+          scrollContainer.scrollHeight - scrollContainer.clientHeight;
         scrollContainer.scrollTo({
-          top: scrollPosition + offset, 
+          top: scrollPosition + offset,
           behavior: 'smooth',
         });
       }
     }
   }, [messages]);
-
-  // useEffect(() => {
-  //   if (conversation) {
-  //     onChatMessage((message) => {
-  //       const newMessage: Message = {
-  //         id: messages.length + 1,
-  //         sender: 'admin',
-  //         content: message,
-  //         type: 'text',
-  //         timestamp: new Date(),
-  //       };
-  //       setMessages((prevMessages) => [...prevMessages, newMessage]);
-  //     });
-  //   }
-  // }, [conversation, onChatMessage, messages.length]);
 
   if (!conversation) {
     return (
@@ -214,7 +369,7 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
           height: '100%',
         }}
       >
-        <Typography variant="h6" color="#0071f9" sx={{marginBottom: 20}}>
+        <Typography variant="h6" color="#0071f9" sx={{ marginBottom: 20 }}>
           Hãy bắt đầu một cuộc trò chuyện!
         </Typography>
       </Paper>
@@ -246,9 +401,9 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
         />
         <Box>
           <Typography variant="h6">{conversation.customer}</Typography>
-          <Typography variant="body2" color="textSecondary">
+          {/* <Typography variant="body2" color="textSecondary">
             Hoạt động 1 giờ trước
-          </Typography>
+          </Typography> */}
         </Box>
       </Paper>
 
@@ -259,28 +414,33 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
           overflowY: 'auto',
           padding: 3,
           backgroundColor: '#f5f5f5',
-          marginBottom: '64px'
+          marginBottom: '64px',
         }}
       >
-        {messages.map((msg, index) => (
-          <Box key={msg.id}>
-            <MessageContainer
-              sx={{
-                justifyContent:
-                  msg.sender === 'user' ? 'flex-end' : 'flex-start',
-              }}
-            >
-              {msg.sender === 'admin' && (
-                <Avatar
-                  src={conversation.avatar || ''}
-                  sx={{ marginRight: 1 }}
-                />
-              )}
+        {messages.map((msg) => (
+          <MessageContainer
+            key={msg.id}
+            sx={{
+              justifyContent:
+                msg.sender === 'student' ? 'flex-start' : 'flex-end',
+            }}
+          >
+            {msg.sender === 'student' && (
+              <Avatar src={conversation.avatar || ''} sx={{ marginRight: 1 }} />
+            )}
+            <Box>
               <MessageBubble
+                className={msg.sender === 'admin' ? 'admin' : ''}
                 sx={{
                   backgroundColor:
-                    msg.sender === 'user' ? '#e0f7fa' : '#ffffff',
+                    msg.sender === 'currentUser'
+                      ? '#e0f7fa'
+                      : msg.sender === 'admin'
+                        ? '#FFE0B2'
+                        : '#ffffff',
                   cursor: msg.type !== 'text' ? 'pointer' : 'default',
+                  width: 'fit-content',
+                  maxWidth: '100%',
                 }}
                 onClick={() => {
                   if (msg.type === 'image' && msg.fileUrl) {
@@ -291,8 +451,19 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
                 }}
               >
                 {msg.type === 'text' ? (
-                  <Typography variant="body2">{msg.content}</Typography>
-                ) : msg.type === 'image' ? (
+                  <>
+                    {msg.sender === 'admin' && (
+                      <Typography
+                        variant="caption"
+                        color="textSecondary"
+                        display="block"
+                      >
+                        Admin
+                      </Typography>
+                    )}
+                    <Typography variant="body2">{msg.content}</Typography>
+                  </>
+                ): msg.type === 'image' ? (
                   <img
                     src={msg.fileUrl}
                     alt={msg.content}
@@ -304,19 +475,15 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
                     }}
                   />
                 ) : msg.type === 'video' ? (
-                  <video
-                    width="100%"
-                    height="auto"
-                    controls
-                  >
+                  <video width="100%" height="auto" controls>
                     <source src={msg.fileUrl} type="video/mp4" />
                   </video>
                 ) : (
                   <Typography variant="body2">{msg.content}</Typography>
                 )}
               </MessageBubble>
-            </MessageContainer>
-          </Box>
+            </Box>
+          </MessageContainer>
         ))}
         <div ref={messagesEndRef} />
       </Box>
@@ -347,16 +514,23 @@ const BoxChat: React.FC<BoxChatProps> = ({ conversation }) => {
         </FileIconButton>
 
         <Tooltip title="Gửi">
-          <IconButton onClick={handleSendMessage} disabled={isSending || !messageText.trim()}>
-            <SendIcon />
-          </IconButton>
+          <>
+            <IconButton
+              onClick={handleSendMessage}
+              disabled={isSending || !messageText.trim()}
+            >
+              <SendIcon />
+            </IconButton>
+          </>
         </Tooltip>
       </ChatInput>
 
       {/* Image Modal */}
       <Dialog open={!!openImage} onClose={handleClose}>
         <DialogContent>
-          {openImage && <img src={openImage} alt="Image" style={{ width: '100%' }} />}
+          {openImage && (
+            <img src={openImage} alt="Image" style={{ width: '100%' }} />
+          )}
         </DialogContent>
       </Dialog>
 

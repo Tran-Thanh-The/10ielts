@@ -6,28 +6,44 @@ import {
   TextField,
   ClickAwayListener,
   Avatar,
+  CircularProgress,
 } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import SendIcon from '@mui/icons-material/Send';
+import conversationApis from '@/api/conversationApi';
+import { useSocket } from '@/context/SocketContext';
+import chatApi from '@/api/chatApi';
+import { Message } from '@/features/dashboard/features/chat/components/chat-box/ChatBox';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/stores/store';
+import formatToVietnamTime from '@/utils/formatter/format-vietnamese-time';
 
-interface Message {
-  text: string;
-  isUser: boolean;
-  timestamp: Date;
-}
+const WELCOME_MESSAGE: Message = {
+  content: 'Xin chào! Tôi có thể giúp gì cho bạn?',
+  sender: 'admin',
+  type:'text',
+  timestamp: new Date(),
+  senderId: ''
+};
 
 const ChatPopup: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      text: 'Xin chào! Tôi có thể giúp gì cho bạn?',
-      isUser: false,
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [inputValue, setInputValue] = useState('');
+  const [currentConversation, setCurrentConversation] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [isSending, setIsSending] = useState<boolean>(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const { socket, sendChatMessage } = useSocket();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const currentUserId = user.id.toString();
 
+  useEffect(() => {
+    if (isOpen) {
+      getCurrentConversation();
+    }
+  }, [isOpen]);
+  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -36,41 +52,122 @@ const ChatPopup: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  const toggleChat = () => setIsOpen(!isOpen);
+  useEffect(() => {
+    if (!socket || !currentConversation) return;
 
-  const handleSendMessage = () => {
-    if (inputValue.trim()) {
-      const userMessage: Message = {
-        text: inputValue.trim(),
-        isUser: true,
-        timestamp: new Date(),
+    const handleNewMessage = (data: {
+      conversationId: string;
+      senderId: string;
+      message: {
+        content: string;
+        createdAt: string;
       };
-      setMessages((prev) => [...prev, userMessage]);
-      setInputValue('');
+    }) => {
+      if (data.conversationId === currentConversation.id) {
+        const newMessage: Message = {
+               id: Date.now(),
+               sender: data.senderId == currentUserId ? 'currentUser' : 'admin',
+               content: data.message.content,
+               type: 'text',
+               timestamp: new Date(data.message.createdAt),
+               senderId: ''
+             };
+             setMessages(prev => [...prev, newMessage]);
+      }
+    };
 
-      setTimeout(() => {
-        const adminMessage: Message = {
-          text: 'Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi sớm nhất có thể!',
-          isUser: false,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, adminMessage]);
-      }, 1000);
+    socket.on('newMessage', handleNewMessage);
+    return () => {
+      socket.off('newMessage', handleNewMessage);
+    };
+  }, [socket, currentConversation]);
+
+  const getCurrentConversation = async () => {
+    setLoading(true);
+    try {
+      const conversationResponse = await conversationApis.getCurrentUserConversations();
+      if (!conversationResponse.data) {
+        await createNewConversation();
+      }
+      else {
+        setCurrentConversation(conversationResponse.data);
+        await fetchMessagesForConversation(conversationResponse.data.id);
+      }
+    } catch (error) {
+      console.error('Error in getCurrentConversation:', error);
+    } finally {
+      setLoading(false);
     }
   };
-
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  
+  const createNewConversation = async () => {
+    try {
+      const newConvResponse = await conversationApis.createConversation();
+      const newConversation = newConvResponse.data.data;
+      setCurrentConversation(newConversation);
+      setMessages([WELCOME_MESSAGE]);
+      await fetchMessagesForConversation(newConversation.id);
+    } catch (createError) {
+      console.error('Error creating new conversation:', createError);
+    }
   };
-
+  
+  const fetchMessagesForConversation = async (conversationId: string) => {
+    if (!conversationId) {
+      console.error('Conversation ID is undefined');
+      return;
+    }
+    
+    try {
+      const messagesResponse = await conversationApis.getConversationMessages(conversationId, { page: 1, limit: 50 });
+      if (messagesResponse.data.data && messagesResponse.data.data.length > 0) {
+        const formattedMessages = messagesResponse.data.data.map((msg: any) => ({
+          id: msg.id,
+          sender: msg.userId == currentUserId ? 'currentUser' : 'admin',
+          content: msg.message,
+          type: msg.type || 'text',
+          timestamp: new Date(msg.createdAt),
+          fileUrl: msg.fileUrl,
+        }))
+        .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+      
+        setMessages(formattedMessages); 
+      } else {
+        setMessages([WELCOME_MESSAGE]);
+      }
+    } catch (error) {
+      console.error('Error fetching messages for conversation:', error);
+    }
+  };
+  
+  const handleSendMessage = async () => {
+    if (!currentConversation || !inputValue.trim() || isSending) return;
+    setIsSending(true);
+    try {
+      const data = {
+        conversationId: currentConversation.id,
+        message: inputValue.trim(),
+      };
+  
+      const response = await chatApi.sendMessage(data);
+      if (response.status === 201) {
+        sendChatMessage(currentConversation.id, inputValue.trim(), currentUserId);
+        setInputValue('');
+      } else {
+        console.error('Failed to send message via API:', response);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsSending(false);
+    }
+  };
+  
   return (
     <>
       <IconButton
         color="primary"
-        onClick={toggleChat}
+        onClick={() => setIsOpen(!isOpen)}
         sx={{
           position: 'fixed',
           bottom: 140,
@@ -119,26 +216,12 @@ const ChatPopup: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
-                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
               }}
             >
-              <Avatar
-                sx={{
-                  bgcolor: '#fff',
-                  color: '#1976d2',
-                  width: 40,
-                  height: 40,
-                }}
-              >
-                A
-              </Avatar>
+              <Avatar sx={{ bgcolor: '#fff', color: '#1976d2' }}>A</Avatar>
               <Box>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                  Chat với Admin
-                </Typography>
-                <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                  Thường trả lời trong vài phút
-                </Typography>
+                <Typography variant="h6">Chat với Admin</Typography>
+                <Typography variant="caption">Thường trả lời trong vài phút</Typography>
               </Box>
             </Box>
 
@@ -153,41 +236,37 @@ const ChatPopup: React.FC = () => {
                 bgcolor: '#f5f5f5',
               }}
             >
-              {messages.map((message, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: message.isUser ? 'flex-end' : 'flex-start',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      maxWidth: '70%',
-                      p: 2,
-                      borderRadius: message.isUser
-                        ? '20px 4px 20px 20px'
-                        : '4px 20px 20px 20px',
-                      bgcolor: message.isUser ? '#1976d2' : '#fff',
-                      color: message.isUser ? '#fff' : '#000',
-                      boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
-                    }}
-                  >
-                    <Typography variant="body1">{message.text}</Typography>
-                  </Box>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 0.5,
-                      color: '#666',
-                      fontSize: '0.75rem',
-                    }}
-                  >
-                    {formatTime(message.timestamp)}
-                  </Typography>
+              {loading ? (
+                <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                  <CircularProgress />
                 </Box>
-              ))}
+              ) : (
+                messages.map((message, index) => (
+                  <Box
+                    key={message.id || index}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: (message.sender == 'currentUser') ? 'flex-end' : 'flex-start',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        maxWidth: '70%',
+                        p: 2,
+                        borderRadius: (message.sender == 'currentUser') ? '20px 4px 20px 20px' : '4px 20px 20px 20px',
+                        bgcolor: (message.sender == 'currentUser') ? '#1976d2' : '#fff',
+                        color: (message.sender == 'currentUser') ? '#fff' : '#000',
+                      }}
+                    >
+                      <Typography variant="body1">{message.content}</Typography>
+                    </Box>
+                    <Typography variant="caption" sx={{ mt: 0.5, color: '#666' }}>
+                      {formatToVietnamTime(message.timestamp)}
+                    </Typography>
+                  </Box>
+                ))
+              )}
               <div ref={messagesEndRef} />
             </Box>
 
@@ -215,6 +294,7 @@ const ChatPopup: React.FC = () => {
                   },
                 }}
               />
+
               <IconButton
                 color="primary"
                 onClick={handleSendMessage}
@@ -227,7 +307,6 @@ const ChatPopup: React.FC = () => {
                   },
                   '&.Mui-disabled': {
                     bgcolor: '#ccc',
-                    color: '#fff',
                   },
                 }}
               >
@@ -241,42 +320,13 @@ const ChatPopup: React.FC = () => {
       <style>
         {`
           @keyframes pulse {
-            0% {
-              transform: scale(1);
-              box-shadow: 0px 4px 12px rgba(25, 118, 210, 0.5);
-            }
-            50% {
-              transform: scale(1.05);
-              box-shadow: 0px 8px 24px rgba(25, 118, 210, 0.7);
-            }
-            100% {
-              transform: scale(1);
-              box-shadow: 0px 4px 12px rgba(25, 118, 210, 0.5);
-            }
+            0% { transform: scale(1); box-shadow: 0px 4px 12px rgba(25, 118, 210, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0px 8px 24px rgba(25, 118, 210, 0.7); }
+            100% { transform: scale(1); box-shadow: 0px 4px 12px rgba(25, 118, 210, 0.5); }
           }
           @keyframes fadeIn {
-            0% {
-              opacity: 0;
-              transform: translateY(20px);
-            }
-            100% {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          /* Custom scrollbar for messages */
-          .MuiBox-root::-webkit-scrollbar {
-            width: 6px;
-          }
-          .MuiBox-root::-webkit-scrollbar-track {
-            background: #f1f1f1;
-          }
-          .MuiBox-root::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 3px;
-          }
-          .MuiBox-root::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
           }
         `}
       </style>

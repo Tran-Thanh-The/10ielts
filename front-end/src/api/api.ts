@@ -19,11 +19,22 @@ export const getCourseRegisterStatistic = async (
   );
 };
 
+export const getMe = async (params: any) => {
+  return axiosInstance.get<any>('auth/me', {
+    params: params,
+  });
+};
+
 export const getUsers = async (params: any) => {
   return axiosInstance.get<any>('users', {
     params: params,
   });
 };
+
+export const getOneUser = async (userId: string) => {
+  return axiosInstance.get<any>(`users/${userId}`);
+};
+
 
 export const createUser = async (data: any) => {
   return axiosInstance.post<any>('users', data);

@@ -8,14 +8,19 @@ interface SendMessageBodyData {
 
 const chatApi = {
   sendMessage: async (data: SendMessageBodyData) => {
-    return axiosInstance.post<any>(
-      "/chats/send-message",
-      data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    )
+    const formData = new FormData();
+    formData.append('conversationId', data.conversationId);
+    formData.append('message', data.message);
+    if (data.attachment) {
+      formData.append('attachment', data.attachment);
+    }
+  
+    return axiosInstance.post('/chats/send-message', formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   }
 }
+
+export default chatApi;

@@ -60,6 +60,31 @@ export class SocketGatewayService
         }
       },
     );
+
+    client.on('chat_message', (message: { conversationId: number; userId: string; content: string }) => {
+      const { conversationId, userId, content } = message;
+    
+      const clientId = Array.from(this.clients.entries()).find(([, sockets]) =>
+        Array.from(sockets).some((socket) => socket.id === client.id),
+      )?.[0];
+    
+      if (clientId) {
+        const sockets = this.clients.get(clientId);
+        if (sockets) {
+          sockets.forEach((socket) => {
+            socket.emit('newMessage', {
+              conversationId,
+              message: {
+                content,
+                createdAt: new Date().toISOString(),
+              },
+              senderId: userId,
+            });
+          });
+        }
+      }
+    });
+    
   }
 
   public handleDisconnect(client: Socket) {

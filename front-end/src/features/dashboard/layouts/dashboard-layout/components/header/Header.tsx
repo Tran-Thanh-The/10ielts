@@ -1,22 +1,19 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import logo from '@/assets/logo.svg';
 import HeaderAction from '@/features/public-pages/layouts/header/components/header-action/HeaderAction';
+import AdbIcon from '@mui/icons-material/Adb';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export default function Header() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -24,6 +21,10 @@ export default function Header() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogoClick = () => {
+    navigate('/');
   };
 
   return (
@@ -46,16 +47,17 @@ export default function Header() {
               height: 'auto',
               width: 120,
               paddingLeft: '8px',
+              cursor: 'pointer', // Thêm hiệu ứng chỉ tay khi hover
             }}
             alt="header-logo"
             src={logo}
+            onClick={handleLogoClick} // Điều hướng khi click
           />
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component="div"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -74,7 +76,7 @@ export default function Header() {
             sx={{
               flexGrow: 0,
               '& > div': {
-                marginTop: 0, 
+                marginTop: 0,
               },
               '& .button-action': {
                 display: 'none',

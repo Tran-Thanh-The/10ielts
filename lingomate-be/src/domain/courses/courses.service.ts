@@ -54,12 +54,6 @@ export class CoursesService {
     }
     const course = await this.courseRepository.create(model);
 
-    // const userCourse = new UserCourse();
-    // userCourse.user = user as UserEntity;
-    // userCourse.course = course as CourseEntity;
-    // userCourse.status = StatusEnum.ACTIVE;
-    // await this.userCourseRepository.create(userCourse);
-
     return CourseMapper.toDto(course);
   }
 
@@ -105,7 +99,6 @@ export class CoursesService {
     isMyCourse?: string,
     orderBy: { [key: string]: "ASC" | "DESC" } = { created_at: "DESC" },
   ): Promise<CourseListResponseDto<CourseWithDetailsDTO>> {
-    // const currentUserId = req.user?.["id"];
     const params = {
       status,
       userId: userId,
@@ -120,10 +113,7 @@ export class CoursesService {
       orderBy,
     };
     const result = await this.courseRepository.getListCourse(params);
-    // return {
-    //   ...result,
-    //   data: result.data.map((course) => CourseMapper.toDto(course)),
-    // };
+
     return result;
   }
 

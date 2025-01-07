@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ChatRepository } from "@/domain/chats/infrastructure/persistence/chat.repository";
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { ConversationRepository } from "./infrastructure/persistence/conversation.repository";
@@ -20,25 +21,31 @@ export class ConversationsService {
     private readonly userConversationRepository: UserConversationRepository,
   ) {}
 
-  async createConversation(userId) {
+  async createConversation(userId: string) {
     try {
       const userExist = await this.userRepository.findById(userId);
       if (!userExist) {
         throw new Error("User not exist");
       }
+
       const result = await this.conversationRepository.create({
         conversationType: ConversationTypesEnum.PRIVATE,
         conversationName: userExist.fullName ?? "",
       });
+      console.log("Result", result);
+
       await this.userConversationRepository.create({
         conversationId: result.id,
         userId: userId,
       });
+
       return {
         statusCode: HttpStatus.OK,
         message: "Conversation created successfully",
+        data: result,
       };
-    } catch {
+    } catch (error) {
+      console.error("Error in createConversation:", error);
       return {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: "Internal server error",

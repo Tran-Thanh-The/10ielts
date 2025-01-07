@@ -45,7 +45,11 @@ export class ConversationsController {
   async createConversation(@Req() req: Request, @Res() res: Response) {
     const userId = req.user?.["id"];
     const result = await this.conversationsService.createConversation(userId);
-    res.status(result.statusCode).json(result.message);
+
+    res.status(result.statusCode).json({
+      message: result.message,
+      data: result.data,
+    });
   }
 
   @Post("/join/:id")

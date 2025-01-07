@@ -1,31 +1,40 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
+interface Message {
+  conversationId: string;
+  message: {
+    content: string;
+    createdAt: string;
+  };
+  senderId: string;
+}
+
 interface SocketContextType {
   socket: Socket | null;
-  sendChatMessage: (message: string) => void;
+  sendChatMessage: (conversationId: string, content: string, userId: string) => void;
   sendChartDataRequest: (data: any) => void;
-  onChatMessage: (callback: (message: string) => void) => void;
+  onChatMessage: (callback: (message: Message) => void) => void;
   onChartDataUpdate: (callback: (data: any) => void) => void;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 const SOCKET_URL = 'http://localhost:3002';
-const clientId = "newMessage";
+const clientId = "chat";
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [authStorage, setAuthStorage] = useState<string | null>(localStorage.getItem('auth'));
+  const [authStorage] = useState<string | null>(localStorage.getItem('auth'));
   const [userId, token] = useMemo(() => {
     const authData = authStorage ? JSON.parse(authStorage) : null;
     return [authData?.user?.id, authData?.token];
   }, [authStorage]);
 
   useEffect(() => {
-    if (!socket) {
+    if (!socket && userId && token) {
       const newSocket = io(SOCKET_URL, {
         transports: ['websocket'],
         reconnection: true,
@@ -33,42 +42,49 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
       });
 
       newSocket.on('connect', () => {
-        setSocket(newSocket);
+        console.log('Socket connected');
         newSocket.emit('register', { clientId, userId, jwtToken: token });
       });
 
       newSocket.on("registered", () => {
-        console.log("Registered");
-      })
+        console.log("Socket registered successfully");
+        setSocket(newSocket);
+      });
+
+      newSocket.on('connect_error', (error) => {
+        console.error('Socket connection error:', error);
+      });
 
       return () => {
         newSocket.disconnect();
       };
     }
-  }, [socket]);
+  }, [userId, token]);
 
-  // Hàm gửi tin nhắn Chat
-  const sendChatMessage = (message: string) => {
-    socket?.emit('chat_message', message);
+  const sendChatMessage = (conversationId: string, content: string, userId: string) => {
+    if (socket) {
+      socket.emit('chat_message', {
+        conversationId,
+        userId,
+        content,
+      });
+    }
   };
 
-  // Hàm gửi yêu cầu cập nhật biểu đồ
   const sendChartDataRequest = (data: any) => {
     socket?.emit('chart_data_request', data);
   };
 
-  // Lắng nghe tin nhắn Chat
-  const onChatMessage = (callback: (message: string) => void) => {
-    if (socket) {
-      socket.on('newMessage', callback);
-    }
+  const onChatMessage = (callback: (message: Message) => void) => {
+    if (!socket) return;
+    socket.on('newMessage', (data: Message) => {
+      callback(data);
+    });
   };
 
-  // Lắng nghe cập nhật dữ liệu biểu đồ
   const onChartDataUpdate = (callback: (data: any) => void) => {
-    if (socket) {
-      socket.on('chart_data_update', callback);
-    }
+    if (!socket) return;
+    socket.on('chart_data_update', callback);
   };
 
   return (

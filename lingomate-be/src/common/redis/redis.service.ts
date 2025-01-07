@@ -49,15 +49,8 @@ export class RedisService {
   async hset(key: string, field: string, value: string, ttl?: number) {
     await this.redisClient.hset(key, field, value);
     if (ttl) {
-      await this.redisClient.call(
-        "HEXPIRE",
-        key,
-        ttl,
-        "NX",
-        "FIELDS",
-        1,
-        field,
-      );
+      // Note: ttl applies to the entire hash, not a specific field
+      await this.redisClient.expire(key, ttl);
     }
   }
 

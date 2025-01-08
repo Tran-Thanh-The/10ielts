@@ -94,7 +94,7 @@ export class CoursesController {
   }
 
   @Get("/list")
-  @Permissions(PermissionEnum.READ_COURSE)
+  // @Permissions(PermissionEnum.READ_COURSE)
   @ApiOperation({ summary: "Get list of courses with filters and pagination" })
   @ApiResponse({
     status: 200,

@@ -251,7 +251,7 @@ export class StatisticalService {
           avg(case when pe."practiceType" = 'SPEAKING' then ah."teacherScore" else null end) as "averageSpeakingScore"
       from practice_exercise pe
       left join answer_history ah on ah."practiceId" = pe.id
-      where ah."userId" = 3;
+      where ah."userId" = $1;
     `;
 
     const result = await this.userCourseRepository.query(practiceAchievementQuery, [userId]);

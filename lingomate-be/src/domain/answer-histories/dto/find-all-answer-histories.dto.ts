@@ -27,5 +27,9 @@ export class FindAllAnswerHistoriesDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  courseId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   userId?: string;
 }

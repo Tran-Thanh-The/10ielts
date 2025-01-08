@@ -6,6 +6,7 @@ export interface FindAnswerHistoryOptions {
   paginationOptions: IPaginationOptions;
   practiceId?: string;
   lessonId?: string;
+  courseId?: string;
   userId?: string;
 }
 export abstract class AnswerHistoryRepository {

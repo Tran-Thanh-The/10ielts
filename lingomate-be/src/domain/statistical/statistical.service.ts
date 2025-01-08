@@ -3,9 +3,18 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { InvoiceEntity } from "../invoices/infrastructure/persistence/relational/entities/invoice.entity";
 import { Repository } from "typeorm";
-import { RevenueByMonthOfAYearResponse, RawRevenueRow, StudentRegisterByMonthByYearResponse, RawStudentRegisterRow, AllCoursesRegisterStatisticsResponse, RawAllCoursesRegisterRow, MonthlyCoursesRegisterStatisticsResponse } from "./dto/revenue.dto";
+import {
+  RevenueByMonthOfAYearResponse,
+  RawRevenueRow,
+  StudentRegisterByMonthByYearResponse,
+  RawStudentRegisterRow,
+  AllCoursesRegisterStatisticsResponse,
+  RawAllCoursesRegisterRow,
+  MonthlyCoursesRegisterStatisticsResponse,
+} from "./dto/revenue.dto";
 import { Request } from "express";
 import { UserCourseEntity } from "../user-courses/infrastructure/persistence/relational/entities/user-course.entity";
+import { UserEntity } from "../users/infrastructure/persistence/relational/entities/user.entity";
 
 @Injectable()
 export class StatisticalService {
@@ -14,9 +23,13 @@ export class StatisticalService {
     private readonly invoiceRepository: Repository<InvoiceEntity>,
     @InjectRepository(UserCourseEntity)
     private readonly userCourseRepository: Repository<UserCourseEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
-  public async getRevenueStatistics(req: Request): Promise<RevenueByMonthOfAYearResponse[]> {
-    const year = req.params.year;
+  public async getRevenueStatistics(
+    req: Request,
+  ): Promise<RevenueByMonthOfAYearResponse[]> {
+    const year = Number(req.query.year);
     const rawQuery = `
       WITH monthly_invoices AS (
         SELECT
@@ -39,7 +52,7 @@ export class StatisticalService {
       rawQuery,
       [year],
     );
-    
+
     const result = Array.from({ length: 12 }, (_, i) => ({
       month: i + 1,
       notPay: 0,
@@ -55,9 +68,11 @@ export class StatisticalService {
     return result;
   }
 
-  public async getStudentRegisterCoursesStatistics(req: Request): Promise<StudentRegisterByMonthByYearResponse[]> {
+  public async getStudentRegisterCoursesStatistics(
+    req: Request,
+  ): Promise<StudentRegisterByMonthByYearResponse[]> {
     const year = req.query.year;
-  
+
     const rawQuery = `
       SELECT
         c.id as id,
@@ -70,14 +85,15 @@ export class StatisticalService {
       GROUP BY c.id, c.name, month
       ORDER BY c.name, month ASC;
     `;
-  
-    const rawResult: RawStudentRegisterRow[] = await this.invoiceRepository.query(rawQuery, [year]);
-  
+
+    const rawResult: RawStudentRegisterRow[] =
+      await this.invoiceRepository.query(rawQuery, [year]);
+
     const result: StudentRegisterByMonthByYearResponse[] = [];
-  
-    rawResult.forEach(row => {
-      let course = result.find(c => c.courseName === row.course_name);
-  
+
+    rawResult.forEach((row) => {
+      let course = result.find((c) => c.courseName === row.course_name);
+
       if (!course) {
         course = {
           courseId: row.id,
@@ -90,13 +106,18 @@ export class StatisticalService {
         result.push(course);
       }
 
-      course.data[row.month - 1].registrationCount = parseInt(row.registration_count.toString(), 10);
+      course.data[row.month - 1].registrationCount = parseInt(
+        row.registration_count.toString(),
+        10,
+      );
     });
 
     return result;
   }
 
-  public async getAllCoursesRegisterStatistics(req: Request): Promise<AllCoursesRegisterStatisticsResponse[]> {
+  public async getAllCoursesRegisterStatistics(
+    req: Request,
+  ): Promise<AllCoursesRegisterStatisticsResponse[]> {
     const year = req.query.year;
 
     const rawQuery = `
@@ -112,13 +133,14 @@ export class StatisticalService {
       ORDER BY c.name, month ASC;
     `;
 
-    const rawResult: RawStudentRegisterRow[] = await this.invoiceRepository.query(rawQuery, [year]);
+    const rawResult: RawStudentRegisterRow[] =
+      await this.invoiceRepository.query(rawQuery, [year]);
 
     const result: AllCoursesRegisterStatisticsResponse[] = [];
 
-    rawResult.forEach(row => {
+    rawResult.forEach((row) => {
       const monthIndex = Number(row.month); // monthIndex is already a number
-      const course = result.find(c => c.month === monthIndex);
+      const course = result.find((c) => c.month === monthIndex);
 
       if (!course) {
         result.push({
@@ -126,7 +148,10 @@ export class StatisticalService {
           registrationCount: parseInt(row.registration_count.toString(), 10),
         });
       } else {
-        course.registrationCount += parseInt(row.registration_count.toString(), 10);
+        course.registrationCount += parseInt(
+          row.registration_count.toString(),
+          10,
+        );
       }
     });
 
@@ -135,14 +160,16 @@ export class StatisticalService {
       registrationCount: 0,
     }));
 
-    result.forEach(row => {
+    result.forEach((row) => {
       sortedResult[row.month - 1] = row;
     });
 
     return sortedResult;
   }
 
-  public async getMonthlyCoursesRegisterStatistics(req: Request): Promise<MonthlyCoursesRegisterStatisticsResponse[]> {
+  public async getMonthlyCoursesRegisterStatistics(
+    req: Request,
+  ): Promise<MonthlyCoursesRegisterStatisticsResponse[]> {
     const [year, month] = [req.query.year, req.query.month];
     const queryParameter = `${year}-${month}`;
     const rawQuery = `
@@ -164,8 +191,32 @@ export class StatisticalService {
           "totalRegistration" DESC;
     `;
 
-    const rawResult: RawAllCoursesRegisterRow[] = await this.userCourseRepository.query(rawQuery, [queryParameter]);
+    const rawResult: RawAllCoursesRegisterRow[] =
+      await this.userCourseRepository.query(rawQuery, [queryParameter]);
 
     return rawResult;
+  }
+
+  public async getUserAchievementStatistics(req: Request): Promise<any> {
+    // const currentUserId = req.user?.["id"];
+    const currentUserId = 4;
+    const courseBuyQuery = `
+      select
+          distinct on (lc.id)
+          count(uc.*) as "countCoursesBought",
+          count(lc.*) as "totalLearnedLessons"
+      from "user" u
+      left join user_course uc on u.id = uc."userId"
+      left join lesson_course lc on uc."courseId" = lc."courseId"
+      where u.id = $1
+      group by lc.id;
+    `;
+    const courseBuyResult = await this.userCourseRepository.query(courseBuyQuery, [
+      currentUserId,
+    ]);
+    return {
+      countCoursesBought: Number(courseBuyResult[0].countCoursesBought),
+      totalLearnedLessons: Number(courseBuyResult[0].totalLearnedLessons),
+    };
   }
 }

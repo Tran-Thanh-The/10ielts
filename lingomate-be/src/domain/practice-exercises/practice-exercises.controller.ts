@@ -113,7 +113,7 @@ export class PracticeExercisesController {
     return this.practiceExercisesService.findOne(id);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
+  // @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Patch(":id")
   @ApiParam({
     name: "id",
@@ -136,7 +136,7 @@ export class PracticeExercisesController {
     );
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.teacher)
+  // @Roles(RoleEnum.admin, RoleEnum.teacher)
   @Delete(":id")
   @ApiParam({
     name: "id",

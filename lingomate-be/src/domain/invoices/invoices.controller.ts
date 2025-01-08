@@ -41,7 +41,7 @@ import { InvoicesService } from "./invoices.service";
 export class InvoicesController {
   constructor(private readonly invoicesService: InvoicesService) {}
 
-  @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.teacher)
+  // @Roles(RoleEnum.admin, RoleEnum.staff, RoleEnum.teacher)
   @Get()
   async getAllInvoices(
     @Query() query: FindAllInvoicesDto,
@@ -92,12 +92,12 @@ export class InvoicesController {
     }
   }
 
-  @Roles(
-    RoleEnum.admin,
-    RoleEnum.staff,
-    RoleEnum.teacher,
-    RoleEnum.customerCare,
-  )
+  // @Roles(
+  //   RoleEnum.admin,
+  //   RoleEnum.staff,
+  //   RoleEnum.teacher,
+  //   RoleEnum.customerCare,
+  // )
   @Patch(":id")
   @ApiParam({
     name: "id",

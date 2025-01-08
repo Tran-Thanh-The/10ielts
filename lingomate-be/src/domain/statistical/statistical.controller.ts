@@ -1,7 +1,5 @@
-import { RoleEnum } from "@/common/enums/roles.enum";
 import { PermissionGuard } from "@/guards/permission.guard";
 import { Public } from "@/utils/decorators/public.decorator";
-import { Roles } from "@/utils/decorators/roles.decorator";
 import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request, Response } from "express";
@@ -24,7 +22,7 @@ export class StatisticalController {
     res.status(200).json({ message: "Statistical service is up" });
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  // @Roles(RoleEnum.admin, RoleEnum.staff)
   @ApiQuery({
     name: "year",
     required: true,
@@ -42,7 +40,7 @@ export class StatisticalController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  // @Roles(RoleEnum.admin, RoleEnum.staff)
   @ApiQuery({
     name: "year",
     required: true,
@@ -64,7 +62,7 @@ export class StatisticalController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  // @Roles(RoleEnum.admin, RoleEnum.staff)
   @ApiQuery({
     name: "year",
     required: true,
@@ -86,7 +84,7 @@ export class StatisticalController {
     }
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  // @Roles(RoleEnum.admin, RoleEnum.staff)
   @ApiQuery({
     name: "year",
     required: true,
@@ -112,6 +110,22 @@ export class StatisticalController {
       res.status(200).json(result);
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  }
+
+  @Public()
+  @Get("/user-achievement-statistics")
+  async getUserAchievementStatistics(
+    // @Param("userId") userId: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    try {
+      const result =
+        await this.statisticalService.getUserAchievementStatistics(req);
+      res.status(200).json(result);
+    } catch (e) {
+      res.status(500).json({ message: e.message });
     }
   }
 }

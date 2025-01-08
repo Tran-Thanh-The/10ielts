@@ -69,11 +69,13 @@ export class AnswerHistoriesService {
     paginationOptions,
     practiceId,
     lessonId,
+    courseId,
     userId,
   }: {
     paginationOptions: IPaginationOptions;
     practiceId?: string;
-    lessonId;
+    lessonId?: string;
+    courseId?: string;
     userId?: string;
   }): Promise<AnswerHistory[]> {
     return this.answerHistoryRepository.findAllWithPagination({
@@ -83,6 +85,7 @@ export class AnswerHistoriesService {
       },
       practiceId,
       lessonId,
+      courseId,
       userId,
     });
   }

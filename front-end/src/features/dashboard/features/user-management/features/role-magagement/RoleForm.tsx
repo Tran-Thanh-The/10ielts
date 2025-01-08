@@ -1,6 +1,8 @@
+import { createRole, getRoleDetail, updateRole } from '@/api/api';
 import FeatureHeader from '@/features/dashboard/layouts/feature-layout/components/feature-header/FeatureHeader';
 import FeatureLayout from '@/features/dashboard/layouts/feature-layout/FeatureLayout';
-import { ROLE_FORM } from '@/utils/constants/constants';
+import { PermissionEnum } from '@/types/enum/account.enum';
+import { DEFAULT_PERMISSIONS, ROLE_FORM } from '@/utils/constants/constants';
 import {
   Box,
   Button,
@@ -9,14 +11,67 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function RoleForm() {
+  const { roleId } = useParams();
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: '',
-    functions: [
-    ],
+    permissions: [],
   });
+
+  useEffect(() => {
+    if (roleId) {
+      getRoleDetail(parseInt(roleId)).then((res) => {
+        setForm({
+          name: res.data.name,
+          permissions: res.data.permissions,
+        });
+      });
+    }
+  }, [roleId]);
+
+  const handleChangeParent = (e: any, permissions: PermissionEnum[]) => {
+    if (e.target.checked) {
+      setForm({
+        ...form,
+        permissions: Array.from(new Set([...form.permissions, ...permissions])),
+      });
+    } else {
+      setForm({
+        ...form,
+        permissions: form.permissions.filter(
+          (permission) => !permissions.includes(permission),
+        ),
+      });
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!form.name.trim()) {
+      toast.warning('Vui lòng nhập tên vai trò');
+      return;
+    }
+
+    if (roleId) {
+      await updateRole(parseInt(roleId), {
+        name: form.name,
+        permissions: Array.from(new Set([...form.permissions, ...DEFAULT_PERMISSIONS])),
+      });
+      toast.success('Cập nhật vai trò thành công');
+    } else {
+      await createRole({
+        name: form.name,
+        permissions: Array.from(new Set([...form.permissions, ...DEFAULT_PERMISSIONS])),
+      });
+      toast.success('Tạo mới vai trò thành công');
+    }
+
+    navigate('/dashboard/user-management/role');
+  };
 
   return (
     <FeatureLayout>
@@ -61,9 +116,18 @@ export default function RoleForm() {
                 label={role.label}
                 control={
                   <Checkbox
-                    checked={true}
-                    indeterminate={false}
-                    onChange={() => {}}
+                    checked={role.permissons.every((role) =>
+                      form.permissions.includes(role),
+                    )}
+                    indeterminate={
+                      role.permissons.some((role) =>
+                        form.permissions.includes(role),
+                      ) &&
+                      !role.permissons.every((role) =>
+                        form.permissions.includes(role),
+                      )
+                    }
+                    onChange={(e) => handleChangeParent(e, role.permissons)}
                   />
                 }
               />
@@ -71,7 +135,16 @@ export default function RoleForm() {
                 {role.children?.map((child, index) => (
                   <FormControlLabel
                     label={child.label}
-                    control={<Checkbox checked={true} onChange={() => {}} />}
+                    control={
+                      <Checkbox
+                        checked={child.permissions.every((role) =>
+                          form.permissions.includes(role),
+                        )}
+                        onChange={(e) =>
+                          handleChangeParent(e, child.permissions)
+                        }
+                      />
+                    }
                   />
                 ))}
               </Box>
@@ -84,7 +157,9 @@ export default function RoleForm() {
             justifyContent: 'flex-end',
           }}
         >
-          <Button variant="contained">Lưu</Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Lưu
+          </Button>
         </Box>
       </Box>
     </FeatureLayout>

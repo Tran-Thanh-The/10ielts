@@ -33,11 +33,8 @@ interface LessonApiRequest extends LessonRequest {
 const validationSchema = Yup.object().shape({
   lessonType: Yup.string().required('Please select the lesson type'),
   title: Yup.string()
-    .min(3, 'Title must be at least 3 characters')
     .required('Title is required'),
-  content: Yup.string()
-    .min(1, 'Content must be at least 10 characters')
-    .required('Content is required'),
+  content: Yup.string(),
   videoUrl: Yup.mixed().when('lessonType', {
     is: LessonTypes.Video,
     then: (schema) =>

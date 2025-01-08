@@ -40,4 +40,8 @@ export enum PermissionEnum {
   DELETE_ROLE = "role:delete",
 
   ACCESS_CHAT = "chat:access",
+
+  ACCESS_PAYMENT = "payment:access",
+
+  ACCESS_STATISTIC = "statistic:access",
 }

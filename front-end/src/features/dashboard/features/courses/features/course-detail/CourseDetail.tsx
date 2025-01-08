@@ -30,15 +30,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import LessonCard from '../../components/lesson-card/LessonCard';
 import { setAppLoading } from '@/stores/slices/appSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createUserCourse } from '@/api/api';
 import CourseOutcomes from '@/features/dashboard/features/courses/components/course-outcomes/CourseOutcomes';
+import { selectIsStudentDashboard } from '@/features/auth/slices/authSlice';
+import ProtectByPremissions from '@/components/ProtectByPremissions';
+import { PermissionEnum } from '@/types/enum/account.enum';
 
 export default function CourseDetail() {
   const dispatch = useDispatch();
   const [course, setCourse] = useState<CourseResponse | null>(
     {} as CourseResponse,
   );
+  const isStudentDashboard = useSelector(selectIsStudentDashboard);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const open = Boolean(anchorEl);
@@ -103,8 +107,8 @@ export default function CourseDetail() {
 
   const handleDelete = async () => {
     if (selectedLessonId) {
-      console.log('Delete lesson ID:', selectedLessonId);
       await lessonApi.deleteLesson(selectedLessonId);
+      setReload(!reload);
     }
     handleMenuClose();
   };
@@ -370,111 +374,144 @@ export default function CourseDetail() {
                 }}
               >
                 {course?.status != 'ACTIVE' && (
+                  <ProtectByPremissions
+                    permissions={[PermissionEnum.UPDATE_COURSE]}
+                    needAll={false}
+                  >
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      size="small"
+                      onClick={handleEditCourse}
+                    >
+                      Xuất bản khóa học
+                    </Button>
+                  </ProtectByPremissions>
+                )}
+
+                <ProtectByPremissions
+                  permissions={[PermissionEnum.DELETE_COURSE]}
+                  needAll={false}
+                >
                   <Button
                     variant="outlined"
-                    color="success"
+                    color="error"
                     size="small"
-                    onClick={handleEditCourse}
+                    onClick={handleDeleteCourse}
                   >
-                    Xuất bản khóa học
+                    Xóa khóa học
                   </Button>
-                )}
-                <Button
-                  variant="outlined"
-                  color="error"
-                  size="small"
-                  onClick={handleDeleteCourse}
+                </ProtectByPremissions>
+
+                <ProtectByPremissions
+                  permissions={[PermissionEnum.UPDATE_COURSE]}
+                  needAll={false}
                 >
-                  Xóa khóa học
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onClick={handleUpdateCourse}
-                >
-                  Sửa khóa học
-                </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                    onClick={handleUpdateCourse}
+                  >
+                    Sửa khóa học
+                  </Button>
+                </ProtectByPremissions>
               </Box>
             </RoleBasedComponent>
           </Card>
 
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 2,
+              filter:
+                !course?.isMyCourse && isStudentDashboard
+                  ? 'blur(5px)'
+                  : 'none',
+              pointerEvents:
+                !course?.isMyCourse && isStudentDashboard ? 'none' : 'auto',
             }}
           >
-            <Typography variant="h5">Danh sách bài học</Typography>
-
-            <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
-              <IconButton
-                color="primary"
-                sx={{
-                  bgcolor: '#f3f7ff',
-                }}
-                onClick={handleAddLesson}
-              >
-                <AddIcon />
-              </IconButton>
-            </RoleBasedComponent>
-          </Box>
-
-          <Box sx={{ width: '100%', marginBottom: 4 }}>
-            <Tabs value={tabIndex} onChange={handleTabChange} centered>
-              <Tab label="Tất cả bài học" />
-              <Tab label="Bài học Video" />
-              <Tab label="Bài học Docs" />
-              <Tab label="Exercises" />
-            </Tabs>
-          </Box>
-
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              {tabIndex === 0 && 'Danh sách tất cả bài học'}
-              {tabIndex === 1 && 'Danh sách bài học Video'}
-              {tabIndex === 2 && 'Danh sách bài học Docs'}
-              {tabIndex === 3 && 'Danh sách Exercises'}
-            </Typography>
             <Box
               sx={{
                 display: 'flex',
-                flexWrap: 'wrap',
-                gap: '20px',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: 2,
               }}
             >
-              {paginatedFilteredLessons.map((lesson, index) => (
-                <LessonCard
-                  key={lesson.id}
-                  index={index}
-                  lesson={lesson}
-                  onMenuOpen={handleMenuOpen}
-                  handRouterLessonDetail={handRouterLessonDetail}
-                />
-              ))}
+              <Typography variant="h5">Danh sách bài học</Typography>
+
+              <ProtectByPremissions
+                permissions={[PermissionEnum.UPDATE_COURSE]}
+                needAll={false}
+              >
+                <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
+                  <IconButton
+                    color="primary"
+                    sx={{
+                      bgcolor: '#f3f7ff',
+                    }}
+                    onClick={handleAddLesson}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </RoleBasedComponent>
+              </ProtectByPremissions>
+            </Box>
+
+            <Box sx={{ width: '100%', marginBottom: 4 }}>
+              <Tabs value={tabIndex} onChange={handleTabChange} centered>
+                <Tab label="Tất cả bài học" />
+                <Tab label="Bài học Video" />
+                <Tab label="Bài học Docs" />
+                <Tab label="Exercises" />
+              </Tabs>
+            </Box>
+
+            <Box>
+              <Typography variant="h6" gutterBottom>
+                {tabIndex === 0 && 'Danh sách tất cả bài học'}
+                {tabIndex === 1 && 'Danh sách bài học Video'}
+                {tabIndex === 2 && 'Danh sách bài học Docs'}
+                {tabIndex === 3 && 'Danh sách Exercises'}
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '20px',
+                }}
+              >
+                {paginatedFilteredLessons.map((lesson, index) => (
+                  <LessonCard
+                    key={lesson.id}
+                    index={index}
+                    lesson={lesson}
+                    onMenuOpen={handleMenuOpen}
+                    handRouterLessonDetail={handRouterLessonDetail}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: 2,
+                mb: 2,
+              }}
+            >
+              <Pagination
+                count={totalFilteredPages}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="primary"
+              />
             </Box>
           </Box>
 
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              marginTop: 2,
-              mb: 2,
-            }}
-          >
-            <Pagination
-              count={totalFilteredPages}
-              page={currentPage}
-              onChange={handlePageChange}
-              color="primary"
-            />
-          </Box>
-
           <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
-            <MenuItem onClick={handleEdit}>Edit</MenuItem>
+            <MenuItem onClick={() => handRouterLessonDetail(selectedLessonId)}>Edit</MenuItem>
             <MenuItem onClick={handleDelete}>Delete</MenuItem>
           </Menu>
         </Box>

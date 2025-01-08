@@ -10,6 +10,10 @@ interface User {
   fullName: string;
   dob: any;
   address: string;
+  role: {
+    id: number;
+    name: string;
+  }
 }
 
 interface AuthState {

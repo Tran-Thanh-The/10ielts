@@ -16,6 +16,8 @@ import { ROLE } from '@/utils/constants/constants';
 import { Course, CourseParams } from '@/types/interface/Course';
 import CourseFilter from './components/course-filter/CourseFilter';
 import CreateCourseModal from './components/create-course-modal/CreateCourseModal';
+import ProtectByPremissions from '@/components/ProtectByPremissions';
+import { PermissionEnum } from '@/types/enum/account.enum';
 
 export default function CourseList() {
   const dispatch = useDispatch();
@@ -103,9 +105,17 @@ export default function CourseList() {
             }}
           />
           <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
-            <Button variant="contained" onClick={handleCreateCourse}>
-              Tạo khóa học
-            </Button>
+            <ProtectByPremissions
+              permissions={[
+                PermissionEnum.CREATE_COURSE,
+                PermissionEnum.UPDATE_COURSE,
+              ]}
+              needAll={false}
+            >
+              <Button variant="contained" onClick={handleCreateCourse}>
+                Tạo khóa học
+              </Button>
+            </ProtectByPremissions>
           </RoleBasedComponent>
         </Box>
 
@@ -134,7 +144,7 @@ export default function CourseList() {
             <Grid item xs={12} sm={6} md={4} lg={3} key={course.id}>
               <CourseCard
                 id={course.id}
-                title={course.name}
+                title={course.title}
                 description={course.description}
                 price={course.price}
                 createdAt={course.createAt}

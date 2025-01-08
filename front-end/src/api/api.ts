@@ -172,3 +172,19 @@ export const InvoiceDetails = async (id: string) => {
 export const createUserCourse = async (data: any) => {
   return axiosInstance.post<any>('user-courses', data);
 };
+
+export const createRole = async (data: any) => {
+  return axiosInstance.post<any>('roles', data);
+}
+
+export const updateRole = async (id: number, data: any) => {
+  return axiosInstance.patch<any>(`roles/${id}`, data);
+}
+
+export const deleteRole = async (id: number) => {
+  return axiosInstance.delete<any>(`roles/${id}`);
+}
+
+export const getRoleDetail = async (id: number) => {
+  return axiosInstance.get<any>(`roles/${id}`);
+}

@@ -1,5 +1,5 @@
 import { createUser, updateUser } from '@/api/api';
-import { setAppLoading } from '@/stores/slices/appSlice';
+import { selectRoles, setAppLoading } from '@/stores/slices/appSlice';
 import { IUser } from '@/types/interface/User';
 import { ROLES } from '@/utils/constants/constants';
 import {
@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 export default function CreateUpdateUserModal({
@@ -29,6 +29,7 @@ export default function CreateUpdateUserModal({
   data?: IUser | null;
 }) {
   const dispatch = useDispatch();
+  const roles = useSelector(selectRoles);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -36,6 +37,7 @@ export default function CreateUpdateUserModal({
     dob: null,
     role: 0,
   });
+  const [filteredRoles, setFilteredRoles] = useState([]);
 
   // Extract role based on URL
   const getRoleFromUrl = () => {
@@ -63,8 +65,14 @@ export default function CreateUpdateUserModal({
 
   const currentRole = getRoleFromUrl();
 
-  // Filter roles based on current URL
-  const filteredRoles = ROLES.filter((role) => role.name === currentRole);
+  useEffect(() => {
+    if (!roles.length) return;
+    const rolesData =
+      currentRole === 'User'
+        ? roles.filter((role) => role.name === currentRole)
+        : roles.filter((role) => role.name !== 'User' && role.name !== 'Admin');
+    setFilteredRoles(rolesData);
+  }, [roles]);
 
   useEffect(() => {
     if (data?.id) {
@@ -179,7 +187,9 @@ export default function CreateUpdateUserModal({
         }}
       >
         <Typography id="modal-title" variant="h6" component="h2">
-          {data?.id ? 'Cập nhập user' : 'Tạo user'}
+          {(data?.id ? 'Cập nhập ' : 'Tạo ') + currentRole === 'User'
+            ? 'Học sinh'
+            : 'Nhân viên'}
         </Typography>
         <Divider />
 
@@ -231,7 +241,7 @@ export default function CreateUpdateUserModal({
                   onChange={handleChange}
                   required
                   fullWidth
-                  disabled // Ngăn người dùng chỉnh sửa
+                  disabled={currentRole === 'User'}
                 >
                   {filteredRoles.map((category) => (
                     <MenuItem key={category.id} value={category.id}>
@@ -265,7 +275,9 @@ export default function CreateUpdateUserModal({
             Hủy
           </Button>
           <Button onClick={handleSubmit} variant="contained">
-            {data?.id ? 'Cập nhập user' : 'Tạo user'}
+            {(data?.id ? 'Cập nhập ' : 'Tạo ') + currentRole === 'User'
+              ? 'Học sinh'
+              : 'Nhân viên'}
           </Button>
         </Box>
       </Box>

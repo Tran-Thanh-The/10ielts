@@ -124,7 +124,7 @@ export default function CUCategoryModal({
         }}
       >
         <Typography id="modal-title" variant="h6" component="h2">
-          {data?.id ? 'Cập nhập khóa học' : 'Tạo khóa học'}
+          {data?.id ? 'Cập nhập danh mục' : 'Tạo danh mục'}
         </Typography>
         <Divider />
 
@@ -164,7 +164,7 @@ export default function CUCategoryModal({
             Hủy
           </Button>
           <Button onClick={handleSubmit} variant="contained">
-            Lưu khóa học
+            Lưu danh mục
           </Button>
         </Box>
       </Box>

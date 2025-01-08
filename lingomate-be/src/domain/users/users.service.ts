@@ -68,17 +68,17 @@ export class UsersService {
     }
 
     if (clonedPayload.role) {
-      const isRoleValid = Object.values(RoleEnum).includes(
-        clonedPayload.role.id,
-      );
-      if (!isRoleValid) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            role: "roleNotExists",
-          },
-        });
-      }
+      // const isRoleValid = Object.values(RoleEnum).includes(
+      //   clonedPayload.role.id,
+      // );
+      // if (!isRoleValid) {
+      //   throw new UnprocessableEntityException({
+      //     status: HttpStatus.UNPROCESSABLE_ENTITY,
+      //     errors: {
+      //       role: "roleNotExists",
+      //     },
+      //   });
+      // }
     } else {
       clonedPayload.role = { id: RoleEnum.user };
     }
@@ -261,19 +261,19 @@ export class UsersService {
       clonedPayload.photo = fileObject;
     }
 
-    if (clonedPayload.role?.id) {
-      const roleObject = Object.values(RoleEnum)
-        .map(String)
-        .includes(String(clonedPayload.role.id));
-      if (!roleObject) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            role: "roleNotExists",
-          },
-        });
-      }
-    }
+    // if (clonedPayload.role?.id) {
+    //   const roleObject = Object.values(RoleEnum)
+    //     .map(String)
+    //     .includes(String(clonedPayload.role.id));
+    //   if (!roleObject) {
+    //     throw new UnprocessableEntityException({
+    //       status: HttpStatus.UNPROCESSABLE_ENTITY,
+    //       errors: {
+    //         role: "roleNotExists",
+    //       },
+    //     });
+    //   }
+    // }
 
     if (clonedPayload.status) {
       const statusObject = Object.values(StatusEnum)

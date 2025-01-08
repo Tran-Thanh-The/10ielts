@@ -14,6 +14,8 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { LessonResponse as Lesson } from '@/types/interface/Lesson';
 import RoleBasedComponent from '@/components/RoleBasedComponent';
 import { ROLE } from '@/utils/constants/constants';
+import ProtectByPremissions from '@/components/ProtectByPremissions';
+import { PermissionEnum } from '@/types/enum/account.enum';
 interface LessonCardProps {
   index: number;
   lesson: Lesson;
@@ -100,9 +102,14 @@ const LessonCard: React.FC<LessonCardProps> = ({
       </Box>
 
       <RoleBasedComponent allowedRoles={[ROLE.ADMIN, ROLE.STAFF]}>
-        <IconButton onClick={(event) => onMenuOpen(event, lesson.id)}>
-          <MoreVertIcon />
-        </IconButton>
+        <ProtectByPremissions
+          permissions={[PermissionEnum.UPDATE_COURSE]}
+          needAll={false}
+        >
+          <IconButton onClick={(event) => onMenuOpen(event, lesson.id)}>
+            <MoreVertIcon />
+          </IconButton>
+        </ProtectByPremissions>
       </RoleBasedComponent>
       {/* <Paper elevation={1} sx={{ mb: 2, p: 2 }}>
         <Grid container alignItems="center" spacing={2}>

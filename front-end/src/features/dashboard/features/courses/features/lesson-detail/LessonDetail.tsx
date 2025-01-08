@@ -109,7 +109,6 @@ const LessonDetail = () => {
           width: '100%',
         }}
       >
-        {/* <CreateUpdateLesson></CreateUpdateLesson> */}
         <LessonView></LessonView>
       </Grid>
 

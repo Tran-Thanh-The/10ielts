@@ -39,13 +39,25 @@ export default function ViewHistory({
 
   const handleGenerateFeedback = async () => {
     try {
+      const authDataString = localStorage.getItem('auth');
+      const authData = authDataString ? JSON.parse(authDataString) : null;
+      let token = authData?.token;
       setLoading(true);
       axios
-        .post(baseUrl + '/evaluate-writing', {
-          topic: 'In 15 minutes, write an article with a topic: Describe your favorite childhood memory',
-          writingAssignmentSubmission:
-            "When I was young, I very like to went to my grandmother house in countryside. Every summer holiday, my parent took me there and I playing with many friend. The air was fresh and we catching fish in small river behind house. Grandmother always cook delicious foods for me likes sweet soup and spring roll.\nOne day, me and friends decided exploring the old temple near village. We walking through bamboo forest and see many interesting thing. Although my grandmother tell us don't go there alone, but we very exciting about adventure. Finally, we finding beautiful temple and take lot of picture.\nThat memory still make me happy when think about it. I missing my childhood time very much.",
-        })
+        .post(
+          baseUrl + '/ai' + '/evaluate-writing',
+          {
+            topic:
+              'In 15 minutes, write an article with a topic: Describe your favorite childhood memory',
+            writingAssignmentSubmission:
+              "When I was young, I very like to went to my grandmother house in countryside. Every summer holiday, my parent took me there and I playing with many friend. The air was fresh and we catching fish in small river behind house. Grandmother always cook delicious foods for me likes sweet soup and spring roll.\nOne day, me and friends decided exploring the old temple near village. We walking through bamboo forest and see many interesting thing. Although my grandmother tell us don't go there alone, but we very exciting about adventure. Finally, we finding beautiful temple and take lot of picture.\nThat memory still make me happy when think about it. I missing my childhood time very much.",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        )
         .then((res) => {
           console.log(res);
           setSelectedAnswerHistory({
@@ -108,7 +120,7 @@ export default function ViewHistory({
               paddingRight: '12px',
               borderRight: '1px solid #e0e0e0',
               gap: '8px',
-              overflowY: 'auto'
+              overflowY: 'auto',
             }}
           >
             {answerHistories.map((item: any, index) => (
@@ -123,7 +135,7 @@ export default function ViewHistory({
                   cursor: 'pointer',
                   backgroundColor:
                     item.id === selectedAnswerHistory?.id ? '#f3f7ff' : 'unset',
-                  borderRadius: '12px'
+                  borderRadius: '12px',
                 }}
                 onClick={() => setSelectedAnswerHistory(item)}
               >

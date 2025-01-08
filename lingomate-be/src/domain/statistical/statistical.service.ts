@@ -198,35 +198,81 @@ export class StatisticalService {
   }
 
   public async getUserAchievementStatistics(req: Request): Promise<any> {
-    const currentUserId = req.user?.["id"];
-    console.log("currentUserId", currentUserId);
-    const courseBuyQuery = `
-      with
-          lessons_learned_cte as (
-              select array_agg(ul."lessonId") as "lessonsLearned"
-              from user_lesson ul
-              where ul."userId" = $1
-          )
-      select
-          (select count(*) from user_course uc where uc."userId" = $1) as "countCoursesBought",
-          (select count(*) from user_lesson ul where ul."userId" = $1) as "totalLessonsLearned",
-          (select count(q.*)
-          from question q
-          join lessons_learned_cte ll on q."lessonId" = any(ll."lessonsLearned")
-          ) as "totalQuestionsDone",
-          (select avg(ah."totalScore")
-          from answer_history ah
-          join lessons_learned_cte ll on ah."lessonId" = any(ll."lessonsLearned")
-          ) as "averageScore";
-    `;
-    const courseBuyResult = await this.userCourseRepository.query(courseBuyQuery, [
-      currentUserId,
+    const currentUserId = Number(req.user?.["id"]);
+    const [courseAchievements, practiceAchievements] = await Promise.all([
+      this.getCourseAchievementStatistics(currentUserId),
+      this.getPracticeAchievementStatistics(currentUserId),
     ]);
     return {
-      countCoursesBought: Number(courseBuyResult[0].countCoursesBought),
-      totalLearnedLessons: Number(courseBuyResult[0].totalLessonsLearned),
-      totalQuestionsDone: Number(courseBuyResult[0].totalQuestionsDone),
-      averageScore: Number(courseBuyResult[0].averageScore),
+      courseAchievements,
+      practiceAchievements,
     };
+  }
+
+  private async getCourseAchievementStatistics(userId: number): Promise<any> {
+    const courseAchievementsQuery = `
+      with lessons_learned_cte as (
+        select array_agg(ul."lessonId") as "lessonsLearned"
+        from user_lesson ul
+        where ul."userId" = $1
+      )
+      select
+        (select count(*) from user_course uc where uc."userId" = $1) as "countCoursesBought",
+        (select count(*) from user_lesson ul where ul."userId" = $1) as "totalLessonsLearned",
+        (select count(q.*)
+         from question q
+         join lessons_learned_cte ll on q."lessonId" = any(ll."lessonsLearned")
+        ) as "totalQuestionsDone",
+        (select coalesce(avg(ah."totalScore"), 0)
+         from answer_history ah
+         join lessons_learned_cte ll on ah."lessonId" = any(ll."lessonsLearned")
+        ) as "averageScore";
+    `;
+    const result = await this.userCourseRepository.query(courseAchievementsQuery, [userId]);
+    return {
+      countCoursesBought: Number(result[0].countCoursesBought),
+      totalLearnedLessons: Number(result[0].totalLessonsLearned),
+      totalQuestionsDone: Number(result[0].totalQuestionsDone),
+      averageScore: Number(result[0].averageScore)
+    };
+  }
+
+  private async getPracticeAchievementStatistics(userId: number): Promise<any> {
+    const practiceAchievementQuery = `
+      select
+          count(distinct pe.id) as "totalPracticeExercises",
+          sum(case when pe."practiceType" = 'WRITING' then 1 else 0 end) as "totalWritingQuestionsDone",
+          avg(case when pe."practiceType" = 'WRITING' then ah."teacherScore" else null end) as "averageWritingScore",
+          sum(case when pe."practiceType" = 'LISTENING' then 1 else 0 end) as "totalListeningQuestionsDone",
+          avg(case when pe."practiceType" = 'LISTENING' then ah."totalScore" else null end) as "averageListeningScore",
+          sum(case when pe."practiceType" = 'READING' then 1 else 0 end) as "totalReadingQuestionsDone",
+          avg(case when pe."practiceType" = 'READING' then ah."totalScore" else null end) as "averageReadingScore",
+          sum(case when pe."practiceType" = 'SPEAKING' then 1 else 0 end) as "totalSpeakingQuestionsDone",
+          avg(case when pe."practiceType" = 'SPEAKING' then ah."teacherScore" else null end) as "averageSpeakingScore"
+      from practice_exercise pe
+      left join answer_history ah on ah."practiceId" = pe.id
+      where ah."userId" = 3;
+    `;
+
+    const result = await this.userCourseRepository.query(practiceAchievementQuery, [userId]);
+    return {
+      totalPracticeExercises: Number(result[0].totalPracticeExercises),
+      reading: {
+        totalQuestionsDone: Number(result[0].totalReadingQuestionsDone),
+        averageScore: Number(result[0].averageReadingScore)
+      },
+      writing: {
+        totalQuestionsDone: Number(result[0].totalWritingQuestionsDone),
+        averageScore: Number(result[0].averageWritingScore)
+      },
+      listening: {
+        totalQuestionsDone: Number(result[0].totalListeningQuestionsDone),
+        averageScore: Number(result[0].averageListeningScore)
+      },
+      speaking: {
+        totalQuestionsDone: Number(result[0].totalSpeakingQuestionsDone),
+        averageScore: Number(result[0].averageSpeakingScore)
+      }
+    }
   }
 }

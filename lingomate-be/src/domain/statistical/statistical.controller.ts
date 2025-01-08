@@ -113,7 +113,6 @@ export class StatisticalController {
     }
   }
 
-  @Public()
   @Get("/user-achievement-statistics")
   async getUserAchievementStatistics(
     // @Param("userId") userId: string,

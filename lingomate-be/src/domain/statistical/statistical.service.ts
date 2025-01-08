@@ -199,6 +199,7 @@ export class StatisticalService {
 
   public async getUserAchievementStatistics(req: Request): Promise<any> {
     const currentUserId = req.user?.["id"];
+    console.log("currentUserId", currentUserId);
     const courseBuyQuery = `
       with
           lessons_learned_cte as (

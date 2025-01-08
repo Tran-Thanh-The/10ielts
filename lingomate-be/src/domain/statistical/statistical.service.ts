@@ -198,25 +198,34 @@ export class StatisticalService {
   }
 
   public async getUserAchievementStatistics(req: Request): Promise<any> {
-    // const currentUserId = req.user?.["id"];
-    const currentUserId = 4;
+    const currentUserId = req.user?.["id"];
     const courseBuyQuery = `
+      with
+          lessons_learned_cte as (
+              select array_agg(ul."lessonId") as "lessonsLearned"
+              from user_lesson ul
+              where ul."userId" = $1
+          )
       select
-          distinct on (lc.id)
-          count(uc.*) as "countCoursesBought",
-          count(lc.*) as "totalLearnedLessons"
-      from "user" u
-      left join user_course uc on u.id = uc."userId"
-      left join lesson_course lc on uc."courseId" = lc."courseId"
-      where u.id = $1
-      group by lc.id;
+          (select count(*) from user_course uc where uc."userId" = $1) as "countCoursesBought",
+          (select count(*) from user_lesson ul where ul."userId" = $1) as "totalLessonsLearned",
+          (select count(q.*)
+          from question q
+          join lessons_learned_cte ll on q."lessonId" = any(ll."lessonsLearned")
+          ) as "totalQuestionsDone",
+          (select avg(ah."totalScore")
+          from answer_history ah
+          join lessons_learned_cte ll on ah."lessonId" = any(ll."lessonsLearned")
+          ) as "averageScore";
     `;
     const courseBuyResult = await this.userCourseRepository.query(courseBuyQuery, [
       currentUserId,
     ]);
     return {
       countCoursesBought: Number(courseBuyResult[0].countCoursesBought),
-      totalLearnedLessons: Number(courseBuyResult[0].totalLearnedLessons),
+      totalLearnedLessons: Number(courseBuyResult[0].totalLessonsLearned),
+      totalQuestionsDone: Number(courseBuyResult[0].totalQuestionsDone),
+      averageScore: Number(courseBuyResult[0].averageScore),
     };
   }
 }

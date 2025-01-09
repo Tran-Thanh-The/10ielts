@@ -56,6 +56,7 @@ export class AnswerHistoryRelationalRepository
     paginationOptions,
     practiceId,
     lessonId,
+    courseId,
     userId,
   }: FindAnswerHistoryOptions): Promise<AnswerHistory[]> {
     const queryBuilder = this.answerHistoryRepository
@@ -63,7 +64,9 @@ export class AnswerHistoryRelationalRepository
       .leftJoinAndSelect("answerHistory.practice", "practice")
       .leftJoinAndSelect("answerHistory.lesson", "lesson")
       .leftJoinAndSelect("answerHistory.user", "user")
-      .leftJoinAndSelect("answerHistory.audioAnswer", "file");
+      .leftJoinAndSelect("answerHistory.audioAnswer", "file")
+      .leftJoin("lesson.lessonCourses", "lessonCourse")
+      .leftJoin("lessonCourse.course", "course");
 
     if (practiceId) {
       queryBuilder.andWhere("practice.id = :practiceId", { practiceId });
@@ -71,6 +74,10 @@ export class AnswerHistoryRelationalRepository
 
     if (lessonId) {
       queryBuilder.andWhere("lesson.id = :lessonId", { lessonId });
+    }
+
+    if (courseId) {
+      queryBuilder.andWhere("course.id = :courseId", { courseId });
     }
 
     if (userId) {

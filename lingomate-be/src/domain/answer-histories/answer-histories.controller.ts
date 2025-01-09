@@ -120,6 +120,7 @@ export class AnswerHistoriesController {
         paginationOptions: { page, limit },
         practiceId: query.practiceId,
         lessonId: query.lessonId,
+        courseId: query.courseId,
         userId: query.userId,
       });
 

@@ -62,7 +62,7 @@ export class ConversationsController {
     res.status(result.statusCode).json(result.message);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.staff)
+  // @Roles(RoleEnum.admin, RoleEnum.staff)
   @Get("/admin")
   async getConversationsStaff(
     @Query() query: FindAllConversationsDto,

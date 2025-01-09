@@ -157,7 +157,7 @@ export default function InvoiceList() {
                       {row.orderCode || index + 1}
                     </TableCell>
                     <TableCell align="left">{row.user?.fullName}</TableCell>
-                    <TableCell align="left">{row.amount}</TableCell>
+                    <TableCell align="left">{row.money}</TableCell>
                     <TableCell align="left">
                       <Chip
                         label={

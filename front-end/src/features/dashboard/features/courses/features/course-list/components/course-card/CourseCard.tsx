@@ -33,6 +33,7 @@ interface CourseCardProps {
   photo: string;
   onDeleted: () => void;
   onEdit?: (id: string) => void;
+  preview?: boolean;
 }
 
 const CourseCard = ({
@@ -47,6 +48,7 @@ const CourseCard = ({
   isMyCourse,
   onDeleted,
   onEdit,
+  preview,
 }: CourseCardProps) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -62,7 +64,11 @@ const CourseCard = ({
   };
 
   const handleCardClick = () => {
-    navigate(`/dashboard/courses/${id}`);
+    if (preview) {
+      navigate(`/courses/${id}`);
+    } else {
+      navigate(`/dashboard/courses/${id}`);
+    }
   };
 
   const handleEdit = (event) => {
@@ -188,34 +194,39 @@ const CourseCard = ({
               </Typography>
             </Box>
 
-            <ProtectByPremissions
-              permissions={[PermissionEnum.UPDATE_COURSE, PermissionEnum.DELETE_COURSE]}
-              needAll={false}
-            >
-              <Box sx={{ alignSelf: 'flex-end' }}>
-                <IconButton onClick={handleMenuOpen}>
-                  <MoreVertIcon />
-                </IconButton>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleMenuClose}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ProtectByPremissions
-                    permissions={[PermissionEnum.UPDATE_COURSE]}
+            {preview ? null : (
+              <ProtectByPremissions
+                permissions={[
+                  PermissionEnum.UPDATE_COURSE,
+                  PermissionEnum.DELETE_COURSE,
+                ]}
+                needAll={false}
+              >
+                <Box sx={{ alignSelf: 'flex-end' }}>
+                  <IconButton onClick={handleMenuOpen}>
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleMenuClose}
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    <MenuItem onClick={handleEdit}>Chỉnh sửa</MenuItem>
-                  </ProtectByPremissions>
+                    <ProtectByPremissions
+                      permissions={[PermissionEnum.UPDATE_COURSE]}
+                    >
+                      <MenuItem onClick={handleEdit}>Chỉnh sửa</MenuItem>
+                    </ProtectByPremissions>
 
-                  <ProtectByPremissions
-                    permissions={[PermissionEnum.DELETE_COURSE]}
-                  >
-                    <MenuItem onClick={handleDelete}>Xóa</MenuItem>
-                  </ProtectByPremissions>
-                </Menu>
-              </Box>
-            </ProtectByPremissions>
+                    <ProtectByPremissions
+                      permissions={[PermissionEnum.DELETE_COURSE]}
+                    >
+                      <MenuItem onClick={handleDelete}>Xóa</MenuItem>
+                    </ProtectByPremissions>
+                  </Menu>
+                </Box>
+              </ProtectByPremissions>
+            )}
           </RoleBasedComponent>
         </Box>
       </CardContent>

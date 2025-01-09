@@ -45,6 +45,7 @@ export default function PracticeDetail() {
   const [openQuestionForm, setOpenQuestionForm] = React.useState(false);
   const [doing, setDoing] = React.useState(false);
   const [openHistory, setOpenHistory] = React.useState(false);
+  const [resetForm, setResetForm] = React.useState(false);
 
   useEffect(() => {
     fetchPracticeDetail();
@@ -126,6 +127,8 @@ export default function PracticeDetail() {
   };
 
   const handleSubmit = () => {
+    dispatch(setAppLoading(true));
+    setResetForm((prev) => !prev);
     switch (practiceDetail?.practiceType) {
       case EPracticeType.LISTENING:
       case EPracticeType.READING:
@@ -210,6 +213,8 @@ export default function PracticeDetail() {
   const handleViewHistory = () => {
     setOpenHistory(true);
   };
+
+  console.log('practiceDetail', practiceDetail?.questions);
 
   return (
     <FeatureLayout>
@@ -304,7 +309,7 @@ export default function PracticeDetail() {
 
         <Box
           sx={{
-            filter: !doing && isStudentDashboard  ? 'blur(5px)' : 'none',
+            filter: !doing && isStudentDashboard ? 'blur(5px)' : 'none',
             pointerEvents: !doing && isStudentDashboard ? 'none' : 'auto',
           }}
         >
@@ -359,9 +364,9 @@ export default function PracticeDetail() {
               </Box>
             </Box>
           ) : practiceDetail?.practiceType === EPracticeType.WRITING ? (
-            <PracticeWriting data={practiceDetail} />
+            <PracticeWriting data={practiceDetail} reset={resetForm} />
           ) : (
-            <PracticeSpeaking data={practiceDetail} />
+            <PracticeSpeaking data={practiceDetail} reset={resetForm} />
           )}
         </Box>
 

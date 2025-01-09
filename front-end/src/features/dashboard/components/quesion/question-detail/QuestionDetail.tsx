@@ -14,7 +14,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function QuestionDetail({
@@ -23,7 +22,7 @@ export default function QuestionDetail({
   readOnly,
   onDelete,
   onEdit,
-  userAnswer,
+  userAnswer
 }: any) {
   const dispatch = useDispatch();
   const doExerciseForm = useSelector(selectDoExerciseForm);
@@ -102,7 +101,10 @@ export default function QuestionDetail({
           <img
             width={400}
             height="auto"
-            src={question?.file?.path ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkeMrDaQuVKvwExVpOp3wCbugxjzFfkSPYHg&s"}
+            src={
+              question?.file?.path ??
+              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkeMrDaQuVKvwExVpOp3wCbugxjzFfkSPYHg&s'
+            }
           />{' '}
         </Box>
       )}
@@ -177,7 +179,9 @@ export default function QuestionDetail({
                               : 'unset'
                           : 'unset',
                     }}
-                    {...(userAnswer ? {checked: userAnswer === option.id} : {})}
+                    {...(userAnswer
+                      ? { checked: userAnswer === option.id }
+                      : {})}
                   />
                   {option.file?.path && (
                     <img src={option.file.path} width={200} height="auto" />

@@ -19,4 +19,13 @@ export class AiService {
       throw new Error(error.message);
     }
   }
+
+  async generatePracticePrompt() {
+    try {
+      const result = await this.googleGeminiService.generatePracticePrompt();
+      return result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }

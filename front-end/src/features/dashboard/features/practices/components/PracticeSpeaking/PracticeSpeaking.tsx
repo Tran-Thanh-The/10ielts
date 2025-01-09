@@ -9,13 +9,19 @@ import { useDispatch } from 'react-redux';
 import { setDoExerciseForm } from '@/stores/slices/appSlice';
 import lamejs from 'lamejs';
 
-export default function PracticeSpeaking({ data }) {
+export default function PracticeSpeaking({ data, reset }) {
   const dispatch = useDispatch();
   const [isRecording, setIsRecording] = useState(false);
   const [audioURL, setAudioURL] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const [countDown, setCountDown] = React.useState(0);
+
+  useEffect(() => {
+    setAudioURL(null);
+    setIsRecording(false);
+    setCountDown(0);
+  }, [reset]);
 
   const startRecording = async () => {
     setCountDown(0);

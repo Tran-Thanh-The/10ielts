@@ -39,10 +39,11 @@ const HeaderNavigation = () => {
     {
       key: 'courses',
       label: 'Khóa học',
-      items: [
-        { path: '/course1', label: 'Học Toeic' },
-        { path: '/course2', label: 'Học Ielts' },
-      ],
+      path: '/courses',
+      // items: [
+      //   { path: '/course1', label: 'Học Toeic' },
+      //   { path: '/course2', label: 'Học Ielts' },
+      // ],
       order: 2,
     },
     {

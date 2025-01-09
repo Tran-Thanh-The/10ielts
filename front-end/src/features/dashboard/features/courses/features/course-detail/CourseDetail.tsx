@@ -214,6 +214,7 @@ export default function CourseDetail() {
         if (result.isConfirmed) {
           try {
             dispatch(setAppLoading(true));
+            setReload((prev) => !prev);
             await courseApi.updateCourse(idCourse, { status: 'ACTIVE' });
             Swal.fire('Thành công!', 'Khóa học đã được xuất bản.', 'success');
           } catch (error) {
@@ -313,7 +314,7 @@ export default function CourseDetail() {
                       </li>
                       <li>
                         <Typography variant="body1">
-                          Tổng bài học: 20
+                          Tổng bài học: {course.lessons.length}
                         </Typography>
                       </li>
                     </ul>
@@ -355,10 +356,6 @@ export default function CourseDetail() {
                   </RoleBasedComponent>
                 </Box>
               </Box>
-              <Typography variant="caption" color="text.secondary">
-                Ngày tạo: {new Date(course.createdAt).toLocaleDateString()}
-              </Typography>
-
               <Typography variant="caption" color="text.secondary">
                 Ngày tạo: {new Date(course.createdAt).toLocaleDateString()}
               </Typography>

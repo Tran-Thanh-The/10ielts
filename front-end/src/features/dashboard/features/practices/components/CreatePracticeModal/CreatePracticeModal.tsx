@@ -105,7 +105,7 @@ export default function CreatePracticeModal({
   const resetForm = () => {
     setFormData({
       title: '',
-      price: 0,
+      price: 1,
       practiceType: EPracticeType.READING,
       content: '',
       description: '',
@@ -253,7 +253,7 @@ export default function CreatePracticeModal({
                   ))}
                 </Select>
 
-                <TextField
+                {/* <TextField
                   label="Giá (VND)"
                   name="price"
                   type="number"
@@ -262,7 +262,7 @@ export default function CreatePracticeModal({
                   onChange={handleChange}
                   required
                   fullWidth
-                />
+                /> */}
               </Box>
 
               {formData.practiceType === EPracticeType.WRITING ||

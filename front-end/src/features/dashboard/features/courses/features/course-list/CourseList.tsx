@@ -62,7 +62,11 @@ export default function CourseList() {
         orderBy: params.orderBy,
       } as any);
 
-      setCourses(response.data.data);
+      if (isStudentDashboard) {
+        setCourses(response.data.data.filter((course: Course) => course.status === "ACTIVE"));
+      } else {
+        setCourses(response.data.data);
+      }
       dispatch(setAppLoading(false));
     } catch (error) {
       console.error('Failed to fetch courses:', error);

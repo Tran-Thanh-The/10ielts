@@ -188,3 +188,9 @@ export const deleteRole = async (id: number) => {
 export const getRoleDetail = async (id: number) => {
   return axiosInstance.get<any>(`roles/${id}`);
 }
+
+export const getAchievements = async () => {
+  return axiosInstance.get<any>('statistical/user-achievement-statistics');
+};
+
+

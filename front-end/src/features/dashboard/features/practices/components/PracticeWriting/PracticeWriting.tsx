@@ -7,10 +7,15 @@ import ReactQuill from 'react-quill';
 import { useDispatch } from 'react-redux';
 // import 'react-quill/dist/quill.snow.css';
 
-export default function PracticeWriting({ data }) {
+export default function PracticeWriting({ data, reset }) {
   const dispatch = useDispatch();
   const [content, setContent] = useState('');
   const [countDown, setCountDown] = React.useState(60 * 15);
+
+  useEffect(() => {
+    setContent('');
+    setCountDown(60 * 15);
+  }, [reset])
 
   const handleChange = (value) => {
     dispatch(setDoExerciseForm({

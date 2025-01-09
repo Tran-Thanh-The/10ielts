@@ -18,6 +18,8 @@ import Insights from '@/features/dashboard/features/insights/Insights';
 import InvoiceList from '@/features/dashboard/features/invoices/features/InvoiceList/InvoiceList';
 import InvoiceDetails from '@/features/dashboard/features/invoices/features/InvoiceDetails/InvoiceDetails';
 import Achievements from '@/features/dashboard/features/achievements/Achievements';
+import CoursesPreview from '@/features/public-pages/pages/course/CoursesPreview';
+import CoursePreviewDetail from '@/features/public-pages/pages/course/CoursePreviewDetail';
 
 const Home = lazy(() => import('@/features/public-pages/pages/home/Home'));
 const Login = lazy(() => import('@/features/auth/pages/login/Login'));
@@ -60,6 +62,8 @@ function AppRoutes() {
         <Route path="/:id" element={<ListCourse />} />
         <Route path="payment" element={<Payment />} />
         <Route path="payment/success" element={<PaymentSuccess />} />
+        <Route path="courses" element={<CoursesPreview />} />
+        <Route path="courses/:id" element={<CoursePreviewDetail />} />
 
         {/* User navigation */}
         <Route

@@ -1,4 +1,5 @@
 import CreateUpdatePractice from '@/features/dashboard/features/practices/features/CreateUpdatePractice/CreateUpdatePractice'
+import PracticeAI from '@/features/dashboard/features/practices/features/PracticeAI/PracticeAI'
 import PracticeDetail from '@/features/dashboard/features/practices/features/PracticeDetail/PracticeDetail'
 import Practices from '@/features/dashboard/features/practices/features/Practices'
 import PracticeListSubmition from '@/features/dashboard/features/practices/features/SubmitionPractice/PracticeList/PracticeListSubmition'
@@ -12,6 +13,7 @@ export default function PracticeRouter() {
     <Routes>
       <Route path="/" element={<Navigate to="list" replace />} />
       <Route path="/list" element={<Practices />} />
+      <Route path="/ai" element={<PracticeAI />} />
       <Route path="/:idPractice" element={<PracticeDetail />} />
       <Route path="/:idPractice/update" element={<CreateUpdatePractice />} />
       <Route path="/submitions" element={<PracticeListSubmition />} />

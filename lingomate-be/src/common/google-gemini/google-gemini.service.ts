@@ -20,14 +20,53 @@ export class GoogleGeminiService {
       },
     },
   };
+
+  private generatePracticePromptSchema = {
+    description: "List of 5 single choice questions",
+    type: SchemaType.ARRAY,
+    items: {
+      type: SchemaType.OBJECT,
+      properties: {
+        question: {
+          type: SchemaType.STRING,
+          description:
+            "A question about English grammar, similar to the sample from tests like TOEIC. Maximum length: 200 characters.",
+          nullable: false,
+        },
+        options: {
+          type: SchemaType.ARRAY,
+          description:
+            "List of 4 options for the question. Maximum length: 50 characters.",
+          items: {
+            type: SchemaType.OBJECT,
+            properties: {
+              text: {
+                type: SchemaType.STRING,
+                description:
+                  "Option text in english. Maximum length: 50 characters.",
+                nullable: false,
+              },
+              isCorrect: {
+                type: SchemaType.BOOLEAN,
+                description: "Correct answer indicator",
+                nullable: false,
+              },
+            },
+          },
+          nullable: false,
+        },
+      },
+    },
+  };
+
   constructor(
     @Inject("GOOGLE_GEMINI_CLIENT")
-    private readonly googleGeminiClient: GoogleGenerativeAI,
+    private readonly googleGeminiClient: GoogleGenerativeAI
   ) {}
 
   async evaluateWritingPrompt(
     topic: string,
-    writingAssignmentSubmission: string,
+    writingAssignmentSubmission: string
   ) {
     const evaluateWritingModel = this.googleGeminiClient.getGenerativeModel({
       model: "gemini-1.5-pro",
@@ -61,14 +100,48 @@ export class GoogleGeminiService {
         throw new Error("Error while evaluating writing prompt");
       }
       const result = JSON.parse(
-        response?.response?.candidates?.[0]?.content?.parts?.[0]?.text,
+        response?.response?.candidates?.[0]?.content?.parts?.[0]?.text
       );
       return result;
     } catch (error) {
       console.error("Error while evaluating writing prompt", error);
       throw new Error(
-        `Error while evaluating writing prompt: ${error.message}`,
+        `Error while evaluating writing prompt: ${error.message}`
       );
+    }
+  }
+
+  async generatePracticePrompt() {
+    const generatePracticeModel = this.googleGeminiClient.getGenerativeModel({
+      model: "gemini-1.5-pro",
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: this.generatePracticePromptSchema,
+      },
+    });
+    try {
+      const response = await generatePracticeModel.generateContent({
+        contents: [
+          {
+            role: "model",
+            parts: [
+              {
+                text: "You are a language teacher in VietNam. You are preparing a practice for your students. Here are 5 questions for the practice:",
+              }
+            ]
+          }
+        ]
+      });
+      if (!response?.response?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        throw new Error("Error while generate practice prompt");
+      }
+      const result = JSON.parse(
+        response?.response?.candidates?.[0]?.content?.parts?.[0]?.text
+      );
+      return result;
+    } catch (error) {
+      console.error("Error while generate practice prompt", error);
+      throw new Error(`Error while generate practice prompt: ${error.message}`);
     }
   }
 }

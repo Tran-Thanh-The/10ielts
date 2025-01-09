@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Res, UseGuards } from "@nestjs/common";
 import { AiService } from "./ai.service";
 import { Response } from "express";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
@@ -18,13 +18,23 @@ export class AiController {
   @Post("/evaluate-writing")
   async evaluateWriting(
     @Body() body: EvaluateWritingDto,
-    @Res() res: Response,
+    @Res() res: Response
   ) {
     try {
       const response = await this.aiService.evaluateWritingPrompt(
         body.topic,
-        body.writingAssignmentSubmission,
+        body.writingAssignmentSubmission
       );
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  @Get("/generate-practice")
+  async generatePractice(@Res() res: Response) {
+    try {
+      const response = await this.aiService.generatePracticePrompt();
       res.status(200).json(response);
     } catch (error) {
       res.status(500).json({ message: error.message });

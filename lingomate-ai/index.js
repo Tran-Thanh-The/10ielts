@@ -139,6 +139,75 @@ app.post('/evaluate-speaking', async (req, res) => {
   }
 });
 
+const generatePracticeSchema = {
+  description: "List of 5 single choice questions",
+  type: SchemaType.ARRAY,
+  items: {
+    type: SchemaType.OBJECT,
+    properties: {
+      question: {
+        type: SchemaType.STRING,
+        description: "A question about English grammar, similar to the sample from tests like TOEIC. Maximum length: 200 characters.",
+        nullable: false,
+      },
+      options: {
+        type: SchemaType.ARRAY,
+        description: "List of 4 options for the question. Maximum length: 50 characters.",
+        items: {
+          type: SchemaType.OBJECT,
+          properties: {
+            text: {
+              type: SchemaType.STRING,
+              description: "Option text in english. Maximum length: 50 characters.",
+              nullable: false,
+            },
+            isCorrect: {
+              type: SchemaType.BOOLEAN,
+              description: "Correct answer indicator",
+              nullable: false,
+            }
+          }
+        },
+        nullable: false,
+      }
+    },
+  }
+};
+
+const generatePracticeModel = genAI.getGenerativeModel({
+  model: "gemini-1.5-pro",
+  generationConfig: {
+    responseMimeType: "application/json",
+    responseSchema: generatePracticeSchema,
+  },
+});
+
+app.get('/generate-practice', async (req, res) => {
+  try {
+    const response = await generatePracticeModel.generateContent({
+      contents: [
+        {
+          role: "model",
+          parts: [
+            {
+              text: "You are a language teacher in VietNam. You are preparing a practice for your students. Here are 5 questions for the practice:",
+            }
+          ]
+        }
+      ]
+    });
+
+    const result = JSON.parse(response?.response?.candidates?.[0]?.content?.parts?.[0]?.text);
+    console.log("GENERATE_PRACTICE_RESPONSE: ", result);
+    res.json(result);
+
+    res.json(response.data);
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+    res.status(500).json({ error: 'Failed to generate practice', detail: error });
+  }
+});
+
 // Khởi động server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

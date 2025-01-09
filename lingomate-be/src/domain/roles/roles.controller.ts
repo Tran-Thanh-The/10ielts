@@ -51,7 +51,7 @@ export class RolesController {
   }
 
   @Get()
-  @Permissions(PermissionEnum.READ_ROLE)
+  // @Permissions(PermissionEnum.READ_ROLE)
   @ApiOkResponse({
     type: InfinityPaginationResponse(Role),
   })
@@ -76,7 +76,7 @@ export class RolesController {
   }
 
   @Get(":id")
-  @Permissions(PermissionEnum.READ_ROLE)
+  // @Permissions(PermissionEnum.READ_ROLE)
   @ApiParam({
     name: "id",
     type: String,

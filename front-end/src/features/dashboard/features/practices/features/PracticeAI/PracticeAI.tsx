@@ -12,6 +12,7 @@ import axios from 'axios';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function PracticeAI() {
   const navigate = useNavigate();
@@ -26,7 +27,9 @@ export default function PracticeAI() {
   const [resetForm, setResetForm] = React.useState(false);
   const [generate, setGenerate] = React.useState(false);
   // const [questions, setQuestions] = React.useState([]);
-  const questions = useSelector((state: RootState) => state.appState.doExerciseForm);
+  const questions = useSelector(
+    (state: RootState) => state.appState.doExerciseForm,
+  );
 
   useEffect(() => {
     dispatch(setAppLoading(true));
@@ -46,7 +49,7 @@ export default function PracticeAI() {
               status: 'ACTIVE',
               isCorrect: option.isCorrect,
             }),
-          )
+          ),
         };
       });
       // setQuestions(formattedData);
@@ -60,7 +63,22 @@ export default function PracticeAI() {
   }, [generate]);
 
   const handleSubmit = () => {
-    console.log("questions", questions);
+    const correctQuestions = questions.reduce((acc: number, item: any) => {
+      const correctAnswer = item.answers.find(
+        (answer: any) => answer.isCorrect,
+      )?.id;
+      return item.userAnswer === correctAnswer ? acc + 1 : acc;
+    }, 0);
+    const score = Math.round((correctQuestions / questions.length) * 100);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Nộp bài thành công',
+      text: `Bạn đã đạt được ${score} điểm`,
+    }).then(() => {
+      setDoing(false);
+      setGenerate((prev) => !prev);
+    });
     // dispatch(setAppLoading(true));
     // setResetForm((prev) => !prev);
     // switch (practiceDetail?.practiceType) {
@@ -126,51 +144,26 @@ export default function PracticeAI() {
         }}
       >
         <FeatureHeader title={'Luyện tập với AI'}>
-          {doing ? (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '12px',
+            }}
+          >
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => {
+                setGenerate((prev) => !prev);
               }}
             >
-              <Button variant="outlined" size="small">
-                {Math.floor(countDown / 60)}:{countDown % 60}
-              </Button>
-
-              <Button variant="contained" onClick={handleSubmit} size="small">
-                Nộp bài
-              </Button>
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-              }}
-            >
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => {
-                  setGenerate((prev) => !prev);
-                }}
-              >
-                Tạo bài với AI
-              </Button>
-
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setDoing(true);
-                }}
-                size="small"
-              >
-                Làm bài
-              </Button>
-            </Box>
-          )}
+              Tạo bài với AI
+            </Button>
+            <Button variant="contained" onClick={handleSubmit} size="small">
+              Nộp bài
+            </Button>
+          </Box>
         </FeatureHeader>
 
         <Box>
@@ -183,17 +176,15 @@ export default function PracticeAI() {
             }}
           >
             <Box>
-              {questions?.map(
-                (question: any, index: number) => (
-                  <QuestionDetail
-                    key={question.id}
-                    question={question}
-                    index={index}
-                    onDelete={() => {}}
-                    onEdit={() => {}}
-                  ></QuestionDetail>
-                ),
-              )}
+              {questions?.map((question: any, index: number) => (
+                <QuestionDetail
+                  key={question.id}
+                  question={question}
+                  index={index}
+                  onDelete={() => {}}
+                  onEdit={() => {}}
+                ></QuestionDetail>
+              ))}
             </Box>
           </Box>
         </Box>

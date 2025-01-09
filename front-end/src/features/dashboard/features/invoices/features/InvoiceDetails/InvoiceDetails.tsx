@@ -83,7 +83,7 @@ const InvoiceDetail: React.FC<{ data: any }> = ({ data }) => {
             </Typography>
             <Typography>Số tiền: {formatCurrency(data.money)}</Typography>
             <Typography>Trạng thái đơn hàng: {data.status}</Typography>
-            <Typography>Mã người dùng: {data.userId}</Typography>
+            {/* <Typography>Mã người dùng: {data.userId}</Typography> */}
           </Box>
         </Grid>
       </Grid>
@@ -118,9 +118,9 @@ const InvoiceDetail: React.FC<{ data: any }> = ({ data }) => {
             <TableBody>
               {data.invoiceProducts.map((product, index) => (
                 <TableRow key={index}>
-                  <TableCell>{product.name}</TableCell>
+                  <TableCell>{product.course.name}</TableCell>
                   <TableCell align="right">
-                    {formatCurrency(product.price)}
+                    {formatCurrency(product.course.price)}
                   </TableCell>
                 </TableRow>
               ))}

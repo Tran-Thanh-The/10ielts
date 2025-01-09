@@ -57,7 +57,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log(type, id);
+  // console.log(paymentData);
 
   const fetchPaymentData = async () => {
     try {
@@ -193,14 +193,15 @@ const Checkout = () => {
               Sản phẩm:
             </Typography>
             <Typography color="#666666" mt={1}>
-              • TOEIC mất gốc đến LR 300 & SW 100
+              • TOEIC online
             </Typography>
 
             <Typography variant="h6" fontWeight="bold" mt={3} color="#333333">
               Tổng giá bán:
             </Typography>
             <Typography variant="h6" fontWeight="bold" color="#333333" mt={1}>
-              1.000.000 VND
+              {paymentData.amount.toLocaleString('vi-VN')}{' '}
+              {paymentData.currency}
             </Typography>
 
             <Box mt={3} p={2} bgcolor="#f0fff4" borderRadius={2}>
@@ -217,7 +218,8 @@ const Checkout = () => {
               Giá bán sau khuyến mãi
             </Typography>
             <Typography variant="h6" fontWeight="bold" color="#1976d2" mt={1}>
-              1.000.000 VND
+              {paymentData.amount.toLocaleString('vi-VN')}{' '}
+              {paymentData.currency}
             </Typography>
 
             <StyledInfoBox>

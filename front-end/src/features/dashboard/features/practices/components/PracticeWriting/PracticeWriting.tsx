@@ -5,7 +5,7 @@ import { Box, Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import { useDispatch } from 'react-redux';
-import 'react-quill/dist/quill.snow.css';
+// import 'react-quill/dist/quill.snow.css';
 
 export default function PracticeWriting({ data }) {
   const dispatch = useDispatch();
@@ -59,11 +59,11 @@ export default function PracticeWriting({ data }) {
             </Button> */}
           </Box>
 
-          <ReactQuill
+          {/* <ReactQuill
             value={content}
             onChange={handleChange}
             style={{ minHeight: '300px' }}
-          />
+          /> */}
         </Box>
       </RoleBasedComponent>
     </Box>
